@@ -1,0 +1,166 @@
+{
+  "app_name": "One Latur",
+  "personality": "4 Tactile / Playful LIGHT",
+  "personality_one_liner": "A vibrant, fast, and touchable grocery experience that blends dark-forward authority with hyper-approachable pastel quick-commerce energy.",
+  "color": {
+    "surface": "#FFFFFF",
+    "onSurface": "#1A1A1A",
+    "surfaceSecondary": "#F5F6F8",
+    "onSurfaceSecondary": "#1A1A1A",
+    "surfaceTertiary": "#EAECEF",
+    "onSurfaceTertiary": "#4A4D52",
+    "surfaceInverse": "#1A1A1A",
+    "onSurfaceInverse": "#FFFFFF",
+    "brand": "#1A1A1A",
+    "onBrand": "#FFFFFF",
+    "brandPrimary": "#1A1A1A",
+    "onBrandPrimary": "#FFFFFF",
+    "brandSecondary": "#F7C948",
+    "onBrandSecondary": "#1A1A1A",
+    "brandTertiary": "#FFF4D4",
+    "onBrandTertiary": "#1A1A1A",
+    "success": "#E6F4EA",
+    "onSuccess": "#0C831F",
+    "warning": "#FFF7D6",
+    "onWarning": "#997300",
+    "error": "#FFE6E6",
+    "onError": "#CC0000",
+    "info": "#F5F6F8",
+    "onInfo": "#1A1A1A",
+    "border": "#EAECEF",
+    "borderStrong": "#D1D5DB",
+    "divider": "#F5F6F8",
+    "muted": "#6B7280",
+    "pastelRed": "#FFE6E6",
+    "pastelYellow": "#FFF7D6",
+    "pastelGreen": "#E6F4EA"
+  },
+  "typography": {
+    "displayFontFamily": "Plus Jakarta Sans",
+    "textFontFamily": "Plus Jakarta Sans",
+    "scale": {
+      "sm": 12,
+      "base": 14,
+      "lg": 16,
+      "xl": 20,
+      "2xl": 24
+    }
+  },
+  "spacing": {
+    "rule": "Generous padding around content, safe-area clearance at bottom, minimum 56pt tappable heights, use gap for grids.",
+    "xs": 4,
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 24,
+    "2xl": 32,
+    "3xl": 48
+  },
+  "radius_tokens": {
+    "sm": 6,
+    "md": 12,
+    "lg": 20,
+    "pill": 999
+  },
+  "shadow_tier": "2",
+  "navigation": "bottom_tabs",
+  "icon_set": "Phosphor",
+  "glassmorphism": {
+    "enabled": "true",
+    "do's": [
+      "Bottom tab bar",
+      "Sticky Location/Header bar over scrolling content",
+      "Sticky primary CTA in cart/checkout"
+    ],
+    "dont's": [
+      "Every button or list row",
+      "Category chips",
+      "Dense product grid cards"
+    ]
+  },
+  "platform_libraries": {
+    "glass": {
+      "ios": "expo-glass-effect",
+      "android": "expo-blur",
+      "low_end_android_fallback": "solid surfaceSecondary"
+    },
+    "image": "expo-image",
+    "blur": "expo-blur",
+    "bottom_sheet": "@gorhom/bottom-sheet",
+    "animation": "react-native-reanimated",
+    "gesture": "react-native-gesture-handler"
+  },
+  "screens": [
+    {
+      "name": "Home",
+      "purpose": "High-density, hyper-personalized Blinkit-style discovery hub with fast access to categories and repeat purchases.",
+      "states": {
+        "loading": "Skeleton grids for categories, centered spinner for personalized rows.",
+        "empty": "Illustration of empty basket + 'Fresh items arriving soon' + Reload CTA.",
+        "error": "Readable 'Connection lost' message + Retry button."
+      },
+      "layout": "Sticky top Location Bar (glass or dark-forward brand surface) with Search Bar beneath it. Horizontal scroll view for 'Discover' chip filters using pastel red/yellow/green backgrounds. Hero promotional banners (horizontal snap carousel). 'Buy Again' horizontal product carousel. 2-col or 3-col Category Grid with pastel tiles. Followed by vertical feed of product grids. Safe area padding at bottom for tab bar."
+    },
+    {
+      "name": "Store Profile",
+      "purpose": "Immersive showcase of a specific local store featuring rich media (videos/images) and their full catalog.",
+      "states": {
+        "loading": "Skeleton blocks for media header and product list.",
+        "empty": "Illustration of closed storefront + 'No products available right now' + Go Back CTA.",
+        "error": "Readable error message + Retry button."
+      },
+      "layout": "Top section: 2x2 grid (or horizontal scroll) containing 2 videos (mocked with play button overlay) and 2 images. Overlapping centered store logo (circular avatar, shadow 2, raised half over the media and half over content). Store metadata (name, delivery time, tags). Horizontal chip filters for store categories. 2-col grid of all store products below."
+    },
+    {
+      "name": "Product Detail",
+      "purpose": "Detailed view of a single grocery item focusing on high-quality imagery and quick add-to-cart action.",
+      "states": {
+        "loading": "Skeleton image block and text lines.",
+        "empty": "Not applicable unless product removed, then 'Product unavailable' + Go Back.",
+        "error": "Readable error message + Retry button."
+      },
+      "layout": "Large product image at top (surfaceSecondary background). Title, weight/volume, price, and Blinkit-style delivery time indicator. Sticky primary 'Add to Cart' CTA at the bottom inside a glass container above the safe area."
+    },
+    {
+      "name": "Cart",
+      "purpose": "Review selected items, view total savings, and proceed to checkout quickly.",
+      "states": {
+        "loading": "Centered spinner.",
+        "empty": "Illustration of empty cart + 'Your cart is waiting for fresh items' + Browse CTA.",
+        "error": "Readable error message + Retry button."
+      },
+      "layout": "List of cart items with quantity steppers. Bill details summary card (surfaceSecondary). Sticky 'Checkout' CTA at the bottom with total amount displayed inside the button."
+    }
+  ],
+  "images": {
+    "grocery_vegetables": {
+      "url": "https://images.unsplash.com/photo-1542838132-92c53300491e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwxfHxmcmVzaCUyMGdyb2NlcnklMjB2ZWdldGFibGVzJTIwYW5kJTIwZnJ1aXRzfGVufDB8fHx8MTc4ODg4OTA3NXww&ixlib=rb-4.1.0&q=85",
+      "alt": "Fresh grocery vegetables"
+    },
+    "grocery_snacks": {
+      "url": "https://images.unsplash.com/photo-1739065883242-92659253f7a6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxNzV8MHwxfHNlYXJjaHwxfHxpbmRpYW4lMjBncm9jZXJ5JTIwc25hY2tzJTIwY2hpcHN8ZW58MHx8fHwxNzg4ODg5MDc1fDA&ixlib=rb-4.1.0&q=85",
+      "alt": "Indian grocery snacks chips"
+    },
+    "delivery_hero": {
+      "url": "https://images.unsplash.com/photo-1733565823567-ca12618dec46?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHwxfHxCbGlua2l0JTIwZGVsaXZlcnklMjBwZXJzb24lMjBvbiUyMHNjb290ZXIlMjBncmFwaGljfGVufDB8fHx8MTc4ODg4OTA4N3ww&ixlib=rb-4.1.0&q=85",
+      "alt": "Delivery person on scooter"
+    }
+  },
+  "haptics": {
+    "add_to_cart": "selection",
+    "stepper_increment": "light",
+    "stepper_decrement": "light",
+    "checkout_success": "success",
+    "tab_switch": "selection"
+  },
+  "instructions_to_main_agent": [
+    "Strictly follow the Tactile / Playful LIGHT personality. Use oversized tap areas, soft radii (md/lg), and clear foreground/background layering.",
+    "Implement the 'Blinkit-style' Home screen: A dense but visually structured layout. The Discover chip filter bar must scroll horizontally and utilize the defined pastel traffic colors (pastelRed, pastelYellow, pastelGreen) for its chip backgrounds.",
+    "The Store Profile screen MUST have the specific header layout requested: a top section containing 2 videos (mocked via images with a play icon overlay) and 2 images, followed by an overlapping, centered circular store logo.",
+    "Integrate the One Latur dark-forward brand identity strategically. For instance, use the dark `brand` color (#1A1A1A) for the top Location/Header bar, creating strong contrast against the white search bar and light app body. This fulfills the 'dark-forward primary' request while keeping the shopping experience bright and tactile.",
+    "Ensure all interactive elements (buttons, quantity steppers) have minimum 44x44pt touch targets and trigger the mapped haptic feedback.",
+    "Apply `expo-glass-effect` (or `expo-blur`) on the bottom tab bar and sticky CTAs to maintain native mobile depth.",
+    "No auth screen is required. The app should launch directly into the Home tab.",
+    "Use Phosphor icons with consistent weight (either all filled or all outlined, except for tab active/inactive states)."
+  ]
+}

@@ -1,0 +1,246 @@
+import { useEffect, useState } from "react";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from "react-native";
+import { Image } from "expo-image";
+import { useVideoPlayer, VideoView } from "expo-video";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Icon from "@react-native-vector-icons/ionicons";
+import { colors, radius, spacing } from "@/src/theme";
+import { api, Category, Product, Store, StoreMedia } from "@/src/api";
+import { ProductCard } from "@/src/components/product-card";
+
+const { width: SCREEN_W } = Dimensions.get("window");
+
+function MediaTile({ media, size }: { media: StoreMedia; size: number }) {
+  const [playing, setPlaying] = useState(false);
+  const player = useVideoPlayer(media.type === "video" ? media.url : "", (p) => {
+    p.loop = true;
+    p.muted = true;
+  });
+
+  if (media.type === "image") {
+    return (
+      <View style={[mediaStyles.tile, { width: size, height: size }]}>
+        <Image source={media.url} style={mediaStyles.img} contentFit="cover" />
+      </View>
+    );
+  }
+
+  return (
+    <TouchableOpacity
+      activeOpacity={0.9}
+      style={[mediaStyles.tile, { width: size, height: size }]}
+      onPress={() => {
+        if (playing) { player.pause(); setPlaying(false); }
+        else { player.play(); setPlaying(true); }
+      }}
+      testID={`store-media-${media.url}`}
+    >
+      {playing ? (
+        <VideoView style={mediaStyles.img} player={player} contentFit="cover" nativeControls={false} />
+      ) : (
+        <>
+          <Image source={media.thumbnail ?? ""} style={mediaStyles.img} contentFit="cover" />
+          <View style={mediaStyles.playOverlay}>
+            <View style={mediaStyles.playBtn}>
+              <Icon name="play" size={22} color={colors.onBrandPrimary} />
+            </View>
+          </View>
+          <View style={mediaStyles.videoBadge}>
+            <Text style={mediaStyles.videoBadgeText}>VIDEO</Text>
+          </View>
+        </>
+      )}
+    </TouchableOpacity>
+  );
+}
+
+const mediaStyles = StyleSheet.create({
+  tile: { borderRadius: radius.md, overflow: "hidden", backgroundColor: colors.surfaceSecondary, position: "relative" },
+  img: { width: "100%", height: "100%" },
+  playOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.15)" },
+  playBtn: { width: 44, height: 44, borderRadius: 22, backgroundColor: "rgba(0,0,0,0.55)", alignItems: "center", justifyContent: "center" },
+  videoBadge: { position: "absolute", top: 8, left: 8, backgroundColor: colors.brandPrimary, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4 },
+  videoBadgeText: { color: colors.onBrandPrimary, fontSize: 9, fontWeight: "800" },
+});
+
+export default function StoreProfileScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const insets = useSafeAreaInsets();
+  const router = useRouter();
+  const [store, setStore] = useState<Store | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [activeCat, setActiveCat] = useState<string>("all");
+
+  useEffect(() => {
+    if (!id) return;
+    api<Store>(`/stores/${id}`).then(setStore).catch(() => {});
+    api<Product[]>(`/stores/${id}/products`).then(setProducts).catch(() => {});
+    api<Category[]>("/categories").then(setCategories).catch(() => {});
+  }, [id]);
+
+  if (!store) {
+    return (
+      <View style={styles.loader}>
+        <Text style={{ color: colors.muted }}>Loading store...</Text>
+      </View>
+    );
+  }
+
+  const tileSize = (SCREEN_W - spacing.lg * 2 - spacing.md) / 2;
+  const catMap = Object.fromEntries(categories.map((c) => [c.id, c]));
+  const cats = ["all", ...Array.from(new Set(products.map((p) => p.category_id)))];
+
+  const shown = activeCat === "all" ? products : products.filter((p) => p.category_id === activeCat);
+
+  return (
+    <View style={{ flex: 1, backgroundColor: colors.surface }} testID="store-screen">
+      {/* Back button - floating */}
+      <TouchableOpacity
+        style={[styles.backBtn, { top: insets.top + 8 }]}
+        onPress={() => router.back()}
+        testID="back-btn"
+      >
+        <Icon name="chevron-back" size={22} color={colors.onSurface} />
+      </TouchableOpacity>
+
+      <ScrollView contentContainerStyle={{ paddingBottom: spacing["3xl"] }} showsVerticalScrollIndicator={false}>
+        {/* Top: 2 videos + 2 images grid */}
+        <View style={[styles.mediaSection, { paddingTop: insets.top + 56 }]}>
+          <View style={styles.mediaRow}>
+            {store.media.slice(0, 2).map((m, i) => (
+              <MediaTile key={i} media={m} size={tileSize} />
+            ))}
+          </View>
+          <View style={[styles.mediaRow, { marginTop: spacing.md }]}>
+            {store.media.slice(2, 4).map((m, i) => (
+              <MediaTile key={i + 2} media={m} size={tileSize} />
+            ))}
+          </View>
+        </View>
+
+        {/* Overlapping centered logo + store info */}
+        <View style={styles.logoWrap}>
+          <View style={styles.logoRing}>
+            <Image source={store.logo} style={styles.logo} contentFit="cover" />
+          </View>
+          <Text style={styles.storeName}>{store.name}</Text>
+          <Text style={styles.tagline}>{store.tagline}</Text>
+          <View style={styles.metaRow}>
+            <View style={styles.metaChip}>
+              <Icon name="flash" size={12} color={colors.onSurface} />
+              <Text style={styles.metaChipText}>{store.delivery_time}</Text>
+            </View>
+            <View style={styles.metaChip}>
+              <Icon name="star" size={12} color={colors.onSurface} />
+              <Text style={styles.metaChipText}>{store.rating}</Text>
+            </View>
+            <View style={styles.metaChip}>
+              <Icon name="storefront-outline" size={12} color={colors.onSurface} />
+              <Text style={styles.metaChipText}>Verified</Text>
+            </View>
+          </View>
+          <View style={styles.tagsRow}>
+            {store.tags.map((t) => (
+              <View key={t} style={styles.tagPill}>
+                <Text style={styles.tagText}>{t}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* Category chip filter (sticky-styled row) */}
+        <View style={styles.chipHeader}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.chipRow}
+          >
+            {cats.map((c) => {
+              const active = activeCat === c;
+              const label = c === "all" ? "All Items" : (catMap[c]?.name ?? c);
+              const emoji = c === "all" ? "🛒" : (catMap[c]?.emoji ?? "");
+              return (
+                <TouchableOpacity
+                  key={c}
+                  onPress={() => setActiveCat(c)}
+                  style={[styles.chip, active && { backgroundColor: colors.brandPrimary, borderColor: colors.brandPrimary }]}
+                  testID={`store-chip-${c}`}
+                >
+                  <Text style={[styles.chipText, active && { color: colors.onBrandPrimary }]}>
+                    {emoji ? `${emoji}  ` : ""}{label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+
+        {/* Products */}
+        <View style={styles.productSection}>
+          <Text style={styles.sectionTitle}>All Products</Text>
+          <View style={styles.grid}>
+            {shown.map((p) => (
+              <View key={p.id} style={styles.gridItem}>
+                <ProductCard product={p} width={undefined as any} />
+              </View>
+            ))}
+            {shown.length === 0 && (
+              <View style={styles.empty}>
+                <Text style={{ color: colors.muted }}>No products in this category</Text>
+              </View>
+            )}
+          </View>
+        </View>
+      </ScrollView>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  loader: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: colors.surface },
+  backBtn: {
+    position: "absolute",
+    left: spacing.lg,
+    width: 40, height: 40, borderRadius: 20,
+    backgroundColor: colors.surface,
+    alignItems: "center", justifyContent: "center",
+    zIndex: 10,
+    shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 6, shadowOffset: { width: 0, height: 2 },
+    elevation: 4,
+  },
+  mediaSection: { paddingHorizontal: spacing.lg, backgroundColor: colors.surfaceSecondary, paddingBottom: 60 },
+  mediaRow: { flexDirection: "row", gap: spacing.md, justifyContent: "space-between" },
+  logoWrap: {
+    marginTop: -50,
+    alignItems: "center",
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.lg,
+  },
+  logoRing: {
+    width: 100, height: 100, borderRadius: 50,
+    backgroundColor: colors.surface,
+    padding: 4,
+    shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 12, shadowOffset: { width: 0, height: 4 },
+    elevation: 6,
+  },
+  logo: { width: "100%", height: "100%", borderRadius: 46 },
+  storeName: { fontSize: 22, fontWeight: "800", color: colors.onSurface, marginTop: spacing.md, textAlign: "center" },
+  tagline: { fontSize: 13, color: colors.muted, marginTop: 4, textAlign: "center" },
+  metaRow: { flexDirection: "row", gap: spacing.sm, marginTop: spacing.md, flexWrap: "wrap", justifyContent: "center" },
+  metaChip: { flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: colors.pastelYellow, paddingHorizontal: 10, paddingVertical: 5, borderRadius: radius.pill },
+  metaChipText: { fontSize: 12, fontWeight: "700", color: colors.onSurface },
+  tagsRow: { flexDirection: "row", flexWrap: "wrap", gap: spacing.xs, marginTop: spacing.md, justifyContent: "center" },
+  tagPill: { backgroundColor: colors.surfaceSecondary, paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.pill, borderWidth: 1, borderColor: colors.border },
+  tagText: { fontSize: 11, color: colors.onSurfaceSecondary, fontWeight: "600" },
+  chipHeader: { borderTopWidth: 1, borderBottomWidth: 1, borderColor: colors.border, backgroundColor: colors.surface, height: 56, justifyContent: "center" },
+  chipRow: { paddingHorizontal: spacing.lg, gap: spacing.sm, flexDirection: "row", alignItems: "center" },
+  chip: { height: 36, flexShrink: 0, paddingHorizontal: 14, borderRadius: radius.pill, borderWidth: 1.5, borderColor: colors.border, backgroundColor: colors.surface, justifyContent: "center" },
+  chipText: { fontSize: 12, fontWeight: "700", color: colors.onSurface },
+  productSection: { paddingTop: spacing.lg },
+  sectionTitle: { fontSize: 16, fontWeight: "800", color: colors.onSurface, paddingHorizontal: spacing.lg, marginBottom: spacing.md },
+  grid: { flexDirection: "row", flexWrap: "wrap", paddingHorizontal: spacing.lg, gap: spacing.md },
+  gridItem: { width: "47.5%" },
+  empty: { padding: spacing.xl, width: "100%", alignItems: "center" },
+});
