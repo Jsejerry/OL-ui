@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "@react-native-vector-icons/ionicons";
 import { colors, radius, spacing } from "@/src/theme";
@@ -6,7 +7,7 @@ import { colors, radius, spacing } from "@/src/theme";
 const TAB_BAR_H = 64;
 
 const ROWS = [
-  { icon: "receipt-outline", label: "My Orders", testID: "acc-orders" },
+  { icon: "receipt-outline", label: "My Orders", testID: "acc-orders", route: "/orders" },
   { icon: "location-outline", label: "Saved Addresses", testID: "acc-addresses" },
   { icon: "heart-outline", label: "Wishlist", testID: "acc-wishlist" },
   { icon: "gift-outline", label: "Refer & Earn", testID: "acc-refer" },
@@ -16,6 +17,7 @@ const ROWS = [
 
 export default function AccountScreen() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.surfaceSecondary }} testID="account-screen">
@@ -32,7 +34,12 @@ export default function AccountScreen() {
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: TAB_BAR_H + 24 }}>
         <View style={styles.card}>
           {ROWS.map((r, i) => (
-            <TouchableOpacity key={r.label} style={[styles.row, i !== ROWS.length - 1 && styles.rowBorder]} testID={r.testID}>
+            <TouchableOpacity
+              key={r.label}
+              style={[styles.row, i !== ROWS.length - 1 && styles.rowBorder]}
+              testID={r.testID}
+              onPress={() => { if (r.route) router.push(r.route as any); }}
+            >
               <View style={styles.rowIcon}>
                 <Icon name={r.icon as any} size={20} color={colors.onSurface} />
               </View>

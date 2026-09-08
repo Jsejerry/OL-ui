@@ -8,6 +8,7 @@ import Icon from "@react-native-vector-icons/ionicons";
 import { colors, radius, spacing } from "@/src/theme";
 import { api, Category, Product, Store, StoreMedia } from "@/src/api";
 import { ProductCard } from "@/src/components/product-card";
+import { useFollowedStores } from "@/src/followed";
 
 const { width: SCREEN_W } = Dimensions.get("window");
 
@@ -68,6 +69,7 @@ export default function StoreProfileScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { isFollowing, toggle } = useFollowedStores();
   const [store, setStore] = useState<Store | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -148,6 +150,21 @@ export default function StoreProfileScreen() {
               </View>
             ))}
           </View>
+
+          <TouchableOpacity
+            style={[styles.followBtn, isFollowing(store.id) && styles.followBtnActive]}
+            onPress={() => toggle(store.id)}
+            testID="follow-btn"
+          >
+            <Icon
+              name={isFollowing(store.id) ? "heart" : "heart-outline"}
+              size={18}
+              color={isFollowing(store.id) ? colors.onError : colors.onBrandPrimary}
+            />
+            <Text style={[styles.followText, isFollowing(store.id) && { color: colors.onSurface }]}>
+              {isFollowing(store.id) ? "Following" : "Follow store"}
+            </Text>
+          </TouchableOpacity>
         </View>
 
         {/* Category chip filter (sticky-styled row) */}
@@ -234,6 +251,18 @@ const styles = StyleSheet.create({
   tagsRow: { flexDirection: "row", flexWrap: "wrap", gap: spacing.xs, marginTop: spacing.md, justifyContent: "center" },
   tagPill: { backgroundColor: colors.surfaceSecondary, paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.pill, borderWidth: 1, borderColor: colors.border },
   tagText: { fontSize: 11, color: colors.onSurfaceSecondary, fontWeight: "600" },
+  followBtn: {
+    marginTop: spacing.md,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 18,
+    height: 40,
+    borderRadius: radius.pill,
+    backgroundColor: colors.brandPrimary,
+  },
+  followBtnActive: { backgroundColor: colors.pastelPink },
+  followText: { color: colors.onBrandPrimary, fontWeight: "800", fontSize: 13 },
   chipHeader: { borderTopWidth: 1, borderBottomWidth: 1, borderColor: colors.border, backgroundColor: colors.surface, height: 56, justifyContent: "center" },
   chipRow: { paddingHorizontal: spacing.lg, gap: spacing.sm, flexDirection: "row", alignItems: "center" },
   chip: { height: 36, flexShrink: 0, paddingHorizontal: 14, borderRadius: radius.pill, borderWidth: 1.5, borderColor: colors.border, backgroundColor: colors.surface, justifyContent: "center" },

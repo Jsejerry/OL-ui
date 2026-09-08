@@ -1,0 +1,51 @@
+{
+  "summary": "Tested new features: coupons, orders, live tracking, reorder, store follow, and Home follow rail. Backend: 15/15 pytest tests pass covering coupons (LATUR10/FRESH50/WELCOME/BAD/below-min), orders (create/get/list, no _id leakage), and catalog regression. Frontend: coupon apply displays 'Coupon LATUR10 −₹20' row and reduces grand total (₹211 → ₹191), Remove Coupon reverts, Checkout navigates to /order/<id> tracking screen with mm:ss ETA countdown, animated rider on SVG map, timeline first step active, items list and Grand total. /orders lists past orders with Track+Reorder; Reorder adds items to cart and briefly shows 'Added'. Store /store/s1 Follow toggles to filled heart 'Following' pastel-pink and persists across reload; Home renders 'Stores you follow' rail with the followed store card. Account → 'My Orders' navigates to /orders. Regression: Home discover chips, categories, buy-again, banners visible; store profile 2x2 media grid with two VIDEO badges + centered logo intact; free-delivery nudge still shown when subtotal < 199.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Cart / Apply Coupon button",
+        "issue": "Sticky Checkout bar (position: absolute, bottom) sits over the coupon Apply button click zone in mobile viewport at some scroll positions. Automated Playwright click on [data-testid=apply-coupon-btn] routed to the checkout-btn (real users may also miss the small Apply target if a bill row scrolls behind). JS .click() works; native tap works when Apply is scrolled into center. Suggest adding scrollView paddingBottom equal to checkoutBar height (~72px) and increasing Apply button hit area / adding a small marginBottom to the coupon card so it is never underlaid by the checkout bar.",
+        "testID": "apply-coupon-btn",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Cart",
+        "issues": [
+          "Bill row 'Discount −₹17' (MRP savings) sits directly above 'Coupon LATUR10 −₹20' – two 'discount-like' rows in a row can confuse; consider labeling MRP row as 'MRP savings' for clarity."
+        ]
+      }
+    ],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "OPTIONAL/MEDIUM: Increase Cart ScrollView paddingBottom to ~80 (checkoutBar + tab bar) and/or increase Apply button hitSlop so the sticky Checkout bar never overlays the coupon Apply button. This is the only interaction friction observed.",
+    "OPTIONAL: rename Cart bill row 'Discount' to 'MRP savings' to disambiguate from 'Coupon' discount row."
+  ],
+  "critical_code_review_comments": [
+    "server.py:363 – LATUR10 pct discount uses round(subtotal*value/100); for subtotal 150 this returns 15 as required. Fine.",
+    "orders endpoints correctly exclude _id via projection {\"_id\": 0} in list and get.",
+    "followed.ts singleton cache + listener pattern is fine but 'cache' is module-scoped and shared across component trees – reload persistence verified via AsyncStorage.",
+    "order/[id].tsx uses expo-video (good, not deprecated). Uses react-native-reanimated + react-native-svg for map animation which is acceptable in web preview.",
+    "cart.tsx: 'Discount' label refers to MRP savings while 'Coupon LATUR10' is coupon discount – consider renaming."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py"
+  ],
+  "success_rate": {"backend": "100% (15/15)", "frontend": "~95% (all core flows verified; minor Apply-btn overlay concern)"},
+  "seed_data_creation": "Test suite created 1 order via POST /api/orders per test-run (retrievable via GET /api/orders/{id}). No seed data pruning performed – acceptable since orders history is a listed feature.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend base is https://onelatur-market.preview.emergentagent.com. Use pytest /app/backend/tests/backend_test.py for regression. For Playwright coupon interactions inside Cart, use JS click (page.evaluate('document.querySelector(...).click()')) to bypass the sticky checkout-bar overlay, OR scroll the Apply button into center first. /orders route is a standalone screen (no bottom tab bar). Follow state persists in AsyncStorage key 'onelatur.followed.v1'.",
+  "rca_of_issue": "No critical bugs. Only observation: sticky Checkout bar can intercept clicks meant for the Apply coupon button when it sits directly below/behind it in the layout. Reproduction: add ≥5 products, open Cart, from natural scroll position tap Apply — a normal Playwright/synthetic click was routed to Checkout. Mitigation: bump ScrollView bottom padding above checkoutBar height and/or slightly raise the coupon card (mb: spacing.md) so Apply is never under the sticky bar."
+}

@@ -7,12 +7,14 @@ import Icon from "@react-native-vector-icons/ionicons";
 import { colors, radius, spacing } from "@/src/theme";
 import { api, Banner, Category, DiscoverChip, Product, Store } from "@/src/api";
 import { ProductCard } from "@/src/components/product-card";
+import { useFollowedStores } from "@/src/followed";
 
 const TAB_BAR_H = 64;
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { isFollowing } = useFollowedStores();
   const [chips, setChips] = useState<DiscoverChip[]>([]);
   const [activeChip, setActiveChip] = useState<string>("d1");
   const [banners, setBanners] = useState<Banner[]>([]);
@@ -34,6 +36,8 @@ export default function HomeScreen() {
   const filtered = query
     ? products.filter((p) => p.name.toLowerCase().includes(query.toLowerCase()))
     : products;
+
+  const followedStores = stores.filter((s) => isFollowing(s.id));
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.surface }} testID="home-screen">
@@ -103,6 +107,37 @@ export default function HomeScreen() {
             })}
           </ScrollView>
         </View>
+
+        {/* Followed stores rail */}
+        {followedStores.length > 0 && (
+          <View style={styles.section}>
+            <View style={styles.rowHeader}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                <Icon name="heart" size={16} color={colors.onError} />
+                <Text style={styles.sectionTitleInline}>Stores you follow</Text>
+              </View>
+              <Text style={styles.link}>{followedStores.length}</Text>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: spacing.lg, gap: spacing.md }}
+            >
+              {followedStores.map((s) => (
+                <TouchableOpacity
+                  key={s.id}
+                  style={styles.followedCard}
+                  onPress={() => router.push(`/store/${s.id}` as any)}
+                  testID={`followed-store-${s.id}`}
+                >
+                  <Image source={s.logo} style={styles.followedLogo} contentFit="cover" />
+                  <Text style={styles.followedName} numberOfLines={1}>{s.name}</Text>
+                  <Text style={styles.followedMeta}>⚡ {s.delivery_time}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        )}
 
         {/* Banners */}
         <ScrollView
@@ -327,6 +362,16 @@ const styles = StyleSheet.create({
   storeName: { fontSize: 14, fontWeight: "800", color: colors.onSurface },
   storeMeta: { fontSize: 11, color: colors.muted, marginTop: 2 },
   storeTag: { fontSize: 11, color: colors.onSurfaceSecondary, marginTop: 2 },
+  followedCard: {
+    width: 88,
+    alignItems: "center",
+    padding: spacing.sm,
+    borderRadius: radius.md,
+    backgroundColor: colors.pastelPink,
+  },
+  followedLogo: { width: 56, height: 56, borderRadius: 28, backgroundColor: colors.surface, borderWidth: 2, borderColor: colors.surface },
+  followedName: { fontSize: 11, fontWeight: "800", color: colors.onSurface, marginTop: 6, textAlign: "center" },
+  followedMeta: { fontSize: 10, color: colors.muted, marginTop: 2 },
   grid: { flexDirection: "row", flexWrap: "wrap", paddingHorizontal: spacing.lg, gap: spacing.md },
   gridItem: { width: "47.5%" },
   link: { fontSize: 13, color: colors.brandPrimary, fontWeight: "700" },

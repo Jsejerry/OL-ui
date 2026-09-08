@@ -68,6 +68,49 @@ class Banner(BaseModel):
     bg: str  # pastel token name
 
 
+class Coupon(BaseModel):
+    code: str
+    label: str
+    kind: str  # "flat" | "pct"
+    value: float
+    min_order: float = 0
+    description: str
+
+
+class OrderItem(BaseModel):
+    id: str
+    name: str
+    weight: str
+    price: float
+    mrp: float
+    image: str
+    qty: int
+
+
+class OrderCreate(BaseModel):
+    items: List[OrderItem]
+    subtotal: float
+    discount: float = 0
+    delivery_fee: float = 0
+    total: float
+    coupon_code: Optional[str] = None
+
+
+class Order(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    items: List[OrderItem]
+    subtotal: float
+    discount: float = 0
+    delivery_fee: float = 0
+    total: float
+    coupon_code: Optional[str] = None
+    status: str = "placed"  # placed | packed | out | delivered
+    rider_name: str = "Suraj"
+    rider_phone: str = "+91 98765 43210"
+    eta_minutes: int = 10
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
 # ---------- Seed data ----------
 CATEGORIES: List[Category] = [
     Category(id="c1", name="Fruits & Veggies", emoji="🥦", color="pastelGreen"),
@@ -101,6 +144,15 @@ BANNERS: List[Banner] = [
     Banner(id="b3", title="Fresh Delivery", subtitle="Rider on the way",
            image="https://images.unsplash.com/photo-1733565823567-ca12618dec46?w=800",
            bg="pastelRed"),
+]
+
+COUPONS: List[Coupon] = [
+    Coupon(code="LATUR10", label="10% OFF", kind="pct", value=10, min_order=99,
+           description="Save 10% on orders above ₹99"),
+    Coupon(code="FRESH50", label="₹50 OFF", kind="flat", value=50, min_order=199,
+           description="Flat ₹50 off on orders above ₹199"),
+    Coupon(code="WELCOME", label="₹25 OFF", kind="flat", value=25, min_order=0,
+           description="Welcome offer for new shoppers"),
 ]
 
 STORES: List[Store] = [
@@ -281,6 +333,60 @@ async def get_product(product_id: str):
         if p.id == product_id:
             return p
     raise HTTPException(status_code=404, detail="Product not found")
+
+
+# ---------- Coupons ----------
+@api_router.get("/coupons", response_model=List[Coupon])
+async def list_coupons():
+    return COUPONS
+
+
+class CouponApply(BaseModel):
+    code: str
+    subtotal: float
+
+
+class CouponResult(BaseModel):
+    ok: bool
+    discount: float = 0
+    coupon: Optional[Coupon] = None
+    message: str = ""
+
+
+@api_router.post("/coupons/apply", response_model=CouponResult)
+async def apply_coupon(payload: CouponApply):
+    code = payload.code.strip().upper()
+    for c in COUPONS:
+        if c.code == code:
+            if payload.subtotal < c.min_order:
+                return CouponResult(ok=False, message=f"Add ₹{c.min_order - payload.subtotal:.0f} more to use {code}")
+            discount = c.value if c.kind == "flat" else round(payload.subtotal * c.value / 100)
+            discount = min(discount, payload.subtotal)
+            return CouponResult(ok=True, discount=discount, coupon=c, message=f"Coupon {code} applied!")
+    return CouponResult(ok=False, message="Invalid coupon code")
+
+
+# ---------- Orders ----------
+@api_router.post("/orders", response_model=Order)
+async def create_order(payload: OrderCreate):
+    order = Order(**payload.dict())
+    doc = order.dict()
+    await db.orders.insert_one(doc)
+    return order
+
+
+@api_router.get("/orders", response_model=List[Order])
+async def list_orders():
+    docs = await db.orders.find({}, {"_id": 0}).sort("created_at", -1).to_list(200)
+    return [Order(**d) for d in docs]
+
+
+@api_router.get("/orders/{order_id}", response_model=Order)
+async def get_order(order_id: str):
+    doc = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return Order(**doc)
 
 
 # ---------- App wiring ----------
