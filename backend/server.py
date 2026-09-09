@@ -9,6 +9,8 @@ from pydantic import BaseModel, Field
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
+from catalog_data import BRANDS, EXTRA_PRODUCTS, EXTRA_CATEGORIES, EVENTS, REELS, image
+from media_store import router as media_router
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -18,6 +20,8 @@ client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
 app = FastAPI()
+app.state.db = db
+app.include_router(media_router)
 api_router = APIRouter(prefix="/api")
 
 
@@ -27,6 +31,8 @@ class Category(BaseModel):
     name: str
     emoji: str
     color: str  # pastel token name
+    department: str = 'grocery'
+    image: str = ''
 
 
 class Product(BaseModel):
@@ -41,12 +47,15 @@ class Product(BaseModel):
     delivery_min: int = 10
     discount_pct: Optional[int] = None
     rating: float = 4.5
+    department: str = 'grocery'
+    brand_id: str = ''
 
 
 class StoreMedia(BaseModel):
     type: str  # "video" | "image"
     url: str
     thumbnail: Optional[str] = None
+    video_web: Optional[str] = None
 
 
 class Store(BaseModel):
@@ -58,6 +67,7 @@ class Store(BaseModel):
     rating: float
     tags: List[str]
     media: List[StoreMedia]
+    department: str = 'grocery'
 
 
 class Banner(BaseModel):
@@ -273,6 +283,26 @@ PRODUCTS: List[Product] = [
 ]
 
 
+# Expand the sample catalogue without changing existing product/order identifiers.
+for cat in CATEGORIES:
+    cat.image = image({'c1': 'fruit', 'c2': 'milk', 'c3': 'fries', 'c4': 'coffee', 'c5': 'bread', 'c6': 'pasta', 'c7': 'skincare', 'c8': 'fresh'}[cat.id])
+CATEGORIES.extend(Category(id=cid, name=name, emoji='', color='pastelGreen', department=dept, image=image(asset)) for cid, name, dept, asset in EXTRA_CATEGORIES)
+PRODUCTS.extend(Product(**p) for p in EXTRA_PRODUCTS)
+for p in PRODUCTS:
+    if p.id == 'p6':
+        p.image = image('snacks')
+    if p.id in {'p1', 'p3', 'p4', 'p5', 'p10'}:
+        p.image = image({'p1': 'tomatoes', 'p3': 'bananas', 'p4': 'milk', 'p5': 'eggs', 'p10': 'bread'}[p.id])
+for b in BRANDS:
+    STORES.append(Store(id=b['id'], name=b['name'], logo=b['logo'] or b['image'], tagline=b['tagline'], delivery_time='25 min' if b['department'] == 'food' else '15 min', rating=4.6, tags=[b['department'].title(), 'Sample brand'], department=b['department'], media=[StoreMedia(type='video', url=image('reel-burger'), thumbnail=b['image']), StoreMedia(type='video', url=image('reel-tomato'), thumbnail=b['image']), StoreMedia(type='image', url=b['image']), StoreMedia(type='image', url=b['image'])]))
+
+for store in STORES:
+    for index, medium in enumerate(store.media):
+        if medium.type == 'video':
+            asset = 'reel-burger' if store.department == 'food' and index == 0 else 'reel-tomato' if index == 0 else 'reel-pasta'
+            medium.url = image(asset)
+            medium.video_web = image(asset + '-webm')
+
 # ---------- Routes ----------
 @api_router.get("/")
 async def root():
@@ -313,10 +343,33 @@ async def get_store_products(store_id: str):
 
 
 @api_router.get("/products", response_model=List[Product])
-async def get_products(category_id: Optional[str] = None, chip: Optional[str] = None):
+async def get_products(category_id: Optional[str] = None, chip: Optional[str] = None, department: Optional[str] = None, brand_id: Optional[str] = None, q: Optional[str] = None):
     items = PRODUCTS
     if category_id:
         items = [p for p in items if p.category_id == category_id]
+    if department:
+        items = [p for p in items if p.department == department]
+    if brand_id:
+        items = [p for p in items if p.brand_id == brand_id]
+    if q:
+        items = [p for p in items if q.strip().lower() in (p.name + ' ' + p.weight).lower()]
+    if chip:
+        if chip == 'd1':
+            items = [p for p in items if p.discount_pct]
+        elif chip == 'd2':
+            items = list(reversed(items))[:6]
+        elif chip in {'d3', 'd7'}:
+            items = [p for p in items if p.category_id == 'c1']
+        elif chip == 'd4':
+            items = [p for p in items if p.rating >= 4.6]
+        elif chip == 'd5':
+            items = [p for p in items if p.price < 99]
+        elif chip == 'd6':
+            items = [p for p in items if p.store_id in {'s1', 's2', 's3'}]
+        elif chip == 'd8':
+            items = [p for p in items if 'pack' in p.weight.lower() or 'meal' in p.name.lower()]
+        else:
+            raise HTTPException(400, 'Unknown discovery filter')
     return items
 
 
@@ -378,6 +431,10 @@ async def create_order(payload: OrderCreate):
 @api_router.get("/orders", response_model=List[Order])
 async def list_orders():
     docs = await db.orders.find({}, {"_id": 0}).sort("created_at", -1).to_list(200)
+    for doc in docs:
+        for item in doc.get('items', []):
+            if item['id'] == 'p6':
+                item['image'] = image('snacks')
     return [Order(**d) for d in docs]
 
 
@@ -386,7 +443,59 @@ async def get_order(order_id: str):
     doc = await db.orders.find_one({"id": order_id}, {"_id": 0})
     if not doc:
         raise HTTPException(status_code=404, detail="Order not found")
+    for item in doc.get('items', []):
+        if item['id'] == 'p6':
+            item['image'] = image('snacks')
     return Order(**doc)
+
+
+@api_router.get('/catalog')
+async def catalog():
+    return {'brands': BRANDS, 'products': PRODUCTS, 'categories': CATEGORIES, 'events': EVENTS, 'sample': True}
+
+
+@api_router.get('/reels')
+async def reels():
+    return [{**r, 'video_web': r['video'] + '-webm', 'product': next(p for p in PRODUCTS if p.id == r['product_id'])} for r in REELS]
+
+
+@api_router.get('/events')
+async def events(kind: Optional[str] = None):
+    return [e for e in EVENTS if not kind or e['kind'] == kind]
+
+
+class BookingEnquiryCreate(BaseModel):
+    event_id: str
+    name: str = Field(min_length=2, max_length=80)
+    phone: str = Field(pattern=r'^[6-9][0-9]{9}$')
+    date: str
+    slot: str
+    guests: int = Field(ge=1, le=8)
+
+
+class BookingEnquiry(BookingEnquiryCreate):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    status: str = 'demo_enquiry_saved'
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+@api_router.post('/booking-enquiries', response_model=BookingEnquiry)
+async def booking_enquiry(payload: BookingEnquiryCreate):
+    from datetime import date, timedelta
+    event = next((e for e in EVENTS if e['id'] == payload.event_id), None)
+    if not event or payload.slot not in event['slots']:
+        raise HTTPException(400, 'Choose an available event and time')
+    try:
+        selected = date.fromisoformat(payload.date)
+        if not date.today() <= selected <= date.today() + timedelta(days=30):
+            raise ValueError()
+    except ValueError as exc:
+        raise HTTPException(400, 'Choose a date within the next 30 days') from exc
+    if not payload.name.strip() or len(payload.name.strip()) < 2:
+        raise HTTPException(400, 'Enter your name')
+    result = BookingEnquiry(**payload.model_dump())
+    await db.booking_enquiries.insert_one(result.model_dump())
+    return result
 
 
 # ---------- App wiring ----------

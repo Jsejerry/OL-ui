@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl } from "react-native";
 import { Image } from "expo-image";
 import { useRouter, useFocusEffect } from "expo-router";
@@ -15,13 +15,15 @@ export default function OrdersScreen() {
   const { add } = useCart();
   const [orders, setOrders] = useState<Order[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState('');
   const [reordered, setReordered] = useState<string | null>(null);
 
   const fetchOrders = useCallback(() => {
     setRefreshing(true);
+    setError('');
     api<Order[]>("/orders")
       .then(setOrders)
-      .catch(() => {})
+      .catch(() => setError('Could not load your orders. Please try again.'))
       .finally(() => setRefreshing(false));
   }, []);
 
@@ -51,7 +53,8 @@ export default function OrdersScreen() {
         contentContainerStyle={{ padding: spacing.lg, paddingBottom: 40 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchOrders} />}
       >
-        {orders.length === 0 ? (
+        {!!error && <View style={styles.empty} testID="orders-error"><Text style={styles.emptySub}>{error}</Text><TouchableOpacity testID="orders-retry" style={styles.shopBtn} onPress={fetchOrders}><Text style={styles.shopBtnText}>Try again</Text></TouchableOpacity></View>}
+        {orders.length === 0 && !error ? (
           <View style={styles.empty}>
             <Text style={styles.emptyEmoji}>📦</Text>
             <Text style={styles.emptyTitle}>No orders yet</Text>

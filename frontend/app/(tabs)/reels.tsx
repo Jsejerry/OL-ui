@@ -1,0 +1,20 @@
+import { useRef, useState } from 'react';
+import { View, FlatList, StyleSheet, useWindowDimensions } from 'react-native';
+import { usePathname } from 'expo-router';
+import { useQuery } from '@tanstack/react-query';
+import { StatusBar } from 'expo-status-bar';
+import { api, Reel } from '@/src/api';
+import { colors } from '@/src/theme';
+import { LoadState } from '@/src/components/catalog-sections';
+import { ReelCard } from '@/src/components/reel-card';
+export default function Reels() {
+  const { data, isError, refetch } = useQuery({ queryKey: ['reels'], queryFn: () => api<Reel[]>('/reels'), retry: 1 });
+  const [height, setHeight] = useState(useWindowDimensions().height - 80);
+  const [index, setIndex] = useState(0);
+  const focused = usePathname() === '/reels';
+  const list = useRef<FlatList<Reel>>(null);
+  const onViewableItemsChanged = useRef(({ viewableItems }: any) => { if (viewableItems.length) setIndex(viewableItems[0].index ?? 0); }).current;
+  if (!data) return <LoadState error={isError} retry={refetch} />;
+  return <View testID="reels-screen" style={styles.screen} onLayout={e => setHeight(e.nativeEvent.layout.height)}>{focused && <StatusBar style="light" />}<FlatList ref={list} testID="reels-list" data={data} keyExtractor={r => r.id} pagingEnabled snapToInterval={height} decelerationRate="fast" showsVerticalScrollIndicator={false} getItemLayout={(_, i) => ({ length: height, offset: height * i, index: i })} onViewableItemsChanged={onViewableItemsChanged} viewabilityConfig={{ itemVisiblePercentThreshold: 55 }} extraData={`${index}-${height}-${focused}`} windowSize={3} initialNumToRender={1} renderItem={({ item, index: i }) => <ReelCard reel={item} height={height} active={focused && i === index} next={() => list.current?.scrollToIndex({ index: (i + 1) % data.length, animated: true })} />} /></View>;
+}
+const styles = StyleSheet.create({ screen: { flex: 1, backgroundColor: colors.brandPrimary } });

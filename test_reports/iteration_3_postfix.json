@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "verification": "Main-agent self checks following iteration3 regression report",
+  "backend": "14/14 existing regression tests passed on rerun; discovery fresh and under99 filters independently validated with curl",
+  "frontend": {
+    "coupon_footer": "PASS: footer now takes layout space below ScrollView; natural Playwright clicks on LATUR10 at390x844 and FRESH50 at360x800 succeed without JS/force fallback",
+    "blocked_image": "PASS: Lays p6 image is now managed /api/media/snacks; naturalWidth>0 confirmed; legacy cart/order display normalises image",
+    "reels": "PASS: playing video occupies390x772 at390x844, native MP4/web VP9 alternatives retained",
+    "orders_recovery": "PASS: deliberately intercepted503 displays error/retry; removal of interception and normal retry restores orders",
+    "book_and_beauty": "PASS: image-loaded final screenshots captured for both department pages",
+    "render_errors": "None. One dependency-origin pointerEvents deprecation warning remains; no direct app pointerEvents props or deprecated shadow style props remain."
+  },
+  "intentional_contracts": ["Managed storage base URL fallback retained as required by verified integration playbook"],
+  "native_device_testing": "Not performed; verification used phone-sized browser preview",
+  "remaining_functional_issues": []
+}

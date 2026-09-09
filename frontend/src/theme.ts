@@ -21,9 +21,9 @@ const light = {
   onBrand: "#FFFFFF",
   brandPrimary: "#1A1A1A",
   onBrandPrimary: "#FFFFFF",
-  brandSecondary: "#F7C948",
+  brandSecondary: "#A3FF12",
   onBrandSecondary: "#1A1A1A",
-  brandTertiary: "#FFF4D4",
+  brandTertiary: "#F1FFD9",
   onBrandTertiary: "#1A1A1A",
 
   // Status
@@ -50,6 +50,25 @@ const light = {
   pastelPink: "#FFE6F0",
   pastelOrange: "#FFEDD6",
   pastelMint: "#DDF5EA",
+  lime: "#A3FF12",
+  limeSoft: "#F0FFD7",
+  forest: "#174D37",
+  forestDeep: "#103B2B",
+  food: "#C64B28",
+  foodSoft: "#FFF1E8",
+  pharmacy: "#087C85",
+  pharmacySoft: "#E9F8F7",
+  beauty: "#9F3E68",
+  beautySoft: "#FCEEF3",
+  book: "#7051CB",
+  bookSoft: "#F0EAFF",
+  bookDark: "#211836",
+  cream: "#F8F9F5",
+  transparent: "transparent",
+  overlay: "rgba(0,0,0,0.45)",
+  overlayDeep: "rgba(0,0,0,0.85)",
+  whiteGlass: "rgba(255,255,255,0.18)",
+  gold: "#FFC72C",
 };
 
 export type ThemeColors = typeof light;
@@ -59,14 +78,14 @@ export const defaultScheme = "light" satisfies ColorScheme;
 export const themes: { light: ThemeColors; dark?: ThemeColors } = { light };
 
 export function setColorScheme(scheme: ColorScheme | null) {
-  Appearance.setColorScheme?.(scheme);
+  Appearance.setColorScheme?.(scheme ?? 'unspecified');
 }
 
 setColorScheme?.(themes.dark ? null : defaultScheme);
 
 export function useTheme(): { scheme: ColorScheme; colors: ThemeColors } {
   const system = useColorScheme();
-  const scheme: ColorScheme = system && themes[system] ? system : defaultScheme;
+  const scheme: ColorScheme = (system === 'light' || system === 'dark') && themes[system] ? system : defaultScheme;
   return { scheme, colors: themes[scheme] ?? themes.light };
 }
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Platform } from "react-native";
 import { Image } from "expo-image";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -14,7 +14,7 @@ const { width: SCREEN_W } = Dimensions.get("window");
 
 function MediaTile({ media, size }: { media: StoreMedia; size: number }) {
   const [playing, setPlaying] = useState(false);
-  const player = useVideoPlayer(media.type === "video" ? media.url : "", (p) => {
+  const player = useVideoPlayer(media.type === "video" ? (Platform.OS === 'web' ? media.video_web || media.url : media.url) : null, (p) => {
     p.loop = true;
     p.muted = true;
   });
@@ -59,7 +59,7 @@ function MediaTile({ media, size }: { media: StoreMedia; size: number }) {
 const mediaStyles = StyleSheet.create({
   tile: { borderRadius: radius.md, overflow: "hidden", backgroundColor: colors.surfaceSecondary, position: "relative" },
   img: { width: "100%", height: "100%" },
-  playOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.15)" },
+  playOverlay: { ...StyleSheet.absoluteFill, alignItems: "center", justifyContent: "center", backgroundColor: colors.overlay },
   playBtn: { width: 44, height: 44, borderRadius: 22, backgroundColor: "rgba(0,0,0,0.55)", alignItems: "center", justifyContent: "center" },
   videoBadge: { position: "absolute", top: 8, left: 8, backgroundColor: colors.brandPrimary, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4 },
   videoBadgeText: { color: colors.onBrandPrimary, fontSize: 9, fontWeight: "800" },
@@ -140,7 +140,7 @@ export default function StoreProfileScreen() {
             </View>
             <View style={styles.metaChip}>
               <Icon name="storefront-outline" size={12} color={colors.onSurface} />
-              <Text style={styles.metaChipText}>Verified</Text>
+              <Text style={styles.metaChipText}>Sample store</Text>
             </View>
           </View>
           <View style={styles.tagsRow}>
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     alignItems: "center", justifyContent: "center",
     zIndex: 10,
-    shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 6, shadowOffset: { width: 0, height: 2 },
+    boxShadow: [{ offsetX: 0, offsetY: 2, blurRadius: 6, color: colors.border }],
     elevation: 4,
   },
   mediaSection: { paddingHorizontal: spacing.lg, backgroundColor: colors.surfaceSecondary, paddingBottom: 60 },
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
     width: 100, height: 100, borderRadius: 50,
     backgroundColor: colors.surface,
     padding: 4,
-    shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 12, shadowOffset: { width: 0, height: 4 },
+    boxShadow: [{ offsetX: 0, offsetY: 4, blurRadius: 12, color: colors.border }],
     elevation: 6,
   },
   logo: { width: "100%", height: "100%", borderRadius: 46 },

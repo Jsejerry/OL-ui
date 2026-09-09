@@ -1,166 +1,133 @@
 {
-  "app_name": "One Latur",
-  "personality": "4 Tactile / Playful LIGHT",
-  "personality_one_liner": "A vibrant, fast, and touchable grocery experience that blends dark-forward authority with hyper-approachable pastel quick-commerce energy.",
-  "color": {
-    "surface": "#FFFFFF",
-    "onSurface": "#1A1A1A",
-    "surfaceSecondary": "#F5F6F8",
-    "onSurfaceSecondary": "#1A1A1A",
-    "surfaceTertiary": "#EAECEF",
-    "onSurfaceTertiary": "#4A4D52",
-    "surfaceInverse": "#1A1A1A",
-    "onSurfaceInverse": "#FFFFFF",
-    "brand": "#1A1A1A",
-    "onBrand": "#FFFFFF",
-    "brandPrimary": "#1A1A1A",
-    "onBrandPrimary": "#FFFFFF",
-    "brandSecondary": "#F7C948",
-    "onBrandSecondary": "#1A1A1A",
-    "brandTertiary": "#FFF4D4",
-    "onBrandTertiary": "#1A1A1A",
-    "success": "#E6F4EA",
-    "onSuccess": "#0C831F",
-    "warning": "#FFF7D6",
-    "onWarning": "#997300",
-    "error": "#FFE6E6",
-    "onError": "#CC0000",
-    "info": "#F5F6F8",
-    "onInfo": "#1A1A1A",
-    "border": "#EAECEF",
-    "borderStrong": "#D1D5DB",
-    "divider": "#F5F6F8",
-    "muted": "#6B7280",
-    "pastelRed": "#FFE6E6",
-    "pastelYellow": "#FFF7D6",
-    "pastelGreen": "#E6F4EA"
+  "project_name": "One Latur Hyperlocal SuperApp",
+  "app_type": "mobile_web_app",
+  "framework": "Expo React Native (JavaScript / TypeScript)",
+  "design_archetype": "THE PERFORMANCE PRO x SWISS HIGH-CONTRAST (Hyperlocal Tactical Commerce)",
+  "color_palette": {
+    "primary_lime": "#A3E635",
+    "primary_lime_dark": "#84CC16",
+    "accent_volt": "#CA8A04",
+    "background_dark": "#09090B",
+    "surface_dark": "#18181B",
+    "card_border_dark": "#27272A",
+    "text_white": "#FFFFFF",
+    "text_muted": "#A1A1AA",
+    "text_subtle": "#71717A",
+    "department_themes": {
+      "Food": {
+        "primary": "#FF5722",
+        "secondary": "#FFF0ED",
+        "dark_bg": "#1F120E",
+        "badge_color": "#FF3D00",
+        "vibe": "High Energy Gourmet & Express Fast Food"
+      },
+      "Grocery Shop": {
+        "primary": "#A3E635",
+        "secondary": "#F7FEE7",
+        "dark_bg": "#111C08",
+        "badge_color": "#65A30D",
+        "vibe": "Fresh Organic & Daily Essential Market"
+      },
+      "Pharmacy": {
+        "primary": "#06B6D4",
+        "secondary": "#ECFEFF",
+        "dark_bg": "#081E24",
+        "badge_color": "#0891B2",
+        "vibe": "Clinical Trust & Express Healthcare"
+      },
+      "Beauty": {
+        "primary": "#EC4899",
+        "secondary": "#FDF2F8",
+        "dark_bg": "#220C17",
+        "badge_color": "#DB2777",
+        "vibe": "Luxe Cosmetics & Glow Essentials"
+      },
+      "Book It": {
+        "primary": "#8B5CF6",
+        "secondary": "#F5F3FF",
+        "dark_bg": "#160F29",
+        "badge_color": "#7C3AED",
+        "vibe": "Entertainment, Cinema & Event Ticketing"
+      }
+    }
   },
   "typography": {
-    "displayFontFamily": "Plus Jakarta Sans",
-    "textFontFamily": "Plus Jakarta Sans",
+    "font_family_header": "System Bold / Barlow Condensed style in React Native",
+    "font_family_body": "System Regular / Inter style in React Native",
     "scale": {
-      "sm": 12,
-      "base": 14,
-      "lg": 16,
-      "xl": 20,
-      "2xl": 24
+      "h1": { "fontSize": 28, "fontWeight": "800", "lineHeight": 34, "letterSpacing": -0.5 },
+      "h2": { "fontSize": 22, "fontWeight": "700", "lineHeight": 28, "letterSpacing": -0.3 },
+      "h3": { "fontSize": 18, "fontWeight": "700", "lineHeight": 24 },
+      "body": { "fontSize": 14, "fontWeight": "400", "lineHeight": 20 },
+      "caption": { "fontSize": 11, "fontWeight": "600", "letterSpacing": 0.5 }
     }
   },
-  "spacing": {
-    "rule": "Generous padding around content, safe-area clearance at bottom, minimum 56pt tappable heights, use gap for grids.",
-    "xs": 4,
-    "sm": 8,
-    "md": 12,
-    "lg": 16,
-    "xl": 24,
-    "2xl": 32,
-    "3xl": 48
-  },
-  "radius_tokens": {
-    "sm": 6,
-    "md": 12,
-    "lg": 20,
-    "pill": 999
-  },
-  "shadow_tier": "2",
-  "navigation": "bottom_tabs",
-  "icon_set": "Phosphor",
-  "glassmorphism": {
-    "enabled": "true",
-    "do's": [
-      "Bottom tab bar",
-      "Sticky Location/Header bar over scrolling content",
-      "Sticky primary CTA in cart/checkout"
-    ],
-    "dont's": [
-      "Every button or list row",
-      "Category chips",
-      "Dense product grid cards"
+  "layout_architecture": {
+    "header_row_1": "Location selector with pin icon + 'One Latur' brand text prominently on right of location",
+    "header_row_2": "Search bar input with magnifying glass + Right side Cart (with live badge counter) and Profile options",
+    "department_strip": {
+      "persistent": true,
+      "hidden_in_reels": true,
+      "items": ["Food", "Grocery Shop", "Pharmacy", "Beauty", "Book It"],
+      "ui_style": "Horizontal scrollable pill list or grid with distinct active highlight, icons and vibrant department colors"
+    },
+    "bottom_navigation_bar": {
+      "items": [
+        { "key": "home", "label": "Home", "icon": "home-outline" },
+        { "key": "categories", "label": "Categories", "icon": "grid-outline" },
+        {
+          "key": "reels",
+          "label": "1 Reels",
+          "is_center_button": true,
+          "style": "Black circle container with high-contrast Lime Green numeral '1' matching uploaded reference button image"
+        },
+        { "key": "food", "label": "Food", "icon": "fast-food-outline" },
+        { "key": "book_it", "label": "Book It", "icon": "ticket-outline" }
+      ]
+    },
+    "home_sections": [
+      { "id": "ads_banner_carousel", "title": "Featured Highlights & Deals Column/Banner" },
+      { "id": "trending_now", "title": "Trending in Latur (Fast Delivery)" },
+      { "id": "top_picks", "title": "Top Picks for You" },
+      {
+        "id": "food_brand_logos",
+        "title": "Popular Food Outlets",
+        "brands": ["McDonald's", "KFC", "Starbucks", "Burger King", "Domino's"]
+      },
+      { "id": "grocery_showcase", "title": "Grocery Essentials & Fresh Produce" },
+      { "id": "pharmacy_beauty_showcase", "title": "Pharmacy & Beauty Bestsellers" },
+      { "id": "book_it_teaser", "title": "Book Movie Tickets & Events in Latur" }
     ]
   },
-  "platform_libraries": {
-    "glass": {
-      "ios": "expo-glass-effect",
-      "android": "expo-blur",
-      "low_end_android_fallback": "solid surfaceSecondary"
-    },
-    "image": "expo-image",
-    "blur": "expo-blur",
-    "bottom_sheet": "@gorhom/bottom-sheet",
-    "animation": "react-native-reanimated",
-    "gesture": "react-native-gesture-handler"
+  "image_urls": {
+    "brand_logo": "https://customer-assets-gfyr7b9c.emergentagent.net/job_onelatur-market/artifacts/jtngkspg_WhatsApp%20Image%202026-09-09%20at%2011.15.15%20AM.jpeg",
+    "reels_button_ref": "https://customer-assets-gfyr7b9c.emergentagent.net/job_onelatur-market/artifacts/51fgvze1_WhatsApp%20Image%202026-09-09%20at%2012.32.55%20PM.jpeg",
+    "home_ui_ref": "https://customer-assets-gfyr7b9c.emergentagent.net/job_onelatur-market/artifacts/6g6j8adr_download%20%2837%29.jpeg",
+    "groceries_shelves": "https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "fruits_market": "https://images.unsplash.com/photo-1607349913338-fca6f7fc42d0?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "store_display": "https://images.unsplash.com/photo-1601600576337-c1d8a0d1373c?crop=entropy&cs=srgb&fm=jpg&q=85"
   },
-  "screens": [
-    {
-      "name": "Home",
-      "purpose": "High-density, hyper-personalized Blinkit-style discovery hub with fast access to categories and repeat purchases.",
-      "states": {
-        "loading": "Skeleton grids for categories, centered spinner for personalized rows.",
-        "empty": "Illustration of empty basket + 'Fresh items arriving soon' + Reload CTA.",
-        "error": "Readable 'Connection lost' message + Retry button."
-      },
-      "layout": "Sticky top Location Bar (glass or dark-forward brand surface) with Search Bar beneath it. Horizontal scroll view for 'Discover' chip filters using pastel red/yellow/green backgrounds. Hero promotional banners (horizontal snap carousel). 'Buy Again' horizontal product carousel. 2-col or 3-col Category Grid with pastel tiles. Followed by vertical feed of product grids. Safe area padding at bottom for tab bar."
-    },
-    {
-      "name": "Store Profile",
-      "purpose": "Immersive showcase of a specific local store featuring rich media (videos/images) and their full catalog.",
-      "states": {
-        "loading": "Skeleton blocks for media header and product list.",
-        "empty": "Illustration of closed storefront + 'No products available right now' + Go Back CTA.",
-        "error": "Readable error message + Retry button."
-      },
-      "layout": "Top section: 2x2 grid (or horizontal scroll) containing 2 videos (mocked with play button overlay) and 2 images. Overlapping centered store logo (circular avatar, shadow 2, raised half over the media and half over content). Store metadata (name, delivery time, tags). Horizontal chip filters for store categories. 2-col grid of all store products below."
-    },
-    {
-      "name": "Product Detail",
-      "purpose": "Detailed view of a single grocery item focusing on high-quality imagery and quick add-to-cart action.",
-      "states": {
-        "loading": "Skeleton image block and text lines.",
-        "empty": "Not applicable unless product removed, then 'Product unavailable' + Go Back.",
-        "error": "Readable error message + Retry button."
-      },
-      "layout": "Large product image at top (surfaceSecondary background). Title, weight/volume, price, and Blinkit-style delivery time indicator. Sticky primary 'Add to Cart' CTA at the bottom inside a glass container above the safe area."
-    },
-    {
-      "name": "Cart",
-      "purpose": "Review selected items, view total savings, and proceed to checkout quickly.",
-      "states": {
-        "loading": "Centered spinner.",
-        "empty": "Illustration of empty cart + 'Your cart is waiting for fresh items' + Browse CTA.",
-        "error": "Readable error message + Retry button."
-      },
-      "layout": "List of cart items with quantity steppers. Bill details summary card (surfaceSecondary). Sticky 'Checkout' CTA at the bottom with total amount displayed inside the button."
-    }
-  ],
-  "images": {
-    "grocery_vegetables": {
-      "url": "https://images.unsplash.com/photo-1542838132-92c53300491e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwxfHxmcmVzaCUyMGdyb2NlcnklMjB2ZWdldGFibGVzJTIwYW5kJTIwZnJ1aXRzfGVufDB8fHx8MTc4ODg4OTA3NXww&ixlib=rb-4.1.0&q=85",
-      "alt": "Fresh grocery vegetables"
-    },
-    "grocery_snacks": {
-      "url": "https://images.unsplash.com/photo-1739065883242-92659253f7a6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxNzV8MHwxfHNlYXJjaHwxfHxpbmRpYW4lMjBncm9jZXJ5JTIwc25hY2tzJTIwY2hpcHN8ZW58MHx8fHwxNzg4ODg5MDc1fDA&ixlib=rb-4.1.0&q=85",
-      "alt": "Indian grocery snacks chips"
-    },
-    "delivery_hero": {
-      "url": "https://images.unsplash.com/photo-1733565823567-ca12618dec46?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHwxfHxCbGlua2l0JTIwZGVsaXZlcnklMjBwZXJzb24lMjBvbiUyMHNjb290ZXIlMjBncmFwaGljfGVufDB8fHx8MTc4ODg4OTA4N3ww&ixlib=rb-4.1.0&q=85",
-      "alt": "Delivery person on scooter"
-    }
+  "key_features_and_flows": {
+    "full_screen_reels": "Instagram-style vertical shoppable product video feed with Like, Share, and Direct 'Add to Cart' quick actions. Department top strip is hidden during Reels screen for full immersive viewing.",
+    "department_pages": "Distinct visual themes (color, typography headers, custom banner promos) for Food, Grocery Shop, Pharmacy, Beauty, and Book It.",
+    "booking_enquiry_flow": "Book It department features interactive movie theater seating/ticket enquiry modal and local event booking workflow."
   },
-  "haptics": {
-    "add_to_cart": "selection",
-    "stepper_increment": "light",
-    "stepper_decrement": "light",
-    "checkout_success": "success",
-    "tab_switch": "selection"
+  "testing_and_accessibility": {
+    "data_testid_policy": "All interactive elements (buttons, navigation tabs, inputs, cards, reel action buttons) MUST have kebab-case data-testid attributes.",
+    "examples": [
+      "data-testid=\"nav-home-tab\"",
+      "data-testid=\"nav-reels-center-button\"",
+      "data-testid=\"dept-strip-food-button\"",
+      "data-testid=\"search-bar-input\"",
+      "data-testid=\"cart-icon-button\"",
+      "data-testid=\"reel-add-to-cart-button\""
+    ]
   },
-  "instructions_to_main_agent": [
-    "Strictly follow the Tactile / Playful LIGHT personality. Use oversized tap areas, soft radii (md/lg), and clear foreground/background layering.",
-    "Implement the 'Blinkit-style' Home screen: A dense but visually structured layout. The Discover chip filter bar must scroll horizontally and utilize the defined pastel traffic colors (pastelRed, pastelYellow, pastelGreen) for its chip backgrounds.",
-    "The Store Profile screen MUST have the specific header layout requested: a top section containing 2 videos (mocked via images with a play icon overlay) and 2 images, followed by an overlapping, centered circular store logo.",
-    "Integrate the One Latur dark-forward brand identity strategically. For instance, use the dark `brand` color (#1A1A1A) for the top Location/Header bar, creating strong contrast against the white search bar and light app body. This fulfills the 'dark-forward primary' request while keeping the shopping experience bright and tactile.",
-    "Ensure all interactive elements (buttons, quantity steppers) have minimum 44x44pt touch targets and trigger the mapped haptic feedback.",
-    "Apply `expo-glass-effect` (or `expo-blur`) on the bottom tab bar and sticky CTAs to maintain native mobile depth.",
-    "No auth screen is required. The app should launch directly into the Home tab.",
-    "Use Phosphor icons with consistent weight (either all filled or all outlined, except for tab active/inactive states)."
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
+    "Strictly build using Expo React Native UI components (View, Text, Pressable, Image, ScrollView, FlatList). Do not inject React web HTML tags like div, span, button.",
+    "Ensure dark/light contrast is crisp and text readability conforms to APCA/WCAG standards.",
+    "Maintain the exact persistent 5-department top strip across screens except full-screen product reels.",
+    "The center bottom nav button must strictly implement the black circle + lime numeral '1' design branding.",
+    "Always attach data-testid props to all pressable and input elements for testing agent automation."
   ]
 }

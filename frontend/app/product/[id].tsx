@@ -72,10 +72,10 @@ export default function ProductDetail() {
 
           <Text style={styles.sectionTitle}>Why you&apos;ll love it</Text>
           <View style={styles.featureList}>
-            <Feature icon="leaf-outline" title="Farm fresh" text="Sourced locally in Latur" />
-            <Feature icon="checkmark-done-outline" title="Quality checked" text="Inspected before delivery" />
-            <Feature icon="flash-outline" title="10-min delivery" text="From our nearest partner store" />
-            <Feature icon="shield-checkmark-outline" title="Easy returns" text="Not happy? Return on the spot" />
+            <Feature icon={product.department === 'food' ? 'restaurant-outline' : 'bag-handle-outline'} title={product.department === 'food' ? 'Made for your cravings' : 'An everyday favourite'} text={product.weight} />
+            <Feature icon="storefront-outline" title="Explore the collection" text="Discover more from this sample store" />
+            <Feature icon="flash-outline" title={`${product.delivery_min}-min delivery estimate`} text="Sample estimate, not a live delivery promise" />
+            <Feature icon="information-circle-outline" title="Sample catalogue" text="Illustrative photos, brands and prices" />
           </View>
         </View>
       </ScrollView>
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     width: 40, height: 40, borderRadius: 20,
     backgroundColor: colors.surface,
     alignItems: "center", justifyContent: "center", zIndex: 10,
-    shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 4,
+    boxShadow: [{ offsetX: 0, offsetY: 2, blurRadius: 6, color: colors.border }], elevation: 4,
   },
   imageWrap: {
     backgroundColor: colors.surfaceSecondary,

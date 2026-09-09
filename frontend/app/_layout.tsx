@@ -9,6 +9,8 @@ import { useEffect } from "react";
 import { ErrorBoundary } from "@/src/components/error-boundary";
 import { queryClient } from "@/src/query-client";
 import { CartProvider } from "@/src/cart";
+import { AppShell } from '@/src/components/app-shell';
+import { colors } from '@/src/theme';
 
 LogBox.ignoreAllLogs(true);
 
@@ -35,7 +37,7 @@ export default function RootLayout() {
           <QueryClientProvider client={queryClient}>
             <CartProvider>
               <StatusBar style="dark" />
-              <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: "#FFFFFF" } }} />
+              <AppShell><Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.surface } }} /></AppShell>
             </CartProvider>
           </QueryClientProvider>
         </ErrorBoundary>

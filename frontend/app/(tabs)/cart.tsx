@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -9,8 +9,6 @@ import { colors, radius, spacing } from "@/src/theme";
 import { useCart } from "@/src/cart";
 import { apiPost, Coupon, CouponResult, Order } from "@/src/api";
 
-const TAB_BAR_H = 64;
-
 export default function CartScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
@@ -18,37 +16,39 @@ export default function CartScreen() {
 
   const [couponCode, setCouponCode] = useState("");
   const [applied, setApplied] = useState<Coupon | null>(null);
-  const [couponDiscount, setCouponDiscount] = useState(0);
+  const couponDiscount = applied && totalPrice >= applied.min_order ? Math.min(totalPrice, applied.kind === 'flat' ? applied.value : Math.round(totalPrice * applied.value / 100)) : 0;
   const [couponMsg, setCouponMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [placing, setPlacing] = useState(false);
+  const [applying, setApplying] = useState(false);
+  const [checkoutError, setCheckoutError] = useState('');
 
   const savings = totalMrp - totalPrice;
-  const deliveryFee = totalPrice > 199 || totalPrice === 0 ? 0 : 15;
+  const deliveryFee = totalPrice >= 199 || totalPrice === 0 ? 0 : 15;
   const grand = Math.max(totalPrice + deliveryFee - couponDiscount, 0);
 
   const applyCoupon = async () => {
-    if (!couponCode.trim()) return;
+    if (!couponCode.trim() || applying) return;
+    setApplying(true);
     try {
       const res = await apiPost<CouponResult>("/coupons/apply", { code: couponCode, subtotal: totalPrice });
       if (res.ok && res.coupon) {
         setApplied(res.coupon);
-        setCouponDiscount(res.discount);
         setCouponMsg({ ok: true, text: res.message });
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       } else {
         setApplied(null);
-        setCouponDiscount(0);
         setCouponMsg({ ok: false, text: res.message || "Invalid coupon" });
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
       }
     } catch {
       setCouponMsg({ ok: false, text: "Could not apply coupon" });
+    } finally {
+      setApplying(false);
     }
   };
 
   const removeCoupon = () => {
     setApplied(null);
-    setCouponDiscount(0);
     setCouponCode("");
     setCouponMsg(null);
   };
@@ -56,6 +56,7 @@ export default function CartScreen() {
   const handleCheckout = async () => {
     if (placing || items.length === 0) return;
     setPlacing(true);
+    setCheckoutError('');
     try {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       const order = await apiPost<Order>("/orders", {
@@ -66,21 +67,21 @@ export default function CartScreen() {
         discount: couponDiscount,
         delivery_fee: deliveryFee,
         total: grand,
-        coupon_code: applied?.code ?? null,
+        coupon_code: couponDiscount > 0 ? applied?.code ?? null : null,
       });
       clear();
       setApplied(null);
-      setCouponDiscount(0);
       setCouponCode("");
       setCouponMsg(null);
       router.replace(`/order/${order.id}` as any);
     } catch {
       setPlacing(false);
+      setCheckoutError('Could not place your order. Please try again.');
     }
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.surfaceSecondary }} testID="cart-screen">
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1, backgroundColor: colors.surfaceSecondary }} testID="cart-screen">
       <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <Text style={styles.title}>My Cart</Text>
         <Text style={styles.subtitle}>{totalItems} item{totalItems === 1 ? "" : "s"}</Text>
@@ -97,7 +98,7 @@ export default function CartScreen() {
         </View>
       ) : (
         <>
-          <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: TAB_BAR_H + 280 }}>
+          <ScrollView testID="cart-scroll" style={{ flex: 1 }} keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: spacing.lg, paddingBottom: 24 }}>
             <View style={styles.deliveryCard}>
               <Icon name="flash" size={22} color={colors.onSurface} />
               <View style={{ flex: 1 }}>
@@ -160,11 +161,13 @@ export default function CartScreen() {
                     placeholder="Enter code (try LATUR10)"
                     placeholderTextColor={colors.muted}
                     autoCapitalize="characters"
+                    onSubmitEditing={applyCoupon}
+                    returnKeyType="done"
                     style={styles.couponInput}
                     testID="coupon-input"
                   />
-                  <TouchableOpacity style={styles.applyBtn} onPress={applyCoupon} testID="apply-coupon-btn">
-                    <Text style={styles.applyText}>Apply</Text>
+                  <TouchableOpacity style={styles.applyBtn} onPress={applyCoupon} disabled={applying} testID="apply-coupon-btn">
+                    <Text style={styles.applyText}>{applying ? 'Applying…' : 'Apply'}</Text>
                   </TouchableOpacity>
                 </View>
               )}
@@ -173,11 +176,12 @@ export default function CartScreen() {
                   {couponMsg.text}
                 </Text>
               )}
+              {applied && totalPrice < applied.min_order && <Text testID="coupon-minimum-warning" style={styles.couponMsg}>Add ₹{applied.min_order - totalPrice} more to reactivate this coupon.</Text>}
               <View style={{ marginTop: spacing.sm, gap: 6 }}>
-                <TouchableOpacity onPress={() => setCouponCode("LATUR10")}>
+                <TouchableOpacity testID="coupon-suggestion-latur10" onPress={() => setCouponCode("LATUR10")}>
                   <Text style={styles.hint}>💡 LATUR10 — 10% off above ₹99</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setCouponCode("FRESH50")}>
+                <TouchableOpacity testID="coupon-suggestion-fresh50" onPress={() => setCouponCode("FRESH50")}>
                   <Text style={styles.hint}>💡 FRESH50 — ₹50 off above ₹199</Text>
                 </TouchableOpacity>
               </View>
@@ -202,7 +206,8 @@ export default function CartScreen() {
             </View>
           </ScrollView>
 
-          <View style={[styles.checkoutBar, { bottom: TAB_BAR_H + 8, marginHorizontal: spacing.lg }]}>
+          {!!checkoutError && <Text testID="checkout-error" style={{ color: colors.onError, padding: 12 }}>{checkoutError}</Text>}
+          <View testID="checkout-footer" style={[styles.checkoutBar, { marginBottom: 12, marginHorizontal: spacing.lg }]}>
             <View style={{ flex: 1 }}>
               <Text style={styles.checkoutTotal}>₹{grand}</Text>
               <Text style={styles.checkoutMeta}>{totalItems} items · View bill</Text>
@@ -214,7 +219,7 @@ export default function CartScreen() {
           </View>
         </>
       )}
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -270,8 +275,8 @@ const styles = StyleSheet.create({
   savingsText: { color: colors.onSuccess, fontSize: 12, fontWeight: "700" },
   couponHead: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginBottom: spacing.md },
   couponRow: { flexDirection: "row", gap: spacing.sm },
-  couponInput: { flex: 1, height: 42, borderWidth: 1, borderColor: colors.border, borderRadius: radius.sm, paddingHorizontal: 12, color: colors.onSurface, backgroundColor: colors.surfaceSecondary },
-  applyBtn: { paddingHorizontal: 18, height: 42, borderRadius: radius.sm, backgroundColor: colors.brandPrimary, alignItems: "center", justifyContent: "center" },
+  couponInput: { flex: 1, height: 48, borderWidth: 1, borderColor: colors.border, borderRadius: radius.sm, paddingHorizontal: 12, color: colors.onSurface, backgroundColor: colors.surfaceSecondary },
+  applyBtn: { paddingHorizontal: 18, height: 48, borderRadius: radius.sm, backgroundColor: colors.brandPrimary, alignItems: "center", justifyContent: "center" },
   applyText: { color: colors.onBrandPrimary, fontWeight: "800" },
   couponMsg: { marginTop: spacing.sm, fontSize: 12, fontWeight: "700" },
   appliedRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: spacing.sm, backgroundColor: colors.pastelGreen, borderRadius: radius.sm },
@@ -279,7 +284,7 @@ const styles = StyleSheet.create({
   appliedText: { color: colors.onSuccess, fontWeight: "800", fontSize: 13 },
   removeCoupon: { color: colors.onError, fontWeight: "700", fontSize: 12 },
   hint: { color: colors.muted, fontSize: 11 },
-  checkoutBar: { position: "absolute", left: 0, right: 0, backgroundColor: colors.brandPrimary, borderRadius: radius.lg, padding: spacing.md, flexDirection: "row", alignItems: "center", gap: spacing.md },
+  checkoutBar: { backgroundColor: colors.brandPrimary, borderRadius: radius.lg, padding: spacing.md, flexDirection: "row", alignItems: "center", gap: spacing.md },
   checkoutTotal: { color: colors.onBrandPrimary, fontSize: 18, fontWeight: "800" },
   checkoutMeta: { color: "#B8B8B8", fontSize: 11, marginTop: 2 },
   checkoutBtn: { backgroundColor: colors.brandSecondary, paddingHorizontal: 20, paddingVertical: 12, borderRadius: radius.pill, flexDirection: "row", alignItems: "center", gap: 6 },

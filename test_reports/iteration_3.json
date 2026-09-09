@@ -1,0 +1,78 @@
+{
+  "summary": "Executed backend + mobile-web frontend regression for iteration 3. Backend passed focused API validation for catalog filters, reels/media byte-range (.webm 200/206/416), booking validation and Mongo persistence, and coupon/order flows (14/14). Frontend core flows largely work: home/header/department strip, reels playback + like/share/copy + add-to-cart, Book It filters + booking confirmation + enquiry history, coupons and checkout tracking. Found reproducible UI/integration gaps around coupon interaction ergonomics and blocked external image asset.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "/api/products",
+        "issue": "`chip` query parameter is accepted in signature but not used in filtering logic."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Cart coupon action row",
+        "issue": "Normal click/tap on `apply-coupon-btn` can be unreliable at some scroll positions due sticky checkout bar overlap; reliable trigger required JS click fallback in automation.",
+        "testID": "apply-coupon-btn",
+        "priority": "MEDIUM"
+      },
+      {
+        "component": "Product image rendering (specific asset)",
+        "issue": "Console shows blocked asset: `https://images.unsplash.com/photo-1621447504864-d8686f215021?w=400` (`net::ERR_BLOCKED_BY_ORB`), causing intermittent broken product imagery.",
+        "testID": "product-image-*",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Cart coupon apply via natural mobile interaction",
+        "issue": "Coupon application works, but interaction is fragile unless button is fully clear of sticky footer. Can appear as 'no response' to user.",
+        "affected_testIDs": [
+          "coupon-input",
+          "apply-coupon-btn",
+          "checkout-btn"
+        ]
+      }
+    ],
+    "design_issues": [],
+    "react_native_issues": [
+      {
+        "component": "ReelVideo wrapper",
+        "issue": "Uses deprecated `props.pointerEvents`; warning suggests migrating to `style.pointerEvents`."
+      },
+      {
+        "component": "Multiple screens",
+        "issue": "Web console repeatedly logs deprecated `shadow*` style props warning."
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration3_regression.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Adjust Cart layout/hit areas so `apply-coupon-btn` is never obscured by sticky checkout bar on mobile web.",
+    "Replace ORB-blocked external Unsplash asset(s) with managed `/api/media/*` assets for stable loading.",
+    "Implement or remove unused `/api/products?chip=` filter parameter to avoid dead API contract.",
+    "Address deprecation warnings (`pointerEvents` prop usage and `shadow*` styles) to reduce future RN-web breakage risk."
+  ],
+  "critical_code_review_comments": [
+    "`frontend/app/orders.tsx` swallows API failures (`catch(() => {})`), leaving silent empty-state behavior when request issues occur.",
+    "`backend/server.py` includes `chip` arg in products endpoint but never applies it.",
+    "`backend/media_store.py` uses fallback integration base URL string; strict env-only fail-fast posture is partially bypassed there."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration3_regression.py",
+    "/app/test_reports/iteration_3.json"
+  ],
+  "success_rate": {
+    "backend": "100% (14/14)",
+    "frontend": "90% (core flows pass; coupon UX + asset loading issue)"
+  },
+  "seed_data_creation": "Created test booking enquiries and test orders during API/UI runs (Mongo persisted).",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Validated at 390x844 and 360 widths; no horizontal overflow detected. Reels video currentTime advanced and strip hidden/restored correctly. Booking flow saved enquiry with reference and history entry. Coupon + checkout path works, but apply interaction can be flaky unless button unobstructed.",
+  "rca_of_issue": "Coupon tap fragility RCA: sticky checkout footer overlaps coupon action zone in certain scroll positions, so pointer events may route unexpectedly; mitigation is increasing safe bottom spacing above footer and/or moving coupon CTA higher. Image load RCA: direct external Unsplash URL triggers browser ORB block in this environment; mitigation is serving that asset via managed media proxy similar to other catalog assets."
+}

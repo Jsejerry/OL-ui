@@ -4,7 +4,7 @@ import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "@react-native-vector-icons/ionicons";
-import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming, Easing, cancelAnimation } from "react-native-reanimated";
+import Animated, { useAnimatedStyle, useSharedValue, withTiming, Easing, cancelAnimation } from "react-native-reanimated";
 import Svg, { Path, Circle } from "react-native-svg";
 import { colors, radius, spacing } from "@/src/theme";
 import { api, Order } from "@/src/api";
@@ -19,6 +19,7 @@ const ROUTE_D = `M 30 ${MAP_H - 30} Q ${MAP_W * 0.25} ${MAP_H * 0.2} ${MAP_W * 0
 
 // Sample points along the route for the rider position (approx)
 function pointOnRoute(t: number) {
+  'worklet';
   // Use a set of points approximating the cubic path
   const start = { x: 30, y: MAP_H - 30 };
   const c1 = { x: MAP_W * 0.25, y: MAP_H * 0.2 };

@@ -1,0 +1,9 @@
+import { colors } from './theme';
+export const departments = [
+  { id: 'food', label: 'Food', icon: 'fast-food-outline', color: colors.food, soft: colors.foodSoft, image: 'burger', route: '/food', title: 'Good food.\nGreat mood.', subtitle: 'Your favourite bites, right around the corner.', eyebrow: 'THE FOOD EDIT', filters: ['All', 'Burgers', 'Pizza', 'Coffee', 'Chicken'] },
+  { id: 'grocery', label: 'Grocery Shop', icon: 'basket-outline', color: colors.forest, soft: colors.limeSoft, image: 'fresh', route: '/grocery', title: 'Fresh finds.\nEvery single day.', subtitle: 'A full basket. A happy home.', eyebrow: 'YOUR DAILY MARKET', filters: ['All', 'Fruits & Veggies', 'Dairy & Eggs', 'Snacks', 'Bakery'] },
+  { id: 'pharmacy', label: 'Pharmacy', icon: 'medkit-outline', color: colors.pharmacy, soft: colors.pharmacySoft, image: 'wellness', route: '/pharmacy', title: 'A little care.\nA healthier you.', subtitle: 'Everyday wellness for your whole family.', eyebrow: 'THE WELLNESS CORNER', filters: ['All', 'Wellness', 'Hygiene'] },
+  { id: 'beauty', label: 'Beauty', icon: 'sparkles-outline', color: colors.beauty, soft: colors.beautySoft, image: 'beauty', route: '/beauty', title: 'Your everyday,\na little elevated.', subtitle: 'Discover your next beauty obsession.', eyebrow: 'THE BEAUTY EDIT', filters: ['All', 'Skincare', 'Makeup', 'Haircare'] },
+  { id: 'book-it', label: 'Book It', icon: 'ticket-outline', color: colors.book, soft: colors.bookSoft, image: 'cinema', route: '/book-it', title: 'Go out.\nMake memories.', subtitle: 'Big screens, live scenes & everything between.', eyebrow: 'YOUR CITY. YOUR PLANS.', filters: ['All', 'Movies', 'Events', 'Activities'] },
+] as const;
+export type DepartmentId = typeof departments[number]['id'];

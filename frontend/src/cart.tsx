@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { mediaUrl } from './api';
 
 export type CartProduct = {
   id: string;
@@ -33,7 +34,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     AsyncStorage.getItem(KEY).then((v) => {
       if (v) {
-        try { setItems(JSON.parse(v)); } catch {}
+        try { setItems(JSON.parse(v).map((item: CartItem) => item.id === 'p6' ? { ...item, image: mediaUrl('snacks') } : item)); } catch {}
       }
       setHydrated(true);
     });
