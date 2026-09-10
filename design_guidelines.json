@@ -1,154 +1,87 @@
 {
-  "project_name": "OneCity",
-  "app_type": "mobile_web_app",
-  "design_archetype": "Pastel & Soft floaty with Electric Kinetic Accents",
-  "theme": "Light & Translucent Floaty Glassmorphism",
-  "logo_asset_url": "https://customer-assets-gfyr7b9c.emergentagent.net/job_onelatur-market/artifacts/k8kt9vac_hf_20260909_210048_132cb1e9-7487-46a6-87fb-4df954f897d2.webp",
-  "colors": {
-    "primary_green_gradient": {
-      "hex_code": "#76EC00",
-      "gradient_css": "linear-gradient(185deg, rgba(118, 236, 0, 0.95) 0%, rgba(118, 236, 0, 0.45) 50%, rgba(255, 255, 255, 0) 100%)",
-      "description": "Upper screen half hero backdrop tint including ads and location bar"
-    },
-    "departments_gradients": {
-      "food": {
-        "start": "#FF9500",
-        "end": "#FF3B30",
-        "css": "linear-gradient(135deg, rgba(255, 149, 0, 0.85) 0%, rgba(255, 59, 48, 0.4) 100%)",
-        "label": "Gourmet Spice & Flame"
-      },
-      "groceries": {
-        "start": "#76EC00",
-        "end": "#34C759",
-        "css": "linear-gradient(135deg, rgba(118, 236, 0, 0.9) 0%, rgba(52, 199, 89, 0.4) 100%)",
-        "label": "Fresh Organic Orchard"
-      },
-      "shops": {
-        "start": "#AF52DE",
-        "end": "#5856D6",
-        "css": "linear-gradient(135deg, rgba(175, 82, 222, 0.85) 0%, rgba(88, 86, 214, 0.4) 100%)",
-        "label": "Boutique Fashion & Tech Velvet"
-      },
-      "pharmacy_beauty": {
-        "start": "#FF2D55",
-        "end": "#5AC8FA",
-        "css": "linear-gradient(135deg, rgba(255, 45, 85, 0.8) 0%, rgba(90, 200, 250, 0.4) 100%)",
-        "label": "Radiant Wellness Glow"
-      },
-      "book_it": {
-        "start": "#007AFF",
-        "end": "#30B0C7",
-        "css": "linear-gradient(135deg, rgba(0, 122, 255, 0.85) 0%, rgba(48, 176, 199, 0.4) 100%)",
-        "label": "Azure Horizon Experiences"
-      }
-    },
-    "neutrals": {
-      "card_glass_bg": "rgba(255, 255, 255, 0.72)",
-      "card_glass_border": "rgba(255, 255, 255, 0.85)",
-      "text_main": "#0F172A",
-      "text_muted": "#64748B",
-      "badge_glow": "rgba(118, 236, 0, 0.3)"
-    }
-  },
   "typography": {
-    "font_family_heading": "Outfit, system-ui, -apple-system, sans-serif",
-    "font_family_body": "Manrope, system-ui, -apple-system, sans-serif",
-    "sizes": {
-      "logo_tag": "text-[10px] font-bold tracking-widest uppercase",
-      "h1": "text-xl sm:text-2xl font-bold tracking-tight",
-      "h2": "text-lg sm:text-xl font-bold tracking-tight",
-      "subheading": "text-xs font-semibold text-slate-500 uppercase tracking-wider",
-      "body": "text-xs sm:text-sm font-medium",
-      "caption": "text-[11px] font-normal text-slate-500"
+    "headings": "font-sans font-bold tracking-tight text-gray-900 (Use Outfit or Manrope). Scale max text-2xl or text-3xl for mobile app feel.",
+    "body": "font-sans font-medium text-gray-700 (Use IBM Plex Sans or Inter, highly legible at small scales). Keep fonts small to maximize screen real estate.",
+    "accents": "uppercase text-[10px] tracking-wider font-bold"
+  },
+  "colors": {
+    "primary": "#00B96B",
+    "primary_glow": "rgba(0, 185, 107, 0.6)",
+    "background": "#FFFFFF",
+    "surface": "#F5F5F5",
+    "surface_glass": "rgba(255, 255, 255, 0.8)",
+    "text_main": "#0A0A0A",
+    "text_muted": "#666666",
+    "black_brand": "#111111"
+  },
+  "visual enhancers": {
+    "border_radius": "Extremely curvy. Use rounded-2xl for cards and rounded-full for buttons/icons.",
+    "shadows": "Soft, colored shadows for primary actions (shadow-[0_8px_20px_rgba(0,185,107,0.3)])",
+    "glassmorphism": "backdrop-blur-xl bg-white/80 for sticky headers and floating bars.",
+    "spacing": "Dense item grids with p-2 or p-3 to show more items, but generous padding (p-4 to p-6) for outer containers."
+  },
+  "component name": {
+    "FloatingCart": "Pill-shaped bottom floating bar (Instamart style) with live price, item count, and Checkout CTA.",
+    "OneButton": "Central '1' floating action button with pulsing neon green glow. Tap -> Discover Reels, Hold -> AI Bot.",
+    "VendorPopUp": "Small animated illustration overlay above Proceed to Pay button.",
+    "CollapsibleHeader": "Header containing Search Bar. On scroll, category icons (Food, Groceries, Shops, Pharmacy, Book it) collapse into the search bar row to save vertical space.",
+    "CartTabs": "Segmented control at the top of the Cart page: [ Cart | One Saver ].",
+    "DiscoverReels": "Instagram-style 3-column dense grid. Tapping an item opens a fullscreen swipable reel.",
+    "AIBotSheet": "Bottom sheet triggered by long-press on '1' button. Conversational UI for meal/catalogue recommendations (e.g. 'gym for bulk')."
+  },
+  "grids": {
+    "DiscoverGrid": "grid grid-cols-3 gap-1 (Instagram explore page style)",
+    "ProductGrid": "grid grid-cols-2 md:grid-cols-3 gap-3 p-3 (dense product layout)"
+  },
+  "layouts": {
+    "app_shell": "Mobile-first, constrained max-width (max-w-md mx-auto relative h-screen bg-white overflow-hidden).",
+    "header": "Sticky top-0 z-40 bg-white/90 backdrop-blur-md pt-4 pb-2 px-4 transition-all. Logo shrunk. Category strip scales down and moves inline with search on scroll.",
+    "cart_page": "Top sticky tabs (Cart / One Saver). Scrollable item list. Bottom floating 'Proceed to pay' button.",
+    "vendor_illustration_placement": "Absolute positioned bottom-full mb-2 left-4 (just above the Pay button), sliding up on item add."
+  },
+  "motion": {
+    "OneButton_Glow": "framer-motion animate={{ boxShadow: ['0px 0px 0px 0px rgba(0,185,107,0.8)', '0px 0px 20px 10px rgba(0,185,107,0)'] }} transition={{ repeat: Infinity, duration: 1.5 }}",
+    "Add_To_Cart": "Trajectory animation: when clicking '+' on a product, a miniature version of the product flies in an arc into the bottom floating cart.",
+    "Category_Icons": "Hover/Tap slight scale (scale: 0.95) and bounce.",
+    "Vendor_PopUp": "Slide up from bottom (y: 20 to 0) with gentle spring, delay 0.2s, pop-in text bubble ('Raju Bhaiya packed your veggies').",
+    "Header_Collapse": "Smooth height interpolation and layout transition using framer-motion layoutId for category items moving up."
+  },
+  "accessibility": {
+    "contrast": "Ensure white text on #00B96B passes minimum 3:1 APCA. Use #0A0A0A for all typography.",
+    "data_testid": "Add data-testid attributes to ALL interactive elements (e.g., '1-button-tap', '1-button-hold', 'add-to-cart-btn', 'floating-cart').",
+    "touch_targets": "Ensure all curvy buttons have minimum 44x44px touch area."
+  },
+  "media": {
+    "image_urls": {
+      "logo_1": "https://customer-assets-4nw71qhi.emergentagent.net/job_overlay-ui-kit/artifacts/b53wk9sj_hf_20260910_213929_6f85b1e9-82fc-42b3-ae7e-a2cee71cf6b2.png",
+      "category_food": "https://images.unsplash.com/photo-1674027392851-7b34f21b07ee?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwzfHwzRCUyMGljb24lMjBmb29kJTIwZ3JvY2VyeSUyMHBoYXJtYWN5JTIwc2hvcHBpbmd8ZW58MHx8fHwxNzg5MDc3MTgzfDA&ixlib=rb-4.1.0&q=85",
+      "category_grocery": "https://images.unsplash.com/photo-1674027392838-d85710a5121d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHw0fHwzRCUyMGljb24lMjBmb29kJTIwZ3JvY2VyeSUyMHBoYXJtYWN5JTIwc2hvcHBpbmd8ZW58MHx8fHwxNzg5MDc3MTgzfDA&ixlib=rb-4.1.0&q=85",
+      "category_pharmacy": "https://images.unsplash.com/photo-1674027392842-29f8354e236c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwyfHwzRCUyMGljb24lMjBmb29kJTIwZ3JvY2VyeSUyMHBoYXJtYWN5JTIwc2hvcHBpbmd8ZW58MHx8fHwxNzg5MDc3MTgzfDA&ixlib=rb-4.1.0&q=85",
+      "vendor_raju_bhaiya_veggies": "https://images.unsplash.com/photo-1740252117027-4275d3f84385?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njl8MHwxfHNlYXJjaHwyfHwzZCUyMGN1dGUlMjBjaGFyYWN0ZXIlMjBhdmF0YXIlMjBzbWlsaW5nfGVufDB8fHx8MTc4OTA3NzIwNnww&ixlib=rb-4.1.0&q=85",
+      "vendor_amul_milk": "https://images.unsplash.com/photo-1740252117013-4fb21771e7ca?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njl8MHwxfHNlYXJjaHwzfHwzZCUyMGN1dGUlMjBjaGFyYWN0ZXIlMjBhdmF0YXIlMjBzbWlsaW5nfGVufDB8fHx8MTc4OTA3NzIwNnww&ixlib=rb-4.1.0&q=85",
+      "vendor_pharmacy": "https://images.unsplash.com/photo-1740252117012-bb53ad05e370?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njl8MHwxfHNlYXJjaHw0fHwzZCUyMGN1dGUlMjBjaGFyYWN0ZXIlMjBhdmF0YXIlMjBzbWlsaW5nfGVufDB8fHx8MTc4OTA3NzIwNnww&ixlib=rb-4.1.0&q=85",
+      "vendor_shops": "https://images.unsplash.com/photo-1740252117070-7aa2955b25f8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njl8MHwxfHNlYXJjaHwxfHwzZCUyMGN1dGUlMjBjaGFyYWN0ZXIlMjBhdmF0YXIlMjBzbWlsaW5nfGVufDB8fHx8MTc4OTA3NzIwNnww&ixlib=rb-4.1.0&q=85",
+      "vendor_food": "https://images.unsplash.com/photo-1603129927228-79965ede0115?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzNTl8MHwxfHNlYXJjaHw0fHxkZWxpdmVyeSUyMG1hbiUyMGlsbHVzdHJhdGlvbiUyMGN1dGUlMjBwb3AlMjB1cHxlbnwwfHx8fDE3ODkwNzcxODN8MA&ixlib=rb-4.1.0&q=85"
     }
   },
-  "layout_and_shape": {
-    "border_radius": "rounded-3xl",
-    "pill_radius": "rounded-full",
-    "backdrop_filter": "backdrop-blur-xl backdrop-saturate-150",
-    "shadows": "shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_12px_40px_rgba(118,236,0,0.2)]",
-    "top_bar": {
-      "logo_position": "Strictly ABOVE location bar in a very small footprint (h-5 / 20px height max)",
-      "search_bar": "Full width with Mic icon (voice search modal) & Camera icon (AI visual search modal)",
-      "top_actions": "Wallet pill button + Cart icon with item count badge + Profile button on top right"
-    }
+  "3d libraries": {
+    "usage": "Use Framer Motion for UI animations and 2D-plane interactions (Reels swipe, floating cart, glow). The 3D category icons are static image assets provided in the media section, styled with drop-shadows to look interactive."
   },
-  "departments_list": [
-    {
-      "id": "food",
-      "name": "Food",
-      "icon": "Utensils",
-      "gradient_key": "food"
-    },
-    {
-      "id": "grocery",
-      "name": "Groceries",
-      "icon": "ShoppingBag",
-      "gradient_key": "groceries"
-    },
-    {
-      "id": "shops",
-      "name": "Shops",
-      "icon": "Store",
-      "gradient_key": "shops",
-      "subcategories": ["Local Fashion", "Electronics", "Homeware & Decor"]
-    },
-    {
-      "id": "pharmacy_beauty",
-      "name": "Pharmacy & Beauty",
-      "icon": "Sparkles",
-      "gradient_key": "pharmacy_beauty"
-    },
-    {
-      "id": "book_it",
-      "name": "Book It",
-      "icon": "CalendarCheck",
-      "gradient_key": "book_it"
-    }
-  ],
-  "creative_ad_format": {
-    "style": "Floaty Organic Curved Banners with Dynamic Brand Reels & Tappable Brand Badges",
-    "amul_brand_showcase": {
-      "featured_ad": "Amul Cheese Burst Slice Reel",
-      "tappable_logo": "Amul Official Logo",
-      "on_logo_click": "Opens Amul Brand Hub showing Amul Butter, Amul Milk, Amul Paneer, Amul Dahi, Amul Ice Cream with instant Add-to-Cart"
-    },
-    "other_partner_brands": [
-      {
-        "name": "FabIndia Fashion",
-        "ad_title": "Handcrafted Silk Sarees & Kurtas",
-        "department": "shops",
-        "tag": "Trending Fashion"
-      },
-      {
-        "name": "Croma Electronics",
-        "ad_title": "Smart Audio & Gadgets 40% Off",
-        "department": "shops",
-        "tag": "Tech Deals"
-      },
-      {
-        "name": "Forest Essentials",
-        "ad_title": "Ayurvedic Beauty Oils & Elixirs",
-        "department": "pharmacy_beauty",
-        "tag": "Luxury Skincare"
-      }
-    ]
+  "instructions_to_main_agent": {
+    "1": "DO NOT rebuild the app. Update existing JS components in `/app/frontend/src/` incrementally.",
+    "2": "Replace the current logo with the provided `logo_1` URL and shrink its container.",
+    "3": "Implement the Header collapse feature: Use framer-motion. On scroll > 50px, transition the 'Food, Groceries, Shops, Pharmacy, Book it' horizontal strip up alongside the search bar, shrinking their icons.",
+    "4": "The 1 Button: Apply continuous pulsing `box-shadow` (green glow). Use `onPress` (or `onClick`) to route to /discover (Reels Grid) and `onLongPress` to open a bottom sheet AI Bot (use Framer Motion drag constraints or standard Dialog).",
+    "5": "Discover Reels: Create a 3-column dense grid of thumbnail rectangles. Tapping one should show a fullscreen video/image view (mock the video with an image).",
+    "6": "Instamart Floating Cart: When cart.length > 0, show a sticky bottom bar (z-50) hovering above the bottom tab nav. Make it pill-shaped (rounded-full). When 'Add' is clicked on a product, animate a small dot flying into the cart.",
+    "7": "Cart Page tabs: Add a simple segmented control at the top: 'Cart' and 'One Saver'.",
+    "8": "Vendor Animations: On the delivery/checkout screen, watch the cart items. When the screen loads or item is updated, slide up one of the 5 character illustrations (e.g., Raju Bhaiya) from behind the 'Proceed to pay' button with a chat bubble.",
+    "9": "Make all buttons and inputs extremely curvy (`rounded-3xl` or `rounded-full`). Shrink font sizes across the board to create high data density."
   },
-  "key_features_requirements": {
-    "voice_and_camera_ai": "Modal triggers on search bar mic/camera button press with simulated AI audio wave and camera scanner preview.",
-    "wallet_demo": "Interactive floating wallet badge showing ₹1,250 balance, tap opens popover with transaction history and Quick Add Money.",
-    "discover_reels": "Full screen vertical/card reels with 'Shop Now' overlay button and clickable brand logo redirecting to brand catalog."
+  "component_path": {
+    "AppShell": "/app/frontend/src/components/app-shell.jsx",
+    "Layout": "/app/frontend/app/(tabs)/_layout.jsx",
+    "Theme": "/app/frontend/src/theme.js"
   },
-  "image_urls": {
-    "fashion_store": "https://images.unsplash.com/photo-1591085686350-798c0f9faa7f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njd8MHwxfHNlYXJjaHw0fHxmYXNoaW9uJTIwY2xvdGhpbmclMjBzdG9yZSUyMHNob3BwaW5nJTIwbW9kZWxzfGVufDB8fHx8MTc4ODk4ODYwMHww&ixlib=rb-4.1.0&q=85",
-    "electronics_gadgets": "https://images.unsplash.com/photo-1515940175183-6798529cb860?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTF8MHwxfHNlYXJjaHwyfHxlbGVjdHJvbmljcyUyMGdhZGdldHMlMjBzbWFydHBob25lJTIwc3RvcmV8ZW58MHx8fHwxNzg4OTg4NjAwfDA&ixlib=rb-4.1.0&q=85",
-    "boutique_rack": "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njd8MHwxfHNlYXJjaHwxfHxmYXNoaW9uJTIwY2xvdGhpbmclMjBzdG9yZSUyMHNob3BwaW5nJTIwbW9kZWxzfGVufDB8fHx8MTc4ODk4ODYwMHww&ixlib=rb-4.1.0&q=85",
-    "smartphone_tech": "https://images.unsplash.com/photo-1596742578443-7682ef5251cd?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTF8MHwxfHNlYXJjaHw0fHxlbGVjdHJvbmljcyUyMGdhZGdldHMlMjBzbWFydHBob25lJTIwc3RvcmV8ZW58MHx8fHwxNzg4OTg4NjAwfDA&ixlib=rb-4.1.0&q=85"
-  },
-  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
-    "Ensure all clickable elements have unique `data-testid` attributes (e.g. `data-testid='top-wallet-button'`, `data-testid='search-mic-button'`, `data-testid='search-camera-button'`, `data-testid='amul-brand-logo'`).",
-    "Keep typography small, elegant and crisp (text-xs / text-sm for labels and metadata) to enhance the floaty aesthetic.",
-    "Use backdrop-blur glass panels with rounded-3xl corners and smooth border strokes instead of hard rectangular cards.",
-    "Maintain the logo image strictly above the location bar in a compact header area."
-  ]
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": "You tend to converge toward generic outputs. Avoid this! Build a highly interactive, fluid, app-like frontend. DO NOT apply universal transitions (e.g., transition: all). Add transitions to specific elements. Avoid completely transparent backgrounds for overlays and headers; always use a blur + slight opacity (e.g., bg-white/80 backdrop-blur-md). DO NOT center-align all app text; left-align naturally. Use the precise image URLs provided; never use dummyimage.com placeholders. Use `data-testid` on all buttons, links, and interactive elements."
 }

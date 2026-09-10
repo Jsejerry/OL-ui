@@ -9,6 +9,7 @@ import { useCatalog } from '@/src/use-catalog';
 import { useFollowedStores } from '@/src/followed';
 import { TrendingCards } from '@/src/components/home-promos';
 import { BrandSpotlight } from '@/src/components/brand-spotlight';
+import { CityScroll } from '@/src/motion';
 import { BrandRail, CategoryRail, EventRail, LoadState, ProductRail, SectionTitle } from '@/src/components/catalog-sections';
 
 export default function HomeScreen() {
@@ -21,7 +22,7 @@ export default function HomeScreen() {
   const followed = stores.filter(s => isFollowing(s.id));
   const go = (route: string) => () => router.navigate(route as any);
   const selected = (ids: string[]) => ids.flatMap(id => data.products.filter(p => p.id === id));
-  return <ScrollView testID="home-screen" showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
+  return <CityScroll testID="home-screen" showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
     {followed.length > 0 && <><SectionTitle id="followed" title="Your local favourites" subtitle="The stores you follow, always first." /><ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.stores}>{followed.map(s => <Pressable testID={`followed-store-${s.id}`} key={s.id} style={styles.store} onPress={go(`/store/${s.id}`)}><Image source={s.logo} style={styles.storeImage} /><Text style={styles.storeName}>{s.name}</Text><Icon name="heart" size={13} color={colors.forest} /></Pressable>)}</ScrollView></>}
     <BrandSpotlight switchable />
     <View style={styles.sheet}>
@@ -50,7 +51,7 @@ export default function HomeScreen() {
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.stores}>{stores.filter(s => s.id.startsWith('s')).map(s => <Pressable testID={`store-card-${s.id}`} key={s.id} style={styles.store} onPress={go(`/store/${s.id}`)}><Image source={s.logo} style={styles.storeImage} /><View><Text style={styles.storeName}>{s.name}</Text><Text style={styles.meta}>{s.delivery_time} · {s.rating} rating</Text></View></Pressable>)}</ScrollView>
     <View style={styles.footer}><Text style={styles.footerTitle}>One city. Endless possibilities.</Text><Text style={styles.footerSub}>Made for Latur. Made for you.</Text><Text testID="sample-catalog-notice" style={styles.notice}>Explore our sample catalogue. Brand listings, prices and booking experiences are for demonstration.</Text></View>
     </View>
-  </ScrollView>;
+  </CityScroll>;
 }
 const styles = StyleSheet.create({
   content: { paddingBottom: 20 }, sheet: { backgroundColor: colors.glassBright, borderTopLeftRadius: 34, borderTopRightRadius: 34, paddingTop: 1, overflow: 'hidden' }, rule: { height: 7, backgroundColor: colors.cream, marginTop: 26 }, railSpace: { marginTop: 18 },

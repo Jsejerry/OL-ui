@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Text, Pressable, StyleSheet, AppState, Share, Modal, Platform } from 'react-native';
 import { Image } from 'expo-image';
 import { useVideoPlayer, VideoView } from 'expo-video';
@@ -14,15 +14,23 @@ import { useCart } from '../cart';
 
 function ReelVideo({ source, muted, paused, id }: { source: string; muted: boolean; paused: boolean; id: string }) {
   const [failed, setFailed] = useState(false);
-  const player = useVideoPlayer(source, p => { p.loop = true; p.muted = true; p.play(); });
+  const view = useRef<VideoView>(null);
+  const player = useVideoPlayer(source, p => { p.loop = true; p.muted = true; });
+  const play = useCallback(() => {
+    if (Platform.OS !== 'web') { player.play(); return; }
+    // Expo's web play() discards HTMLMediaElement's promise. Use the view's
+    // exposed nativeRef to handle expected cancellation when navigating away.
+    const element = (view.current as unknown as { nativeRef?: { current?: HTMLVideoElement } })?.nativeRef?.current;
+    void element?.play().catch((error: Error) => { if (error.name !== 'AbortError') setFailed(true); });
+  }, [player]);
   useEffect(() => { player.muted = muted; }, [player, muted]);
-  useEffect(() => { if (paused) player.pause(); else player.play(); }, [player, paused]);
+  useEffect(() => { if (paused) player.pause(); else play(); return () => { player.pause(); }; }, [player, paused, play]);
   useEffect(() => {
     const listener = player.addListener('statusChange', e => setFailed(e.status === 'error'));
-    const app = AppState.addEventListener('change', state => { if (state !== 'active' || paused) player.pause(); else player.play(); });
+    const app = AppState.addEventListener('change', state => { if (state !== 'active' || paused) player.pause(); else play(); });
     return () => { listener.remove(); app.remove(); };
-  }, [player, paused]);
-  return <><View testID={`reel-video-${id}`} style={styles.video}><VideoView player={player} nativeControls={false} contentFit="cover" style={styles.video} /></View>{failed && <View style={styles.videoError}><Text testID={`reel-video-error-${id}`} style={styles.errorText}>Video unavailable. You can still shop this find.</Text></View>}</>;
+  }, [player, paused, play]);
+  return <><View testID={`reel-video-${id}`} style={styles.video}><VideoView ref={view} player={player} nativeControls={false} contentFit="cover" style={styles.video} /></View>{failed && <View style={styles.videoError}><Text testID={`reel-video-error-${id}`} style={styles.errorText}>Video unavailable. You can still shop this find.</Text></View>}</>;
 }
 
 export function ReelCard({ reel: r, height, active, next }: { reel: Reel; height: number; active: boolean; next: () => void }) {
@@ -42,9 +50,9 @@ export function ReelCard({ reel: r, height, active, next }: { reel: Reel; height
   const share = async () => { if (Platform.OS === 'web') { setCopied(false); setShareOpen(true); return; } try { await Share.share({ title: r.product.name, message: `Found on OneCity: ${r.product.name} — ${link}` }); } catch { setShareOpen(true); } };
   return <View testID={`reel-card-${r.id}`} style={[styles.card, { height }]}>
     <Image source={r.product.image} contentFit="cover" style={StyleSheet.absoluteFill} />
-    {active && <ReelVideo source={Platform.OS === 'web' ? r.video_web : r.video} muted={muted} paused={paused || shareOpen} id={r.id} />}
+    {active && !!r.video && <ReelVideo source={Platform.OS === 'web' ? r.video_web : r.video} muted={muted} paused={paused || shareOpen} id={r.id} />}
     <LinearGradient colors={[colors.overlay, colors.transparent, colors.transparent, colors.overlayDeep]} locations={[0, 0.25, 0.5, 1]} style={StyleSheet.absoluteFill} />
-    <View style={[styles.top, { paddingTop: insets.top + 16 }]}><View><Text style={styles.title}>City finds.</Text><Text style={styles.topSub}>LITTLE ADS. LOVELY DISCOVERIES.</Text></View><Pressable testID={`reel-cart-${r.id}`} accessibilityLabel="View cart" onPress={() => router.navigate('/cart' as any)} style={styles.round}><Icon name="bag-handle-outline" size={20} color={colors.surface} />{totalItems > 0 && <Text testID={`reel-cart-count-${r.id}`} style={styles.cartCount}>{totalItems}</Text>}</Pressable></View>
+    <View style={[styles.top, { paddingTop: insets.top + 16 }]}><Pressable testID={`reel-back-discover-${r.id}`} accessibilityLabel="Back to Discover grid" onPress={() => router.navigate('/discover' as any)}><Text style={styles.title}>‹ City finds.</Text><Text style={styles.topSub}>LITTLE ADS. LOVELY DISCOVERIES.</Text></Pressable><Pressable testID={`reel-cart-${r.id}`} accessibilityLabel="View cart" onPress={() => router.navigate('/cart' as any)} style={styles.round}><Icon name="bag-handle-outline" size={20} color={colors.surface} />{totalItems > 0 && <Text testID={`reel-cart-count-${r.id}`} style={styles.cartCount}>{totalItems}</Text>}</Pressable></View>
     <Pressable testID={`reel-play-${r.id}`} accessibilityLabel={paused ? 'Play video' : 'Pause video'} onPress={() => setPaused(!paused)} style={styles.playArea}>{paused && <View style={styles.pauseIcon}><Icon name="play" size={34} color={colors.surface} /></View>}</Pressable>
     <View style={styles.actions}>
       <Pressable testID={`reel-like-${r.id}`} accessibilityLabel={liked ? 'Unlike product' : 'Like product'} accessibilityState={{ selected: liked }} disabled={!hydrated} onPress={like} style={[styles.action, styles.actionGlass]}><Icon name={liked ? 'heart' : 'heart-outline'} size={23} color={liked ? colors.lime : colors.surface} /><Text testID={`reel-likes-${r.id}`} style={styles.actionLabel}>{r.likes + (liked ? 1 : 0)}</Text></Pressable>

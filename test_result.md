@@ -103,6 +103,13 @@
 #====================================================================================================
 
 user_problem_statement: "Redesign One Latur using supplied grocery UI and lime/black logos: persistent Food/Grocery Shop/Pharmacy/Beauty/Book It strip except reels; location and company row, search/cart/profile; ads, trending, top picks, department showcases; distinct department pages; bottom Home/Categories/1 Reels/Food/Book It; shoppable reels; demo booking enquiries approved. Preserve existing shopping features."
+latest_request: "Incremental interactive OneCity refresh: smaller logo, folded glowing 1, tap Discover grid and hold real AI, animated floating cart, Cart/One Saver, scroll-away header/departments, green/white/black 3D icons and five vendor illustrations. Do not rebuild."
+latest_implementation:
+  working: true
+  needs_retesting: false
+  files: [frontend/src/motion.tsx, frontend/src/components/one-button.tsx, frontend/src/components/floating-cart.tsx, frontend/app/(tabs)/discover.tsx, frontend/src/use-discovery.ts, frontend/app/assistant.tsx, backend/assistant.py, frontend/src/components/one-saver.tsx, frontend/src/components/vendor-note.tsx]
+  test_focus: [Tap versus long hold 1, Correct tile opens selected reel or photo, Reel regression, Scroll header on all five departments and home, Floating cart add/remove totals persistence, One Saver eligibility and coupon apply, Five vendor images and factual pre-order wording, Real AI streaming and multi-turn memory with product IDs, External search links clearly non-live, Voice input review, Checkout and delivery regression, No overflow at 360 and 390]
+  notes: "Iteration6 found preview-origin POST blocker, vendor cheeseburger misclassification and missing WebM. All addressed and browser-verified; see iteration_6_postfix.json. Real assistant->recommended add->One Saver apply->sample checkout/delivery passed; five vendors and all six scroll pages passed. Focused backend15/15 rerun; tsc/lints pass. No auth; existing catalogue/orders/tracking remain sample. No live retailer price provider; transparent external searches only. Native device testing pending."
 backend:
   - task: Expanded catalogue, managed media and demo booking enquiry persistence
     implemented: true

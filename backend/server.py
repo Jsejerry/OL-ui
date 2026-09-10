@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from catalog_data import BRANDS, EXTRA_PRODUCTS, EXTRA_CATEGORIES, EVENTS, REELS, image
 from media_store import router as media_router
 from ai_search import router as search_router
+from assistant import router as assistant_router
 from city_catalog import CITY_BRANDS, CITY_PRODUCTS, CITY_CATEGORIES, CITY_REELS
 
 ROOT_DIR = Path(__file__).parent
@@ -25,6 +26,7 @@ app = FastAPI()
 app.state.db = db
 app.include_router(media_router)
 app.include_router(search_router)
+app.include_router(assistant_router)
 api_router = APIRouter(prefix="/api")
 
 

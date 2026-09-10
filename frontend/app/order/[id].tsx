@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, ActivityIndicator } from "react-native";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -8,6 +8,8 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming, Easing, cancelA
 import Svg, { Path, Circle } from "react-native-svg";
 import { colors, radius, spacing } from "@/src/theme";
 import { api, Order } from "@/src/api";
+import { VendorNote } from '@/src/components/vendor-note';
+import { useMotionAllowed } from '@/src/motion';
 
 const AnimatedView = Animated.View;
 const { width: SCREEN_W } = Dimensions.get("window");
@@ -47,6 +49,10 @@ export default function OrderTrackingScreen() {
   const router = useRouter();
   const [order, setOrder] = useState<Order | null>(null);
   const [elapsedS, setElapsedS] = useState(0);
+  const [error, setError] = useState('');
+  const [retry, setRetry] = useState(0);
+  const [help, setHelp] = useState(false);
+  const motion = useMotionAllowed();
 
   // Rider animation: 0..1 over the delivery duration
   const progress = useSharedValue(0);
@@ -54,17 +60,18 @@ export default function OrderTrackingScreen() {
 
   useEffect(() => {
     if (!id) return;
-    api<Order>(`/orders/${id}`).then(setOrder).catch(() => {});
-  }, [id]);
+    setError('');
+    api<Order>(`/orders/${id}`).then(setOrder).catch(() => setError('Could not load this order. Please try again.'));
+  }, [id, retry]);
 
   useEffect(() => {
     // For a delightful preview we animate the rider across the route in 24s (loops after)
     progress.value = 0;
-    progress.value = withTiming(1, { duration: 24000, easing: Easing.inOut(Easing.ease) });
+    if (motion) progress.value = withTiming(1, { duration: 24000, easing: Easing.inOut(Easing.ease) });
     // ETA countdown ticker
     const t = setInterval(() => setElapsedS((s) => s + 1), 1000);
     return () => { clearInterval(t); cancelAnimation(progress); };
-  }, [progress]);
+  }, [progress, motion]);
 
   const riderStyle = useAnimatedStyle(() => {
     const p = pointOnRoute(progress.value);
@@ -79,7 +86,7 @@ export default function OrderTrackingScreen() {
   if (!order) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: colors.surface }}>
-        <Text style={{ color: colors.muted }}>Loading order...</Text>
+        {error ? <><Text testID="tracking-error" style={{ color: colors.onError }}>{error}</Text><TouchableOpacity testID="tracking-retry" style={styles.homeBtn} onPress={() => setRetry(v => v + 1)}><Text style={styles.homeBtnText}>Try again</Text></TouchableOpacity></> : <ActivityIndicator testID="tracking-loading" color={colors.forest} />}
       </View>
     );
   }
@@ -91,21 +98,22 @@ export default function OrderTrackingScreen() {
           <Icon name="chevron-back" size={22} color={colors.onSurface} />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
-          <Text style={styles.title}>Live Tracking</Text>
-          <Text style={styles.sub}>Order #{order.id.slice(0, 8).toUpperCase()}</Text>
+          <Text testID="tracking-title" style={styles.title}>Your delivery story</Text>
+          <Text testID="tracking-sample-notice" style={styles.sub}>Sample tracking · #{order.id.slice(0, 8).toUpperCase()}</Text>
         </View>
       </View>
 
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: 60 }}>
+        <VendorNote items={order.items} status={order.status} />
         {/* ETA hero */}
         <View style={styles.etaCard}>
           <View style={styles.etaLeft}>
-            <Text style={styles.etaLabel}>ARRIVING IN</Text>
+            <Text style={styles.etaLabel}>SAMPLE DELIVERY COUNTDOWN</Text>
             <Text style={styles.etaTime} testID="eta-time">{mins}:{secs.toString().padStart(2, "0")}</Text>
-            <Text style={styles.etaHint}>10-min express delivery</Text>
+            <Text testID="tracking-animation-notice" style={styles.etaHint}>Illustrative route · not live GPS</Text>
           </View>
           <View style={styles.dispatchDot}>
-            <Text style={styles.dispatchEmoji}>🛵</Text>
+            <Icon name="bicycle-outline" size={36} color={colors.forestDeep} />
           </View>
         </View>
 
@@ -126,11 +134,11 @@ export default function OrderTrackingScreen() {
             <Circle cx={MAP_W - 30} cy={30} r={10} fill={colors.pastelGreen} />
             <Circle cx={MAP_W - 30} cy={30} r={4} fill={colors.onSuccess} />
           </Svg>
-          <View style={styles.storeLabel}><Text style={styles.markerText}>🏪 Store</Text></View>
-          <View style={styles.homeLabel}><Text style={styles.markerText}>🏠 You</Text></View>
+          <View style={styles.storeLabel}><Text style={styles.markerText}>Store</Text></View>
+          <View style={styles.homeLabel}><Text style={styles.markerText}>You</Text></View>
           {/* rider */}
           <AnimatedView style={[styles.rider, riderStyle]} testID="rider-marker">
-            <Text style={{ fontSize: 22 }}>🛵</Text>
+            <Icon name="bicycle" size={24} color={colors.forest} />
           </AnimatedView>
         </View>
 
@@ -139,12 +147,13 @@ export default function OrderTrackingScreen() {
           <View style={styles.avatar}><Text style={styles.avatarText}>{order.rider_name[0]}</Text></View>
           <View style={{ flex: 1 }}>
             <Text style={styles.riderName}>{order.rider_name}</Text>
-            <Text style={styles.riderMeta}>Your delivery partner · ⭐ 4.9</Text>
+            <Text style={styles.riderMeta}>Your sample delivery partner</Text>
           </View>
-          <TouchableOpacity style={styles.callBtn} testID="call-rider-btn">
-            <Icon name="call" size={18} color={colors.onBrandPrimary} />
+          <TouchableOpacity style={styles.callBtn} testID="call-rider-btn" accessibilityLabel="Delivery information" onPress={() => setHelp(!help)}>
+            <Icon name="information-circle-outline" size={20} color={colors.onBrandPrimary} />
           </TouchableOpacity>
         </View>
+        {help && <Text testID="delivery-help" style={styles.riderMeta}>This is a sample order. No real rider is assigned or available to call.</Text>}
 
         {/* Timeline */}
         <View style={styles.timeline}>

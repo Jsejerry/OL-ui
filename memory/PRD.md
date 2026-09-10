@@ -1,5 +1,40 @@
 # OneCity — Hyperlocal Shopping & Discovery
 
+## Latest request — interactive motion refresh (September 2026)
+User explicitly requested incremental changes only: smaller logo, uploaded folded lime 1 button, tap -> Instagram-style Discover ad grid; long hold -> AI shopping assistant; preserve fullscreen reel layout. Instamart-inspired floating animated cart, Cart/One Saver tabs, scroll-away search/departments, green/white/black 3D category icons, curvy controls, small readable typography, five vendor illustrations and interactive delivery. Followup emphasized cool interactive animations in floating bars. User approved defaults and existing AI setup.
+
+### Implemented and verified
+- Smaller 76x22 existing OneCity header logo; SVG folded 1 matched to supplied reference, tap/hold distinction, glow pulse, press spring, native haptic and reduced-motion handling.
+- Discover tab: 3-column mobile grid, filter chips, existing 3 playable ads plus 9 catalogue-derived photo ads (not fake videos). Tile opens selected fullscreen ReelCard; existing like/share/Shop Now/cart/brand flows retained.
+- Green/white/black theme updates, curved cards and controls. Five individually generated clay category icons and five matching vendor portraits stored via managed object storage (`*-v2` keys). Seed script `backend/seed_motion_assets.py`; first sprite-sheet cutouts discarded due to loss of white details.
+- `src/motion.tsx` scroll context + CityScroll on Home/Food/Groceries/Shops/Care/Book It: header/search/departments naturally translate away, compact Explore/Search pill remains; Explore scrolls to the category strip. Scroll offset tracked per screen.
+- Floating cart on main tabs: product arc, spring entry/quantity bump, thumbnails, subtotal, real free-delivery progress and MRP savings. Cart state now emits add events with optional touch origin.
+- Cart/One Saver tabs. One Saver fetches actual configured coupons, ranks applicable savings, applies selected coupon through API and returns to Cart. No subscription or paid membership implied.
+- Five interactive illustrated packing crews: veggies, dairy (Amul shirt), food, care, shops. Cart wording uses future tense, since not ordered yet. Order page follows server order status; no fabricated packed confirmations. Sample notices retained. Existing checkout remains sample order creation without payment; button says Place sample order rather than falsely suggesting live payment.
+- Real GPT-5.4 conversational assistant `/assistant`: streamed answers, Mongo-backed anonymous capability sessions, history, validated catalogue recommendations, add-to-cart cards, sample prices, clear error/retry, new chat, optional Whisper voice input for review before send.
+- Backend `/api/assistant/sessions`, `/sessions/{id}`, `/chat` with input limits, per-session busy lease, shared AI rate budget, response timeout, validated product IDs. NDJSON streaming via XMLHttpRequest on Expo native/web.
+- External live price retrieval is NOT available with existing integration. Playbook confirmed LlmChat has no supported hosted web search through the configured credentials. UI offers clearly labeled Amazon India/BigBasket/JioMart external searches, not fabricated retailer prices. Catalogue prices remain existing sample values.
+- Delivery screen: packing crew, rounded green accents, illustrative route labels, accessible delivery info instead of inert call action, order-load retry. Existing sample timeline/countdown retained.
+
+### Current verification
+- TypeScript passes, frontend batch lint and backend modified-file lint pass.
+- Testing agent report `/app/test_reports/iteration_6.json`: 15/15 focused new backend tests passed; UI identified preview CORS mismatch, a vendor grouping bug and missing legacy browser video.
+- Fixed preview-origin mismatch by using the browser's own origin only on web; iOS/Android still use Constants-configured EXPO_PUBLIC_BACKEND_URL. No protected environment changes. UI then passed real AI session/streaming -> product add -> One Saver coupon apply -> sample checkout -> delivery story.
+- Fixed cheeseburger misclassified as dairy: department classification precedes word-boundary dairy matching. Verified all 5 packing crews, wave and next controls; pager shows 1/5.
+- Restored missing reel-burger/tomato/pasta WebM assets with existing transcode_reels.py. Verified burger playback advancing and selected 5 reel/photo cards opening correctly.
+- Avoided SVG gradient ID collisions across retained screens using unique React IDs; One button now stays visible after assistant/cart navigation.
+- Verified all 12 Discover photos loaded; All/Reels counts12/3; filters and full-screen navigation pass. Final image-loaded screenshots captured for Discover, Cart, One Saver, floating cart.
+- Home/Food/Groceries/Shops/Care/Book It scroll-away headers and compact Explore restoration verified, including switching active pages. Animated add produces correct count/subtotal/free-delivery progress; removing last item hides bar.
+- 390px mobile previews and 360px no horizontal overflow verified. Reduced-motion rendering verified; floating cart immediately visible when motion disabled.
+- Re-ran focused real backend tests after fixes:15/15 passed, TypeScript and all frontend/Python changed-code lints pass. See `/app/test_reports/iteration_6_postfix.json`.
+- One dependency-origin pointerEvents deprecation warning remains non-blocking. Native device behavior (haptics/microphone/keyboard) not device-tested.
+- Final rapid reel navigation exposed Expo web's discarded HTML play() promises. Removed duplicate autoplay, pause on cleanup, and catch expected AbortError through VideoView's exposed web nativeRef; native player API unchanged. Verified rapid open/close, advancing playback and pause with zero browser page errors. Do not suppress global errors or edit node_modules for this.
+
+### Remaining priorities
+- P0: no known unresolved core-flow bugs in this update; await user review.
+- P1: live retailer price provider (not connected); actual payments/fulfilment remain outside current existing sample infrastructure.
+- P2: native device validation of haptics, long press, microphone permissions, and keyboard behavior.
+
 ## Latest request (iteration4)
 Rebrand to **OneCity** with uploaded small logo above location; exact #76EC00 gradient across header AND home ad area. Five departments now **Food, Groceries, Shops, Pharmacy & Beauty, Book It**. User approved sample fashion/electronics/homeware for Shops, explicitly wants real AI photo/voice search, demo wallet, and a floaty, curved, translucent UI with smaller text/icons. Reels need Shop Now and tappable brand logos linking a multi-product collection, starting Amul cheese.
 

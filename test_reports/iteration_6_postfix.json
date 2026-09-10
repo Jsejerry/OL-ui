@@ -1,0 +1,31 @@
+{
+  "case": "Incremental OneCity interactive shopping refresh",
+  "verification": "Main-agent follow-up after testing-agent iteration_6; fixes verified with existing pytest suite and mobile Playwright screenshots/interactions",
+  "backend": {"focused_suite": "tests/test_iteration6_assistant_media.py", "result": "15 passed", "real_ai": true, "typescript": "pass", "frontend_lint": "pass", "python_lint": "pass"},
+  "resolved": [
+    "Preview CORS origin mismatch: web now requests same-origin, native retains configured backend; real assistant session/stream, coupon apply and order creation passed in browser",
+    "Vendor grouping: cheeseburger checked as food before dairy matching; five groups including veggies, dairy, food, care and shops verified",
+    "Missing reel-burger-webm and related legacy WebM assets restored; burger video currentTime advances",
+    "Repeated SVG gradient identifiers fixed with useId; One glyph remains visible across retained routes",
+    "Floating cart entrance respects reduced-motion preference",
+    "Expo browser playback cancellation handled locally via VideoView nativeRef; rapid open/close and pause verified with zero page errors"
+  ],
+  "ui_verified": [
+    "Quick tap One opens Discover; long press opens assistant without a simultaneous Discover navigation",
+    "Image-loaded 12-card Discover grid and existing3-video Reels filter",
+    "Five selected reel/photo tiles open correct item, add to cart and return to grid",
+    "Real AI bulking answer streamed, recommendation card add -> cart",
+    "One Saver WELCOME apply -> cart applied coupon -> checkout -> persisted sample order delivery",
+    "Five vendor illustrations, next/wave and future-tense pre-order message",
+    "Home, Food, Groceries, Shops, Care, Book It collapse shared header; compact Explore restores correct active screen",
+    "Floating cart animated add with accurate count/price/free-delivery progress; removing last item removes bar",
+    "390x844 screenshots; 360x844 no horizontal document overflow",
+    "Reduced-motion views retain content and controls"
+  ],
+  "limitations": [
+    "No live retailer price provider: external retailer search links explicitly labeled, sample catalogue prices only",
+    "Existing sample catalogue, orders, rider tracking and booking enquiries retained; no live payment or fulfilment",
+    "Native iOS/Android device verification, haptics, microphone permissions and keyboard still require a physical device",
+    "Dependency-origin pointerEvents deprecation warning remains non-blocking"
+  ]
+}

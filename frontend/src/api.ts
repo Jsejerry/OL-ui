@@ -1,5 +1,9 @@
 import Constants from 'expo-constants';
-export const BACKEND = (Constants.expoConfig?.extra?.backendUrl || process.env.EXPO_PUBLIC_BACKEND_URL || '').replace(/\/$/, '');
+import { Platform } from 'react-native';
+const configuredBackend = (Constants.expoConfig?.extra?.backendUrl || process.env.EXPO_PUBLIC_BACKEND_URL || '').replace(/\/$/, '');
+// Browser previews are served through an origin-rewriting proxy. Keep preview
+// requests same-origin; native apps always use the configured backend URL.
+export const BACKEND = Platform.OS === 'web' && typeof window !== 'undefined' ? window.location.origin : configuredBackend;
 export const API = BACKEND + '/api';
 export const mediaUrl = (key: string) => `${API}/media/${key}`;
 function resolveMedia(value: any): any {

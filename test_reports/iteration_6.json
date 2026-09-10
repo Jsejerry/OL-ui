@@ -1,0 +1,89 @@
+{
+  "summary": "Executed backend+frontend regression for OneCity incremental refresh. Core discovery/tap-hold/floating-cart UX mostly works, but critical browser-origin CORS blocks all POST integrations from public preview (assistant, coupon apply, checkout/order creation).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "GET /api/media/reel-burger-webm",
+        "issue": "Returns 404 in current deploy; legacy regression tests expecting this key fail while new *-v2 assets work."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Cart vendor-note grouping",
+        "issue": "After adding p1/p4/f1/b1/sneak1, vendor pager showed 1/4 instead of expected 5 groups in this run.",
+        "testID": "vendor-note",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Long-press Discover -> Assistant session creation",
+        "issue": "POST preflight blocked by CORS; assistant cannot initialize from public preview origin.",
+        "affected_testIDs": [
+          "tab-reels",
+          "assistant-screen",
+          "assistant-starter-0"
+        ]
+      },
+      {
+        "flow": "One Saver apply coupon",
+        "issue": "POST /api/coupons/apply blocked by CORS from preview origin, UI shows Could not apply coupon.",
+        "affected_testIDs": [
+          "cart-tab-saver",
+          "saver-apply-WELCOME",
+          "coupon-msg"
+        ]
+      },
+      {
+        "flow": "Checkout place sample order -> order tracking",
+        "issue": "POST /api/orders blocked by CORS from preview origin, UI shows Could not place your order.",
+        "affected_testIDs": [
+          "checkout-btn",
+          "checkout-error"
+        ]
+      }
+    ],
+    "design_issues": [],
+    "react_native_issues": [
+      {
+        "component": "Runtime warning",
+        "issue": "Console warning observed: props.pointerEvents is deprecated."
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration6_assistant_media.py",
+    "/app/test_reports/pytest/pytest_results_iter6.xml",
+    "/app/test_reports/pytest/pytest_results_iter6_assistant_media.xml",
+    "/app/test_reports/artifacts_iter6_ui/home_390.jpeg",
+    "/app/test_reports/artifacts_iter6_ui_focus/focus_fail.jpeg",
+    "/app/test_reports/artifacts_iter6_ui_vendor/vendor_groups.jpeg"
+  ],
+  "action_items": [
+    "Fix preview CORS origin mapping so Access-Control-Allow-Origin matches https://overlay-ui-kit.preview.emergentagent.com for POST preflight requests.",
+    "Retest assistant session/chat UI after CORS fix (streaming, follow-up memory, add-to-cart cards).",
+    "Retest cart coupon apply and checkout order creation after CORS fix.",
+    "Investigate vendor-note group derivation to ensure all five intended groups appear for p1/p4/f1/b1/sneak1.",
+    "Decide whether legacy reel-burger-webm key should be restored or old test expectation retired."
+  ],
+  "critical_code_review_comments": [
+    "Frontend API base selection (Constants.expoConfig?.extra?.backendUrl precedence) plus preview ingress CORS policy appears inconsistent with public preview origin.",
+    "CORS headers observed via OPTIONS return a different cluster-origin domain, causing browser-side POST failures despite backend endpoint health."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration6_assistant_media.py",
+    "/app/test_reports/iteration_6.json"
+  ],
+  "success_rate": {
+    "backend": "97%",
+    "frontend": "62%"
+  },
+  "seed_data_creation": "No new seed data created. Verified /tmp/motion-assets-v2.log import completion.",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Start with CORS verification from public origin using OPTIONS on /api/assistant/sessions, /api/coupons/apply, /api/orders. GET routes and managed v2 media keys are healthy. Long-press vs quick tap behavior is correct from Home.",
+  "rca_of_issue": "Reproduced in Playwright console and curl preflight. OPTIONS requests to /api/orders and /api/assistant/sessions from Origin https://overlay-ui-kit.preview.emergentagent.com return Access-Control-Allow-Origin set to a different cluster domain (not request origin). Browser blocks subsequent POSTs, breaking assistant UI, coupon apply, and checkout order placement."
+}

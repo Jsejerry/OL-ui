@@ -9,13 +9,17 @@ export type CartProduct = {
   price: number;
   mrp: number;
   image: string;
+  department?: string;
+  category_id?: string;
+  brand_id?: string;
 };
 
 export type CartItem = CartProduct & { qty: number };
 
 type CartContextType = {
   items: CartItem[];
-  add: (p: CartProduct) => void;
+  add: (p: CartProduct, origin?: { x: number; y: number }) => void;
+  lastAdded: { product: CartProduct; origin?: { x: number; y: number }; revision: number } | null;
   remove: (id: string) => void;
   clear: () => void;
   qtyOf: (id: string) => number;
@@ -30,6 +34,7 @@ const KEY = "onelatur.cart.v1";
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [hydrated, setHydrated] = useState(false);
+  const [lastAdded, setLastAdded] = useState<CartContextType['lastAdded']>(null);
 
   useEffect(() => {
     AsyncStorage.getItem(KEY).then((v) => {
@@ -44,7 +49,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (hydrated) AsyncStorage.setItem(KEY, JSON.stringify(items));
   }, [items, hydrated]);
 
-  const add = (p: CartProduct) => {
+  const add = (p: CartProduct, origin?: { x: number; y: number }) => {
+    setLastAdded(prev => ({ product: p, origin, revision: (prev?.revision || 0) + 1 }));
     setItems((prev) => {
       const ex = prev.find((i) => i.id === p.id);
       if (ex) return prev.map((i) => (i.id === p.id ? { ...i, qty: i.qty + 1 } : i));
@@ -66,7 +72,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const totalMrp = items.reduce((a, b) => a + b.qty * b.mrp, 0);
 
   return (
-    <CartContext.Provider value={{ items, add, remove, clear, qtyOf, totalItems, totalPrice, totalMrp }}>
+    <CartContext.Provider value={{ items, add, remove, clear, qtyOf, totalItems, totalPrice, totalMrp, lastAdded }}>
       {children}
     </CartContext.Provider>
   );

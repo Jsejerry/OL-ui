@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, Pressable, ActivityIndicator } from "react-native";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -8,6 +8,8 @@ import * as Haptics from "expo-haptics";
 import { colors, radius, spacing } from "@/src/theme";
 import { useCart } from "@/src/cart";
 import { apiPost, Coupon, CouponResult, Order } from "@/src/api";
+import { VendorNote } from '@/src/components/vendor-note';
+import { OneSaver } from '@/src/components/one-saver';
 
 export default function CartScreen() {
   const insets = useSafeAreaInsets();
@@ -21,18 +23,21 @@ export default function CartScreen() {
   const [placing, setPlacing] = useState(false);
   const [applying, setApplying] = useState(false);
   const [checkoutError, setCheckoutError] = useState('');
+  const [tab, setTab] = useState<'cart' | 'saver'>('cart');
 
   const savings = totalMrp - totalPrice;
   const deliveryFee = totalPrice >= 199 || totalPrice === 0 ? 0 : 15;
   const grand = Math.max(totalPrice + deliveryFee - couponDiscount, 0);
 
-  const applyCoupon = async () => {
-    if (!couponCode.trim() || applying) return;
+  const runCoupon = async (code: string) => {
+    if (!code.trim() || applying) return;
     setApplying(true);
     try {
-      const res = await apiPost<CouponResult>("/coupons/apply", { code: couponCode, subtotal: totalPrice });
+      const res = await apiPost<CouponResult>("/coupons/apply", { code, subtotal: totalPrice });
       if (res.ok && res.coupon) {
         setApplied(res.coupon);
+        setCouponCode(code);
+        setTab('cart');
         setCouponMsg({ ok: true, text: res.message });
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       } else {
@@ -46,6 +51,7 @@ export default function CartScreen() {
       setApplying(false);
     }
   };
+  const applyCoupon = () => runCoupon(couponCode);
 
   const removeCoupon = () => {
     setApplied(null);
@@ -83,13 +89,13 @@ export default function CartScreen() {
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1, backgroundColor: colors.surfaceSecondary }} testID="cart-screen">
       <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
-        <Text style={styles.title}>My Cart</Text>
-        <Text style={styles.subtitle}>{totalItems} item{totalItems === 1 ? "" : "s"}</Text>
+        <View style={styles.cartTop}><Pressable testID="cart-back" accessibilityLabel="Continue shopping" style={styles.back} onPress={() => router.navigate('/(tabs)' as any)}><Icon name="chevron-back" size={20} color={colors.onSurface} /></Pressable><Text testID="cart-title" style={styles.title}>Your little bag</Text><Text testID="cart-total-items" style={styles.subtitle}>{totalItems} items</Text></View>
+        <View testID="cart-tabs" style={styles.tabs}>{[{ id: 'cart', label: 'Cart', icon: 'bag-handle-outline' }, { id: 'saver', label: 'One Saver', icon: 'sparkles-outline' }].map(t => <Pressable key={t.id} testID={`cart-tab-${t.id}`} accessibilityRole="tab" accessibilityState={{ selected: tab === t.id }} onPress={() => setTab(t.id as 'cart' | 'saver')} style={[styles.tab, tab === t.id && styles.selectedTab]}><Icon name={t.icon as any} size={15} color={tab === t.id ? colors.surface : colors.forest} /><Text style={[styles.tabText, tab === t.id && styles.selectedTabText]}>{t.label}</Text></Pressable>)}</View>
       </View>
 
-      {items.length === 0 ? (
+      {tab === 'saver' ? <OneSaver onApply={code => void runCoupon(code)} applying={applying} /> : items.length === 0 ? (
         <View style={styles.emptyWrap}>
-          <Text style={styles.emptyEmoji}>🛒</Text>
+          <Icon name="bag-handle-outline" size={64} color={colors.forest} />
           <Text style={styles.emptyTitle}>Your cart is empty</Text>
           <Text style={styles.emptySub}>Add fresh items to get started</Text>
           <TouchableOpacity style={styles.browseBtn} onPress={() => router.replace("/(tabs)" as any)} testID="browse-btn">
@@ -102,8 +108,8 @@ export default function CartScreen() {
             <View style={styles.deliveryCard}>
               <Icon name="flash" size={22} color={colors.onSurface} />
               <View style={{ flex: 1 }}>
-                <Text style={styles.deliveryTitle}>Delivery in 10 minutes</Text>
-                <Text style={styles.deliverySub}>Shipping to Latur, MH 413512</Text>
+                <Text testID="cart-delivery-title" style={styles.deliveryTitle}>Your city, at your doorstep</Text>
+                <Text testID="cart-delivery-notice" style={styles.deliverySub}>Sample order · estimated 10 min · Latur</Text>
               </View>
             </View>
 
@@ -179,10 +185,10 @@ export default function CartScreen() {
               {applied && totalPrice < applied.min_order && <Text testID="coupon-minimum-warning" style={styles.couponMsg}>Add ₹{applied.min_order - totalPrice} more to reactivate this coupon.</Text>}
               <View style={{ marginTop: spacing.sm, gap: 6 }}>
                 <TouchableOpacity testID="coupon-suggestion-latur10" onPress={() => setCouponCode("LATUR10")}>
-                  <Text style={styles.hint}>💡 LATUR10 — 10% off above ₹99</Text>
+                  <Text style={styles.hint}>LATUR10 — 10% off above ₹99</Text>
                 </TouchableOpacity>
                 <TouchableOpacity testID="coupon-suggestion-fresh50" onPress={() => setCouponCode("FRESH50")}>
-                  <Text style={styles.hint}>💡 FRESH50 — ₹50 off above ₹199</Text>
+                  <Text style={styles.hint}>FRESH50 — ₹50 off above ₹199</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -200,20 +206,21 @@ export default function CartScreen() {
               <BillRow label="Grand total" value={`₹${grand}`} strong />
               {(savings + couponDiscount) > 0 && (
                 <View style={styles.savings}>
-                  <Text style={styles.savingsText}>🎉 You saved ₹{savings + couponDiscount} on this order</Text>
+                  <Text testID="cart-order-savings" style={styles.savingsText}>You save ₹{savings + couponDiscount} on this order</Text>
                 </View>
               )}
             </View>
           </ScrollView>
 
           {!!checkoutError && <Text testID="checkout-error" style={{ color: colors.onError, padding: 12 }}>{checkoutError}</Text>}
+          <VendorNote items={items} />
           <View testID="checkout-footer" style={[styles.checkoutBar, { marginBottom: 12, marginHorizontal: spacing.lg }]}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.checkoutTotal}>₹{grand}</Text>
-              <Text style={styles.checkoutMeta}>{totalItems} items · View bill</Text>
+              <Text testID="checkout-total" style={styles.checkoutTotal}>₹{grand}</Text>
+              <Text testID="checkout-payment-notice" style={styles.checkoutMeta}>Sample order · no charge</Text>
             </View>
             <TouchableOpacity style={styles.checkoutBtn} onPress={handleCheckout} testID="checkout-btn" disabled={placing}>
-              <Text style={styles.checkoutText}>{placing ? "Placing..." : "Checkout"}</Text>
+              {placing && <ActivityIndicator color={colors.forest} />}<Text style={styles.checkoutText}>{placing ? "Placing..." : "Place sample order"}</Text>
               {!placing && <Icon name="arrow-forward" size={16} color={colors.onBrandSecondary} />}
             </TouchableOpacity>
           </View>
@@ -245,8 +252,9 @@ const billStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
+  cartTop: { flexDirection: 'row', alignItems: 'center', gap: 10 }, back: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.cream }, tabs: { flexDirection: 'row', backgroundColor: colors.surfaceSecondary, padding: 4, borderRadius: 28, marginTop: 10 }, tab: { flex: 1, minHeight: 44, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 8, borderRadius: 24 }, selectedTab: { backgroundColor: colors.forestDeep }, tabText: { color: colors.forest, fontSize: 12, fontWeight: '600' }, selectedTabText: { color: colors.surface },
   header: { paddingHorizontal: spacing.lg, paddingBottom: spacing.md, backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.border },
-  title: { fontSize: 22, fontWeight: "800", color: colors.onSurface },
+  title: { fontSize: 20, fontWeight: "700", color: colors.onSurface, flex: 1 },
   subtitle: { fontSize: 13, color: colors.muted, marginTop: 2 },
   emptyWrap: { flex: 1, alignItems: "center", justifyContent: "center", padding: spacing.xl },
   emptyEmoji: { fontSize: 64, marginBottom: spacing.md },
@@ -254,7 +262,7 @@ const styles = StyleSheet.create({
   emptySub: { fontSize: 13, color: colors.muted, marginTop: 4 },
   browseBtn: { marginTop: spacing.lg, backgroundColor: colors.brandPrimary, paddingHorizontal: 20, paddingVertical: 12, borderRadius: radius.pill },
   browseText: { color: colors.onBrandPrimary, fontWeight: "700" },
-  deliveryCard: { backgroundColor: colors.pastelYellow, borderRadius: radius.md, padding: spacing.md, flexDirection: "row", alignItems: "center", gap: spacing.md, marginBottom: spacing.md },
+  deliveryCard: { backgroundColor: colors.limeSoft, borderRadius: radius.md, padding: spacing.md, flexDirection: "row", alignItems: "center", gap: spacing.md, marginBottom: spacing.md },
   deliveryTitle: { fontSize: 14, fontWeight: "800", color: colors.onSurface },
   deliverySub: { fontSize: 12, color: colors.onSurfaceSecondary, marginTop: 2 },
   freeHint: { flexDirection: "row", alignItems: "center", gap: spacing.sm, backgroundColor: colors.pastelGreen, padding: spacing.md, borderRadius: radius.md, marginBottom: spacing.md },
@@ -266,7 +274,7 @@ const styles = StyleSheet.create({
   itemWeight: { fontSize: 11, color: colors.muted, marginTop: 2 },
   itemPrice: { fontSize: 14, fontWeight: "800", color: colors.onSurface, marginTop: 4 },
   stepper: { flexDirection: "row", alignItems: "center", backgroundColor: colors.brandPrimary, borderRadius: radius.sm, overflow: "hidden" },
-  stepBtn: { paddingHorizontal: 10, paddingVertical: 6 },
+  stepBtn: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   stepText: { color: colors.onBrandPrimary, fontWeight: "800", fontSize: 14 },
   stepQty: { color: colors.onBrandPrimary, fontWeight: "700", minWidth: 18, textAlign: "center" },
   billTitle: { fontSize: 14, fontWeight: "800", color: colors.onSurface },
@@ -286,7 +294,7 @@ const styles = StyleSheet.create({
   hint: { color: colors.muted, fontSize: 11 },
   checkoutBar: { backgroundColor: colors.brandPrimary, borderRadius: radius.lg, padding: spacing.md, flexDirection: "row", alignItems: "center", gap: spacing.md },
   checkoutTotal: { color: colors.onBrandPrimary, fontSize: 18, fontWeight: "800" },
-  checkoutMeta: { color: "#B8B8B8", fontSize: 11, marginTop: 2 },
+  checkoutMeta: { color: colors.onSurfaceInverse, fontSize: 8, marginTop: 2 },
   checkoutBtn: { backgroundColor: colors.brandSecondary, paddingHorizontal: 20, paddingVertical: 12, borderRadius: radius.pill, flexDirection: "row", alignItems: "center", gap: 6 },
-  checkoutText: { color: colors.onBrandSecondary, fontWeight: "800" },
+  checkoutText: { color: colors.onBrandSecondary, fontWeight: "700", fontSize: 11 },
 });
