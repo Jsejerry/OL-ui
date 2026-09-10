@@ -15,7 +15,7 @@ export function ProductRail({ products, scope }: { products: Product[]; scope: s
 export function BrandRail({ brands, scope, onSelect, active }: { brands: Brand[]; scope: string; onSelect?: (id: string) => void; active?: string }) {
   const router = useRouter();
   return <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.brandRail}>
-    {brands.map(b => <Pressable testID={`${scope}-brand-${b.id}`} key={b.id} onPress={() => onSelect ? onSelect(b.id) : router.push(`/store/${b.id}` as any)} style={styles.brandItem}>
+    {brands.map(b => <Pressable testID={`${scope}-brand-${b.id}`} key={b.id} onPress={() => onSelect ? onSelect(b.id) : router.push(`/brand/${b.id}` as any)} style={styles.brandItem}>
       <View style={[styles.brandCircle, active === b.id && styles.selectedBrand]}>{b.logo ? <Image source={b.logo} contentFit="contain" style={styles.brandLogo} /> : <Text style={[styles.brandWord, { color: b.department === 'beauty' ? colors.beauty : colors.pharmacy }]} numberOfLines={2}>{b.name}</Text>}</View><Text style={styles.brandName} numberOfLines={1}>{b.name}</Text>
     </Pressable>)}
   </ScrollView>;
@@ -35,7 +35,7 @@ export function LoadState({ error, retry }: { error?: boolean; retry?: () => voi
 }
 const styles = StyleSheet.create({
   heading: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, marginTop: 26, marginBottom: 13, gap: 8 }, headingText: { flex: 1 },
-  title: { fontSize: 20, letterSpacing: -0.6, fontWeight: '700', color: colors.onSurface }, subtitle: { fontSize: 11, color: colors.muted, lineHeight: 17, marginTop: 3 },
+  title: { fontSize: 18, letterSpacing: -0.4, fontWeight: '600', color: colors.onSurface }, subtitle: { fontSize: 10, color: colors.muted, lineHeight: 16, marginTop: 3 },
   seeAll: { flexDirection: 'row', alignItems: 'center', gap: 5, minHeight: 44 }, seeText: { color: colors.forest, fontSize: 11, fontWeight: '700' }, rail: { paddingHorizontal: 20, gap: 12 },
   brandRail: { paddingHorizontal: 20, gap: 12 }, brandItem: { width: 68, alignItems: 'center', gap: 8 }, brandCircle: { height: 66, width: 66, borderRadius: 23, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' }, brandLogo: { width: 43, height: 43 }, brandWord: { fontSize: 13, fontWeight: '800', textAlign: 'center', paddingHorizontal: 3 }, selectedBrand: { borderColor: colors.forest, borderWidth: 2, backgroundColor: colors.limeSoft }, brandName: { fontSize: 10, color: colors.onSurface, fontWeight: '600' },
   category: { width: 94, gap: 8 }, categoryImage: { width: 94, height: 91, borderRadius: 20, backgroundColor: colors.cream }, categoryName: { color: colors.onSurface, fontSize: 11, fontWeight: '600', textAlign: 'center' },

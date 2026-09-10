@@ -71,4 +71,15 @@ export async function apiPost<T>(path: string, body: unknown): Promise<T> {
 export type Brand = { id: string; name: string; department: string; logo: string; image: string; tagline: string };
 export type EventListing = { id: string; title: string; kind: string; subtitle: string; venue: string; price: number; image: string; tag: string; slots: string[] };
 export type Catalog = { brands: Brand[]; products: Product[]; categories: Category[]; events: EventListing[] };
-export type Reel = { id: string; video: string; video_web: string; product: Product; caption: string; creator: string; likes: number; tag: string };
+export type Reel = { id: string; video: string; video_web: string; product: Product; caption: string; creator: string; likes: number; tag: string; brand: Brand };
+export type AISearchResult = { query: string; product_ids: string[]; explanation: string; transcript?: string };
+export async function uploadSearch(mode: 'image' | 'voice', uri: string, name: string, type: string, signal: AbortSignal): Promise<AISearchResult> {
+  const { Platform } = await import('react-native');
+  const form = new FormData();
+  if (Platform.OS === 'web') { const response = await fetch(uri); form.append('file', await response.blob(), name); }
+  else form.append('file', { uri, name, type } as any);
+  const response = await fetch(`${API}/search/${mode}`, { method: 'POST', body: form, signal });
+  const payload = await response.json();
+  if (!response.ok) throw new Error(typeof payload.detail === 'string' ? payload.detail : 'Search is unavailable. Please try again.');
+  return payload;
+}

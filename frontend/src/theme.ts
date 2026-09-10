@@ -1,4 +1,4 @@
-// One Latur design tokens (light theme). Values come from design_guidelines.json.
+// OneCity: soft, translucent surfaces and flowing department gradients.
 import { useMemo } from "react";
 import { Appearance, StyleSheet, useColorScheme } from "react-native";
 
@@ -21,7 +21,7 @@ const light = {
   onBrand: "#FFFFFF",
   brandPrimary: "#1A1A1A",
   onBrandPrimary: "#FFFFFF",
-  brandSecondary: "#A3FF12",
+  brandSecondary: "#76EC00",
   onBrandSecondary: "#1A1A1A",
   brandTertiary: "#F1FFD9",
   onBrandTertiary: "#1A1A1A",
@@ -50,7 +50,7 @@ const light = {
   pastelPink: "#FFE6F0",
   pastelOrange: "#FFEDD6",
   pastelMint: "#DDF5EA",
-  lime: "#A3FF12",
+  lime: "#76EC00",
   limeSoft: "#F0FFD7",
   forest: "#174D37",
   forestDeep: "#103B2B",
@@ -69,6 +69,29 @@ const light = {
   overlayDeep: "rgba(0,0,0,0.85)",
   whiteGlass: "rgba(255,255,255,0.18)",
   gold: "#FFC72C",
+  cityMid: '#B8F49B',
+  cityFade: '#F1FBEA',
+  groceryTop: '#74DFC1',
+  groceryMid: '#B4EEE0',
+  groceryFade: '#F3FCF8',
+  shopsTop: '#A7A1F6',
+  shopsMid: '#D9D2FA',
+  shopsFade: '#F8F5FF',
+  careTop: '#F2B6DA',
+  careMid: '#F9DDEC',
+  careFade: '#FFFAFD',
+  bookTop: '#8EBEF8',
+  bookMid: '#C8DFFB',
+  bookFade: '#F3F8FF',
+  foodTop: '#FFBD84',
+  foodMid: '#FFDFC2',
+  foodFade: '#FFFAF4',
+  glass: 'rgba(255,255,255,0.6)',
+  glassBright: 'rgba(255,255,255,0.88)',
+  glassLine: 'rgba(255,255,255,0.7)',
+  inkSoft: '#416034',
+  shadow: 'rgba(30,64,30,0.07)',
+  walletInk: '#253E26',
 };
 
 export type ThemeColors = typeof light;

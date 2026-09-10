@@ -2,15 +2,15 @@ import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import Icon from '@react-native-vector-icons/ionicons';
 import { colors } from '@/src/theme';
-import { departments } from '@/src/departments';
+import { departments, inDepartment } from '@/src/departments';
 import { useCatalog } from '@/src/use-catalog';
 import { CategoryRail, LoadState } from '@/src/components/catalog-sections';
 export default function Categories() {
   const router = useRouter();
   const { data, isError, refetch } = useCatalog();
   if (!data) return <LoadState error={isError} retry={refetch} />;
-  return <ScrollView testID="categories-screen" contentContainerStyle={styles.content}><Text testID="categories-title" style={styles.title}>A whole city to explore.</Text><Text style={styles.subtitle}>Five worlds. One Latur.</Text>
-    {departments.map(d => <View key={d.id} style={styles.section}><Pressable testID={`category-department-${d.id}`} style={[styles.heading, { backgroundColor: d.soft }]} onPress={() => router.navigate(d.route as any)}><Icon name={d.icon as any} size={23} color={d.color} /><Text style={[styles.name, { color: d.color }]}>{d.label}</Text><Icon name="arrow-forward" size={20} color={d.color} /></Pressable>{d.id === 'book-it' ? <View style={styles.bookLinks}>{['Movies', 'Events', 'Activities'].map(kind => <Pressable testID={`category-book-${kind.toLowerCase()}`} key={kind} onPress={() => router.navigate(`/book-it?kind=${kind.toLowerCase()}` as any)} style={styles.bookLink}><Text style={styles.bookText}>{kind}</Text><Icon name="arrow-forward" size={14} color={colors.book} /></Pressable>)}</View> : <CategoryRail categories={data.categories.filter(c => c.department === d.id)} scope={`all-${d.id}`} />}</View>)}
+  return <ScrollView testID="categories-screen" contentContainerStyle={styles.content}><Text testID="categories-title" style={styles.title}>A whole city to explore.</Text><Text style={styles.subtitle}>Five worlds. OneCity.</Text>
+    {departments.map(d => <View key={d.id} style={styles.section}><Pressable testID={`category-department-${d.id}`} style={[styles.heading, { backgroundColor: d.soft }]} onPress={() => router.navigate(d.route as any)}><Icon name={d.icon as any} size={19} color={d.color} /><Text style={[styles.name, { color: d.color }]}>{d.label.replace('\n', ' ')}</Text><Icon name="arrow-forward" size={17} color={d.color} /></Pressable>{d.id === 'book-it' ? <View style={styles.bookLinks}>{['Movies', 'Events', 'Activities'].map(kind => <Pressable testID={`category-book-${kind.toLowerCase()}`} key={kind} onPress={() => router.navigate(`/book-it?kind=${kind.toLowerCase()}` as any)} style={styles.bookLink}><Text style={styles.bookText}>{kind}</Text><Icon name="arrow-forward" size={14} color={colors.book} /></Pressable>)}</View> : <CategoryRail categories={data.categories.filter(c => inDepartment(c.department, d.id))} scope={`all-${d.id}`} />}</View>)}
   </ScrollView>;
 }
 const styles = StyleSheet.create({

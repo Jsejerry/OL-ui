@@ -119,6 +119,23 @@ backend:
         agent: main
         comment: "Iteration3 backend suite passed14/14; rerun after fixes14/14. chip d5/d3 semantics verified with curl."
 frontend:
+  - task: OneCity gradient redesign, branded reels, AI voice/photo search and demo wallet
+    implemented: true
+    working: NA
+    file: frontend/src/components/app-shell.tsx, frontend/src/components/brand-spotlight.tsx, frontend/app/smart-search.tsx, backend/ai_search.py
+    stuck_count: 0
+    priority: high
+    needs_retesting: true
+    status_history:
+      - working: NA
+        agent: main
+        comment: "New request iteration4: brand OneCity, Food/Groceries/Shops/Care/BookIt, seamless gradients, full search mic/camera, demo wallet, Amul/NIVEA/McDonalds branded reels and collection/ShopNow. Real image backend call passed; voice needs actual end-to-end tests. Read PRD latest and image_testing.md."
+      - working: false
+        agent: testing
+        comment: "Iteration4: backend52/52 including realGPT5.4 image and Whisper voice passed; UI/photo/reels/wallet/checkout/bookings passed. Found typed care/shopping returned0. Frontend controlled microphone speech not deterministic; native device still required."
+      - working: NA
+        agent: main
+        comment: "Added intent and multiword search matching client/server; query param updates; proper web animation driver. Fixed legacy test URL fallbacks. Requesting focused retest for care/shopping/Amul cheese/categories and prior normal searches."
   - task: New home, shared header/departments and five-department navigation
     implemented: true
     working: true
@@ -162,10 +179,10 @@ frontend:
         agent: main
         comment: "Regression verified booking persistence, checkout/tracking, follows. Fixed coupon footer overlap; naturally clicked LATUR10 at390 and FRESH50 at360, both passed. Managed Lays image loads; order failure/retry recovery verified."
 metadata:
-  test_sequence: 3
+  test_sequence: 4
   run_ui: true
 test_plan:
-  current_focus: [Five departments, Shared navigation, Reels playback and actions, Booking enquiries, Search, Cart/coupons/checkout/orders/reorder, Store follow]
+  current_focus: [OneCity branding and seamless gradients, New Shops and combined Care, Real AI voice and photo search, Demo wallet persistence, Branded reels ShopNow and collections, Shopping regression]
   stuck_tasks: []
   test_all: true
   test_priority: high_first

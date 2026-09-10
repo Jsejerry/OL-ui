@@ -2,8 +2,14 @@
 import os
 import pytest
 import requests
+from pathlib import Path
+from dotenv import load_dotenv
 
-BASE_URL = os.environ.get("EXPO_PUBLIC_BACKEND_URL", "https://onelatur-market.preview.emergentagent.com").rstrip("/")
+load_dotenv(Path(__file__).resolve().parents[2] / 'frontend' / '.env')
+BASE_URL = os.environ.get('EXPO_PUBLIC_BACKEND_URL')
+if not BASE_URL:
+    pytest.fail('EXPO_PUBLIC_BACKEND_URL is required for API tests', pytrace=False)
+BASE_URL = BASE_URL.rstrip('/')
 API = f"{BASE_URL}/api"
 
 

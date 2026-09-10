@@ -11,6 +11,8 @@ import uuid
 from datetime import datetime, timezone
 from catalog_data import BRANDS, EXTRA_PRODUCTS, EXTRA_CATEGORIES, EVENTS, REELS, image
 from media_store import router as media_router
+from ai_search import router as search_router
+from city_catalog import CITY_BRANDS, CITY_PRODUCTS, CITY_CATEGORIES, CITY_REELS
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -22,6 +24,7 @@ db = client[os.environ['DB_NAME']]
 app = FastAPI()
 app.state.db = db
 app.include_router(media_router)
+app.include_router(search_router)
 api_router = APIRouter(prefix="/api")
 
 
@@ -286,7 +289,9 @@ PRODUCTS: List[Product] = [
 # Expand the sample catalogue without changing existing product/order identifiers.
 for cat in CATEGORIES:
     cat.image = image({'c1': 'fruit', 'c2': 'milk', 'c3': 'fries', 'c4': 'coffee', 'c5': 'bread', 'c6': 'pasta', 'c7': 'skincare', 'c8': 'fresh'}[cat.id])
-CATEGORIES.extend(Category(id=cid, name=name, emoji='', color='pastelGreen', department=dept, image=image(asset)) for cid, name, dept, asset in EXTRA_CATEGORIES)
+CATEGORIES.extend(Category(id=cid, name=name, emoji='', color='pastelGreen', department=dept, image=image(asset)) for cid, name, dept, asset in EXTRA_CATEGORIES + CITY_CATEGORIES)
+BRANDS.extend(CITY_BRANDS)
+EXTRA_PRODUCTS.extend(CITY_PRODUCTS)
 PRODUCTS.extend(Product(**p) for p in EXTRA_PRODUCTS)
 for p in PRODUCTS:
     if p.id == 'p6':
@@ -304,6 +309,7 @@ for store in STORES:
             medium.video_web = image(asset + '-webm')
 
 # ---------- Routes ----------
+app.state.products = PRODUCTS
 @api_router.get("/")
 async def root():
     return {"message": "One Latur API"}
@@ -348,11 +354,18 @@ async def get_products(category_id: Optional[str] = None, chip: Optional[str] = 
     if category_id:
         items = [p for p in items if p.category_id == category_id]
     if department:
-        items = [p for p in items if p.department == department]
+        items = [p for p in items if p.department == department or (department == 'care' and p.department in {'pharmacy', 'beauty'})]
     if brand_id:
         items = [p for p in items if p.brand_id == brand_id]
     if q:
-        items = [p for p in items if q.strip().lower() in (p.name + ' ' + p.weight).lower()]
+        query = ' '.join(q.lower().replace('&', ' ').replace('’', ' ').replace("'", ' ').split())
+        intents = {'care': {'pharmacy', 'beauty'}, 'personal care': {'pharmacy', 'beauty'}, 'pharmacy beauty': {'pharmacy', 'beauty'}, 'shopping': {'shops'}, 'shops': {'shops'}, 'shop': {'shops'}, 'groceries': {'grocery'}, 'grocery': {'grocery'}, 'supermarket': {'grocery'}, 'pharmacy': {'pharmacy'}, 'beauty': {'beauty'}, 'food': {'food'}}
+        if query in intents:
+            items = [p for p in items if p.department in intents[query]]
+        else:
+            category_names = {c.id: c.name for c in CATEGORIES}
+            brand_names = {b['id']: b['name'] for b in BRANDS}
+            items = [p for p in items if all(word in (p.name + ' ' + p.weight + ' ' + category_names.get(p.category_id, '') + ' ' + brand_names.get(p.brand_id, '')).lower() for word in query.split())]
     if chip:
         if chip == 'd1':
             items = [p for p in items if p.discount_pct]
@@ -456,7 +469,7 @@ async def catalog():
 
 @api_router.get('/reels')
 async def reels():
-    return [{**r, 'video_web': r['video'] + '-webm', 'product': next(p for p in PRODUCTS if p.id == r['product_id'])} for r in REELS]
+    return [{**r, 'video_web': r['video'] + '-webm', 'product': next(p for p in PRODUCTS if p.id == r['product_id']), 'brand': next(b for b in BRANDS if b['id'] == r['brand_id'])} for r in CITY_REELS]
 
 
 @api_router.get('/events')

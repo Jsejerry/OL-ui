@@ -1,133 +1,154 @@
 {
-  "project_name": "One Latur Hyperlocal SuperApp",
+  "project_name": "OneCity",
   "app_type": "mobile_web_app",
-  "framework": "Expo React Native (JavaScript / TypeScript)",
-  "design_archetype": "THE PERFORMANCE PRO x SWISS HIGH-CONTRAST (Hyperlocal Tactical Commerce)",
-  "color_palette": {
-    "primary_lime": "#A3E635",
-    "primary_lime_dark": "#84CC16",
-    "accent_volt": "#CA8A04",
-    "background_dark": "#09090B",
-    "surface_dark": "#18181B",
-    "card_border_dark": "#27272A",
-    "text_white": "#FFFFFF",
-    "text_muted": "#A1A1AA",
-    "text_subtle": "#71717A",
-    "department_themes": {
-      "Food": {
-        "primary": "#FF5722",
-        "secondary": "#FFF0ED",
-        "dark_bg": "#1F120E",
-        "badge_color": "#FF3D00",
-        "vibe": "High Energy Gourmet & Express Fast Food"
+  "design_archetype": "Pastel & Soft floaty with Electric Kinetic Accents",
+  "theme": "Light & Translucent Floaty Glassmorphism",
+  "logo_asset_url": "https://customer-assets-gfyr7b9c.emergentagent.net/job_onelatur-market/artifacts/k8kt9vac_hf_20260909_210048_132cb1e9-7487-46a6-87fb-4df954f897d2.webp",
+  "colors": {
+    "primary_green_gradient": {
+      "hex_code": "#76EC00",
+      "gradient_css": "linear-gradient(185deg, rgba(118, 236, 0, 0.95) 0%, rgba(118, 236, 0, 0.45) 50%, rgba(255, 255, 255, 0) 100%)",
+      "description": "Upper screen half hero backdrop tint including ads and location bar"
+    },
+    "departments_gradients": {
+      "food": {
+        "start": "#FF9500",
+        "end": "#FF3B30",
+        "css": "linear-gradient(135deg, rgba(255, 149, 0, 0.85) 0%, rgba(255, 59, 48, 0.4) 100%)",
+        "label": "Gourmet Spice & Flame"
       },
-      "Grocery Shop": {
-        "primary": "#A3E635",
-        "secondary": "#F7FEE7",
-        "dark_bg": "#111C08",
-        "badge_color": "#65A30D",
-        "vibe": "Fresh Organic & Daily Essential Market"
+      "groceries": {
+        "start": "#76EC00",
+        "end": "#34C759",
+        "css": "linear-gradient(135deg, rgba(118, 236, 0, 0.9) 0%, rgba(52, 199, 89, 0.4) 100%)",
+        "label": "Fresh Organic Orchard"
       },
-      "Pharmacy": {
-        "primary": "#06B6D4",
-        "secondary": "#ECFEFF",
-        "dark_bg": "#081E24",
-        "badge_color": "#0891B2",
-        "vibe": "Clinical Trust & Express Healthcare"
+      "shops": {
+        "start": "#AF52DE",
+        "end": "#5856D6",
+        "css": "linear-gradient(135deg, rgba(175, 82, 222, 0.85) 0%, rgba(88, 86, 214, 0.4) 100%)",
+        "label": "Boutique Fashion & Tech Velvet"
       },
-      "Beauty": {
-        "primary": "#EC4899",
-        "secondary": "#FDF2F8",
-        "dark_bg": "#220C17",
-        "badge_color": "#DB2777",
-        "vibe": "Luxe Cosmetics & Glow Essentials"
+      "pharmacy_beauty": {
+        "start": "#FF2D55",
+        "end": "#5AC8FA",
+        "css": "linear-gradient(135deg, rgba(255, 45, 85, 0.8) 0%, rgba(90, 200, 250, 0.4) 100%)",
+        "label": "Radiant Wellness Glow"
       },
-      "Book It": {
-        "primary": "#8B5CF6",
-        "secondary": "#F5F3FF",
-        "dark_bg": "#160F29",
-        "badge_color": "#7C3AED",
-        "vibe": "Entertainment, Cinema & Event Ticketing"
+      "book_it": {
+        "start": "#007AFF",
+        "end": "#30B0C7",
+        "css": "linear-gradient(135deg, rgba(0, 122, 255, 0.85) 0%, rgba(48, 176, 199, 0.4) 100%)",
+        "label": "Azure Horizon Experiences"
       }
+    },
+    "neutrals": {
+      "card_glass_bg": "rgba(255, 255, 255, 0.72)",
+      "card_glass_border": "rgba(255, 255, 255, 0.85)",
+      "text_main": "#0F172A",
+      "text_muted": "#64748B",
+      "badge_glow": "rgba(118, 236, 0, 0.3)"
     }
   },
   "typography": {
-    "font_family_header": "System Bold / Barlow Condensed style in React Native",
-    "font_family_body": "System Regular / Inter style in React Native",
-    "scale": {
-      "h1": { "fontSize": 28, "fontWeight": "800", "lineHeight": 34, "letterSpacing": -0.5 },
-      "h2": { "fontSize": 22, "fontWeight": "700", "lineHeight": 28, "letterSpacing": -0.3 },
-      "h3": { "fontSize": 18, "fontWeight": "700", "lineHeight": 24 },
-      "body": { "fontSize": 14, "fontWeight": "400", "lineHeight": 20 },
-      "caption": { "fontSize": 11, "fontWeight": "600", "letterSpacing": 0.5 }
+    "font_family_heading": "Outfit, system-ui, -apple-system, sans-serif",
+    "font_family_body": "Manrope, system-ui, -apple-system, sans-serif",
+    "sizes": {
+      "logo_tag": "text-[10px] font-bold tracking-widest uppercase",
+      "h1": "text-xl sm:text-2xl font-bold tracking-tight",
+      "h2": "text-lg sm:text-xl font-bold tracking-tight",
+      "subheading": "text-xs font-semibold text-slate-500 uppercase tracking-wider",
+      "body": "text-xs sm:text-sm font-medium",
+      "caption": "text-[11px] font-normal text-slate-500"
     }
   },
-  "layout_architecture": {
-    "header_row_1": "Location selector with pin icon + 'One Latur' brand text prominently on right of location",
-    "header_row_2": "Search bar input with magnifying glass + Right side Cart (with live badge counter) and Profile options",
-    "department_strip": {
-      "persistent": true,
-      "hidden_in_reels": true,
-      "items": ["Food", "Grocery Shop", "Pharmacy", "Beauty", "Book It"],
-      "ui_style": "Horizontal scrollable pill list or grid with distinct active highlight, icons and vibrant department colors"
+  "layout_and_shape": {
+    "border_radius": "rounded-3xl",
+    "pill_radius": "rounded-full",
+    "backdrop_filter": "backdrop-blur-xl backdrop-saturate-150",
+    "shadows": "shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_12px_40px_rgba(118,236,0,0.2)]",
+    "top_bar": {
+      "logo_position": "Strictly ABOVE location bar in a very small footprint (h-5 / 20px height max)",
+      "search_bar": "Full width with Mic icon (voice search modal) & Camera icon (AI visual search modal)",
+      "top_actions": "Wallet pill button + Cart icon with item count badge + Profile button on top right"
+    }
+  },
+  "departments_list": [
+    {
+      "id": "food",
+      "name": "Food",
+      "icon": "Utensils",
+      "gradient_key": "food"
     },
-    "bottom_navigation_bar": {
-      "items": [
-        { "key": "home", "label": "Home", "icon": "home-outline" },
-        { "key": "categories", "label": "Categories", "icon": "grid-outline" },
-        {
-          "key": "reels",
-          "label": "1 Reels",
-          "is_center_button": true,
-          "style": "Black circle container with high-contrast Lime Green numeral '1' matching uploaded reference button image"
-        },
-        { "key": "food", "label": "Food", "icon": "fast-food-outline" },
-        { "key": "book_it", "label": "Book It", "icon": "ticket-outline" }
-      ]
+    {
+      "id": "grocery",
+      "name": "Groceries",
+      "icon": "ShoppingBag",
+      "gradient_key": "groceries"
     },
-    "home_sections": [
-      { "id": "ads_banner_carousel", "title": "Featured Highlights & Deals Column/Banner" },
-      { "id": "trending_now", "title": "Trending in Latur (Fast Delivery)" },
-      { "id": "top_picks", "title": "Top Picks for You" },
+    {
+      "id": "shops",
+      "name": "Shops",
+      "icon": "Store",
+      "gradient_key": "shops",
+      "subcategories": ["Local Fashion", "Electronics", "Homeware & Decor"]
+    },
+    {
+      "id": "pharmacy_beauty",
+      "name": "Pharmacy & Beauty",
+      "icon": "Sparkles",
+      "gradient_key": "pharmacy_beauty"
+    },
+    {
+      "id": "book_it",
+      "name": "Book It",
+      "icon": "CalendarCheck",
+      "gradient_key": "book_it"
+    }
+  ],
+  "creative_ad_format": {
+    "style": "Floaty Organic Curved Banners with Dynamic Brand Reels & Tappable Brand Badges",
+    "amul_brand_showcase": {
+      "featured_ad": "Amul Cheese Burst Slice Reel",
+      "tappable_logo": "Amul Official Logo",
+      "on_logo_click": "Opens Amul Brand Hub showing Amul Butter, Amul Milk, Amul Paneer, Amul Dahi, Amul Ice Cream with instant Add-to-Cart"
+    },
+    "other_partner_brands": [
       {
-        "id": "food_brand_logos",
-        "title": "Popular Food Outlets",
-        "brands": ["McDonald's", "KFC", "Starbucks", "Burger King", "Domino's"]
+        "name": "FabIndia Fashion",
+        "ad_title": "Handcrafted Silk Sarees & Kurtas",
+        "department": "shops",
+        "tag": "Trending Fashion"
       },
-      { "id": "grocery_showcase", "title": "Grocery Essentials & Fresh Produce" },
-      { "id": "pharmacy_beauty_showcase", "title": "Pharmacy & Beauty Bestsellers" },
-      { "id": "book_it_teaser", "title": "Book Movie Tickets & Events in Latur" }
+      {
+        "name": "Croma Electronics",
+        "ad_title": "Smart Audio & Gadgets 40% Off",
+        "department": "shops",
+        "tag": "Tech Deals"
+      },
+      {
+        "name": "Forest Essentials",
+        "ad_title": "Ayurvedic Beauty Oils & Elixirs",
+        "department": "pharmacy_beauty",
+        "tag": "Luxury Skincare"
+      }
     ]
+  },
+  "key_features_requirements": {
+    "voice_and_camera_ai": "Modal triggers on search bar mic/camera button press with simulated AI audio wave and camera scanner preview.",
+    "wallet_demo": "Interactive floating wallet badge showing ₹1,250 balance, tap opens popover with transaction history and Quick Add Money.",
+    "discover_reels": "Full screen vertical/card reels with 'Shop Now' overlay button and clickable brand logo redirecting to brand catalog."
   },
   "image_urls": {
-    "brand_logo": "https://customer-assets-gfyr7b9c.emergentagent.net/job_onelatur-market/artifacts/jtngkspg_WhatsApp%20Image%202026-09-09%20at%2011.15.15%20AM.jpeg",
-    "reels_button_ref": "https://customer-assets-gfyr7b9c.emergentagent.net/job_onelatur-market/artifacts/51fgvze1_WhatsApp%20Image%202026-09-09%20at%2012.32.55%20PM.jpeg",
-    "home_ui_ref": "https://customer-assets-gfyr7b9c.emergentagent.net/job_onelatur-market/artifacts/6g6j8adr_download%20%2837%29.jpeg",
-    "groceries_shelves": "https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?crop=entropy&cs=srgb&fm=jpg&q=85",
-    "fruits_market": "https://images.unsplash.com/photo-1607349913338-fca6f7fc42d0?crop=entropy&cs=srgb&fm=jpg&q=85",
-    "store_display": "https://images.unsplash.com/photo-1601600576337-c1d8a0d1373c?crop=entropy&cs=srgb&fm=jpg&q=85"
-  },
-  "key_features_and_flows": {
-    "full_screen_reels": "Instagram-style vertical shoppable product video feed with Like, Share, and Direct 'Add to Cart' quick actions. Department top strip is hidden during Reels screen for full immersive viewing.",
-    "department_pages": "Distinct visual themes (color, typography headers, custom banner promos) for Food, Grocery Shop, Pharmacy, Beauty, and Book It.",
-    "booking_enquiry_flow": "Book It department features interactive movie theater seating/ticket enquiry modal and local event booking workflow."
-  },
-  "testing_and_accessibility": {
-    "data_testid_policy": "All interactive elements (buttons, navigation tabs, inputs, cards, reel action buttons) MUST have kebab-case data-testid attributes.",
-    "examples": [
-      "data-testid=\"nav-home-tab\"",
-      "data-testid=\"nav-reels-center-button\"",
-      "data-testid=\"dept-strip-food-button\"",
-      "data-testid=\"search-bar-input\"",
-      "data-testid=\"cart-icon-button\"",
-      "data-testid=\"reel-add-to-cart-button\""
-    ]
+    "fashion_store": "https://images.unsplash.com/photo-1591085686350-798c0f9faa7f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njd8MHwxfHNlYXJjaHw0fHxmYXNoaW9uJTIwY2xvdGhpbmclMjBzdG9yZSUyMHNob3BwaW5nJTIwbW9kZWxzfGVufDB8fHx8MTc4ODk4ODYwMHww&ixlib=rb-4.1.0&q=85",
+    "electronics_gadgets": "https://images.unsplash.com/photo-1515940175183-6798529cb860?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTF8MHwxfHNlYXJjaHwyfHxlbGVjdHJvbmljcyUyMGdhZGdldHMlMjBzbWFydHBob25lJTIwc3RvcmV8ZW58MHx8fHwxNzg4OTg4NjAwfDA&ixlib=rb-4.1.0&q=85",
+    "boutique_rack": "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njd8MHwxfHNlYXJjaHwxfHxmYXNoaW9uJTIwY2xvdGhpbmclMjBzdG9yZSUyMHNob3BwaW5nJTIwbW9kZWxzfGVufDB8fHx8MTc4ODk4ODYwMHww&ixlib=rb-4.1.0&q=85",
+    "smartphone_tech": "https://images.unsplash.com/photo-1596742578443-7682ef5251cd?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTF8MHwxfHNlYXJjaHw0fHxlbGVjdHJvbmljcyUyMGdhZGdldHMlMjBzbWFydHBob25lJTIwc3RvcmV8ZW58MHx8fHwxNzg4OTg4NjAwfDA&ixlib=rb-4.1.0&q=85"
   },
   "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
-    "Strictly build using Expo React Native UI components (View, Text, Pressable, Image, ScrollView, FlatList). Do not inject React web HTML tags like div, span, button.",
-    "Ensure dark/light contrast is crisp and text readability conforms to APCA/WCAG standards.",
-    "Maintain the exact persistent 5-department top strip across screens except full-screen product reels.",
-    "The center bottom nav button must strictly implement the black circle + lime numeral '1' design branding.",
-    "Always attach data-testid props to all pressable and input elements for testing agent automation."
+    "Ensure all clickable elements have unique `data-testid` attributes (e.g. `data-testid='top-wallet-button'`, `data-testid='search-mic-button'`, `data-testid='search-camera-button'`, `data-testid='amul-brand-logo'`).",
+    "Keep typography small, elegant and crisp (text-xs / text-sm for labels and metadata) to enhance the floaty aesthetic.",
+    "Use backdrop-blur glass panels with rounded-3xl corners and smooth border strokes instead of hard rectangular cards.",
+    "Maintain the logo image strictly above the location bar in a compact header area."
   ]
 }

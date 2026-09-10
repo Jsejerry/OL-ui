@@ -7,7 +7,8 @@ import { colors } from '@/src/theme';
 import { api, Store } from '@/src/api';
 import { useCatalog } from '@/src/use-catalog';
 import { useFollowedStores } from '@/src/followed';
-import { HomePromos, TrendingCards } from '@/src/components/home-promos';
+import { TrendingCards } from '@/src/components/home-promos';
+import { BrandSpotlight } from '@/src/components/brand-spotlight';
 import { BrandRail, CategoryRail, EventRail, LoadState, ProductRail, SectionTitle } from '@/src/components/catalog-sections';
 
 export default function HomeScreen() {
@@ -22,7 +23,8 @@ export default function HomeScreen() {
   const selected = (ids: string[]) => ids.flatMap(id => data.products.filter(p => p.id === id));
   return <ScrollView testID="home-screen" showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
     {followed.length > 0 && <><SectionTitle id="followed" title="Your local favourites" subtitle="The stores you follow, always first." /><ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.stores}>{followed.map(s => <Pressable testID={`followed-store-${s.id}`} key={s.id} style={styles.store} onPress={go(`/store/${s.id}`)}><Image source={s.logo} style={styles.storeImage} /><Text style={styles.storeName}>{s.name}</Text><Icon name="heart" size={13} color={colors.forest} /></Pressable>)}</ScrollView></>}
-    <HomePromos />
+    <BrandSpotlight switchable />
+    <View style={styles.sheet}>
     <SectionTitle id="trending" title="Trending in Latur" subtitle="Good finds. Everyone’s talking." onPress={go('/search?collection=trending')} />
     <TrendingCards products={selected(['f1', 'f5', 'b1', 'f3'])} />
     <SectionTitle id="top-picks" title="Top picks for you" subtitle="A few things we think you’ll love." onPress={go('/search?collection=picks')} />
@@ -33,10 +35,13 @@ export default function HomeScreen() {
     <View style={styles.railSpace}><ProductRail products={selected(['f4', 'f2', 'f5'])} scope="food-home" /></View>
     <SectionTitle id="home-grocery" title="A fresh start, every day" subtitle="GROCERY SHOP · Your everyday essentials." onPress={go('/grocery')} />
     <CategoryRail categories={data.categories.filter(c => c.department === 'grocery').slice(0, 6)} scope="grocery-home" />
-    <SectionTitle id="home-pharmacy" title="A little care goes a long way" subtitle="PHARMACY · Wellness for the whole family." onPress={go('/pharmacy')} />
+    <SectionTitle id="home-shops" title="A little city shopping" subtitle="SHOPS · Style, sound & lovely little spaces." onPress={go('/shops')} />
+    <BrandRail brands={data.brands.filter(b => b.department === 'shops')} scope="home-shops" />
+    <View style={styles.railSpace}><ProductRail products={selected(['sneak1', 'audio1', 'home1'])} scope="shops-home" /></View>
+    <SectionTitle id="home-pharmacy" title="A little care goes a long way" subtitle="PHARMACY & BEAUTY · Feel good, inside and out." onPress={go('/care')} />
     <BrandRail brands={data.brands.filter(b => b.department === 'pharmacy')} scope="home-pharmacy" />
     <View style={styles.railSpace}><ProductRail products={selected(['h2', 'h1', 'h3'])} scope="pharmacy-home" /></View>
-    <SectionTitle id="home-beauty" title="Find your everyday glow" subtitle="BEAUTY · Your next little obsession." onPress={go('/beauty')} />
+    <SectionTitle id="home-beauty" title="Find your everyday glow" subtitle="Your next little obsession." onPress={go('/care')} />
     <BrandRail brands={data.brands.filter(b => b.department === 'beauty')} scope="home-beauty" />
     <View style={styles.railSpace}><ProductRail products={selected(['b2', 'b3', 'b4'])} scope="beauty-home" /></View>
     <SectionTitle id="home-book" title="Make room for good times" subtitle="BOOK IT · Movies, events & little adventures." onPress={go('/book-it')} />
@@ -44,10 +49,11 @@ export default function HomeScreen() {
     <SectionTitle id="home-stores" title="Meet your neighbourhood" subtitle="Independent stores. A little closer to home." />
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.stores}>{stores.filter(s => s.id.startsWith('s')).map(s => <Pressable testID={`store-card-${s.id}`} key={s.id} style={styles.store} onPress={go(`/store/${s.id}`)}><Image source={s.logo} style={styles.storeImage} /><View><Text style={styles.storeName}>{s.name}</Text><Text style={styles.meta}>{s.delivery_time} · {s.rating} rating</Text></View></Pressable>)}</ScrollView>
     <View style={styles.footer}><Text style={styles.footerTitle}>One city. Endless possibilities.</Text><Text style={styles.footerSub}>Made for Latur. Made for you.</Text><Text testID="sample-catalog-notice" style={styles.notice}>Explore our sample catalogue. Brand listings, prices and booking experiences are for demonstration.</Text></View>
+    </View>
   </ScrollView>;
 }
 const styles = StyleSheet.create({
-  content: { paddingBottom: 35, backgroundColor: colors.surface }, rule: { height: 7, backgroundColor: colors.cream, marginTop: 26 }, railSpace: { marginTop: 18 },
+  content: { paddingBottom: 20 }, sheet: { backgroundColor: colors.glassBright, borderTopLeftRadius: 34, borderTopRightRadius: 34, paddingTop: 1, overflow: 'hidden' }, rule: { height: 7, backgroundColor: colors.cream, marginTop: 26 }, railSpace: { marginTop: 18 },
   stores: { paddingHorizontal: 20, gap: 12 }, store: { padding: 12, borderRadius: 16, backgroundColor: colors.cream, flexDirection: 'row', alignItems: 'center', gap: 10 },
   storeImage: { width: 42, height: 42, borderRadius: 13 }, storeName: { color: colors.onSurface, fontSize: 12, fontWeight: '700' }, meta: { color: colors.muted, fontSize: 10, marginTop: 4 },
   footer: { marginTop: 38, paddingHorizontal: 24, paddingVertical: 30, backgroundColor: colors.limeSoft }, footerTitle: { color: colors.forest, fontSize: 25, letterSpacing: -1, fontWeight: '700', maxWidth: 250 },

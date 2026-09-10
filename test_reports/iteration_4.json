@@ -1,0 +1,72 @@
+{
+  "summary": "Iteration 4 backend + mobile-web testing completed on preview URL. Full backend suite (including new real AI image/voice tests) passed. Core OneCity UI flows passed across 390x844 and 360 widths with one functional regression found in typed search semantics.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Search screen",
+        "issue": "Typed keyword queries 'shopping' and 'care' return 0 results; requested regression expected these queries to be supported/covered.",
+        "testID": "search-input",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Header voice search frontend with controlled spoken intent",
+        "issue": "Browser mic path opened and recorded, but controlled spoken-content validation to guaranteed product match is not deterministic in this headless preview run; backend real voice API was validated separately and passed.",
+        "affected_testIDs": [
+          "header-voice-search",
+          "voice-record-button",
+          "voice-transcript"
+        ]
+      }
+    ],
+    "design_issues": [],
+    "react_native_issues": [
+      {
+        "component": "Animated native driver on web",
+        "issue": "Console warning: useNativeDriver not supported in this web preview runtime (falls back to JS animation)."
+      },
+      {
+        "component": "pointerEvents deprecation",
+        "issue": "Console warning: props.pointerEvents is deprecated; warning still appears at runtime."
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration4_ai_search.py",
+    "/app/test_reports/pytest/pytest_results_iter4_ai.xml",
+    "/app/test_reports/pytest/pytest_results_iter4_full.xml",
+    "/app/test_reports/artifacts_iter4_load/home_loaded.jpeg",
+    "/app/test_reports/artifacts_iter4_ui/home_390.jpeg",
+    "/app/test_reports/artifacts_iter4_ui/shops_360.jpeg",
+    "/app/test_reports/artifacts_iter4_ui_retry/reels_paths.jpeg",
+    "/app/test_reports/artifacts_iter4_ui_retry/voice_state.jpeg",
+    "/app/test_reports/artifacts_iter4_ui_final/ai_photo_add_any.jpeg",
+    "/app/test_reports/artifacts_iter4_ui_final/checkout_booking_enquiries.jpeg"
+  ],
+  "action_items": [
+    "Fix typed-search intent mapping so generic terms like 'care' and 'shopping' return relevant catalogue results or scoped department suggestions.",
+    "Run native-device validation for mic/camera permission UX and deterministic voice intent capture (not fully guaranteed in headless browser preview)."
+  ],
+  "critical_code_review_comments": [
+    "Frontend API base uses EXPO_PUBLIC_BACKEND_URL; project instructions mention EXPO_BACKEND_URL. Keep one consistent env contract across app and deployment docs to avoid config drift.",
+    "backend/tests/backend_test.py and backend/tests/test_onelatur_api.py still contain hardcoded URL fallback; remove fallback and fail fast on missing env to match test policy."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration4_ai_search.py",
+    "/app/test_reports/iteration_4.json"
+  ],
+  "success_rate": {
+    "backend": "100% (52/52)",
+    "frontend": "~90% (all critical requested visual/navigation/reels/wallet/photo-search/checkout-booking flows passed; typed-search semantic regression failed)"
+  },
+  "seed_data_creation": "No new seed data created.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Use preview URL only. Real AI image endpoint and real AI voice endpoint are passing from backend tests with multipart fixtures. For frontend voice, browser recording flow is available but deterministic spoken-intent validation should be repeated on native device or controlled fake-audio browser context.",
+  "rca_of_issue": "RCA (typed search): search.tsx filters only by direct product name/weight substring. Terms like 'care' and 'shopping' are department-intent words, not product text, so filter returns zero. Mitigation: map intent keywords to department filters/categories/brands before text matching, or perform fallback semantic mapping when exact text returns zero."
+}

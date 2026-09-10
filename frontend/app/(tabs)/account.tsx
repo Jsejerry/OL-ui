@@ -12,7 +12,7 @@ const ROWS = [
   { icon: "heart-outline", label: "Wishlist", testID: "acc-wishlist" },
   { icon: "gift-outline", label: "Refer & Earn", testID: "acc-refer" },
   { icon: "help-circle-outline", label: "Help & Support", testID: "acc-help" },
-  { icon: "information-circle-outline", label: "About One Latur", testID: "acc-about" },
+    { icon: "information-circle-outline", label: "About OneCity", testID: "acc-about" },
 ];
 
 export default function AccountScreen() {
@@ -48,7 +48,7 @@ export default function AccountScreen() {
             </TouchableOpacity>
           ))}
         </View>
-        <Text style={styles.tag}>One Latur · Made in Latur</Text>
+        <Text style={styles.tag}>OneCity · Made in Latur</Text>
       </ScrollView>
     </View>
   );

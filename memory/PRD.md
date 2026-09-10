@@ -1,4 +1,30 @@
-# One Latur — Hyperlocal Shopping & Discovery
+# OneCity — Hyperlocal Shopping & Discovery
+
+## Latest request (iteration4)
+Rebrand to **OneCity** with uploaded small logo above location; exact #76EC00 gradient across header AND home ad area. Five departments now **Food, Groceries, Shops, Pharmacy & Beauty, Book It**. User approved sample fashion/electronics/homeware for Shops, explicitly wants real AI photo/voice search, demo wallet, and a floaty, curved, translucent UI with smaller text/icons. Reels need Shop Now and tappable brand logos linking a multi-product collection, starting Amul cheese.
+
+### Implemented this iteration
+- Updated header with managed uploaded OneCity logo, location beneath, top-right wallet/cart/profile and full-width search with working mic/camera routes.
+- Seamless matching header/ad gradients per department. Important: tab/stack scenes must remain opaque to avoid seeing retained screens behind translucent content. Header ends at palette.mid and BrandSpotlight starts at same color.
+- Animated organic BrandSpotlight instead of ad cards; floating packshot and glass stickers; home story switcher. Reduced-motion preference honoured.
+- Groceries includes Amul, Shops adds Nike/boAt/Home Edit, Care combines old pharmacy+beauty. Old routes still lead to combined page.
+- Brand collections at `/brand/[id]`: Amul four products, follow and store profile, real cart integration.
+- Reels: Amul and NIVEA sample motion ads plus McDonald's stock clip. Logos open brand collection, Shop Now opens featured product, prior likes/share/cart retained. NativeMP4 and browserWebM stored in managed object storage.
+- Demo wallet with starting₹250, local demo₹100 top-up/activity; not real money, cannot be used at checkout.
+- Real AI image search via OpenAI **gpt-5.4**, Whisper voice transcription followed by GPT-5.4 catalogue matching. Existing server-only universal key. Backend `ai_search.py`, frontend `smart-search.tsx` and `voice-search-control.tsx`.
+- Image multipart -> JPEG normalisation -> private managed object storage -> transient base64 vision SDK. No public route for private search photos. Voice up to20s decoded/validated to temporary WAV, transcribed and discarded. Error/loading/retry/permission states; Mongo-backed global demo budget60searches/hour.
+- Expo audio/image-picker/image-manipulator added; iOS/Android permission descriptions configured. Native device permission flows still require device verification.
+- AI playbooks: installed emergentintegrations0.2.0 source verified `OpenAISpeechToText.transcribe` is **async**, accepts binary file plus model. Ignore earlier inaccurate tool recipe claiming sync/path-only. `LlmChat.stream_message` used for structured catalogue inference.
+
+### Verification this iteration
+- TypeScript and new-code lints pass.
+- Real photo search recognised Amul cheese and returned catalogue a1.
+- Mobile screenshots: logo/header/new Shops, reel playback/Amul logo->collection, demo wallet top-up verified. Follow-up adjusted seamless gradients and reel contrast.
+- Comprehensive iteration4 testing pending; MUST include actual voice+photo backend and UI, new/old navigation, wallet persistence and regression shopping flows.
+- Product images audited: original bbassets file name misleading. Actual imagea1 = Amul Pure Milk Cheese1kg; a4 = Cheese Cubes200g. Listings corrected. Butter replaced with actual dairy packshot. Generated isolated Amul illustration used only in sample ad.
+
+### Pending separate request
+Security audit of deployed app was requested but never started: asked for deployed URL; user instead continued with this redesign. Only preview URL available. Do not claim security audit performed.
 
 ## Current request
 User supplied grocery home screenshot and lime-green/black One Latur logos. Wants header location then company name, search then cart/profile, persistent five-department strip (Food, Grocery Shop, Pharmacy, Beauty, Book It) on all routes except reels, ads/trending/top picks and department showcases, named food brands, grocery imagery, pharmacy/beauty brands and products, movie/event/activity booking options. Bottom navigation: Home, Categories, raised black-circle/lime “1” reels button, Food, Book It. Each department has a distinct visual feel. Product reels have like/share/cart.

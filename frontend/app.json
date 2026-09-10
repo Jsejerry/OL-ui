@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "frontend",
+    "name": "OneCity",
     "slug": "frontend",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -9,9 +9,15 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Find products using a photo",
+        "NSMicrophoneUsageDescription": "Search for products with your voice",
+        "NSPhotoLibraryUsageDescription": "Choose product photos for visual search"
+      },
       "bundleIdentifier": "com.emergent.onelaturmarket.rrvr15"
     },
     "android": {
+      "permissions": ["CAMERA", "RECORD_AUDIO"],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#000000"
@@ -40,7 +46,9 @@
       "expo-web-browser",
       "expo-status-bar",
       "@react-native-vector-icons/ionicons",
-      "expo-video"
+      "expo-video",
+      ["expo-audio", {"microphonePermission": "Search for products with your voice"}],
+      ["expo-image-picker", {"cameraPermission": "Find products using a photo", "photosPermission": "Choose product photos for visual search", "microphonePermission": false}]
     ],
     "experiments": {
       "typedRoutes": true

@@ -3,26 +3,13 @@ import Icon from '@react-native-vector-icons/ionicons';
 import { usePathname, useRouter } from 'expo-router';
 import { colors } from '../theme';
 import { departments } from '../departments';
-
 export function DepartmentStrip() {
-  const pathname = usePathname();
-  const router = useRouter();
-  return <View testID="department-strip" style={styles.row}>
-    {departments.map(d => {
-      const active = pathname === d.route;
-      return <Pressable key={d.id} accessibilityRole="button" accessibilityLabel={d.label} accessibilityState={{ selected: active }} testID={`department-${d.id}`} onPress={() => router.navigate(d.route as any)} style={({ pressed }) => [styles.item, pressed && styles.pressed]}>
-        <View style={[styles.circle, { backgroundColor: active ? d.color : d.soft }]}><Icon name={d.icon as any} size={24} color={active ? colors.surface : d.color} /></View>
-        <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8} style={[styles.label, active && { color: d.color }]}>{d.label}</Text>
-        <View style={[styles.line, { backgroundColor: active ? d.color : colors.transparent }]} />
-      </Pressable>;
-    })}
-  </View>;
+  const path = usePathname(); const router = useRouter();
+  return <View testID="department-strip" style={styles.row}>{departments.map(d => {
+    const selected = path === d.route || (d.id === 'care' && ['/beauty', '/pharmacy'].includes(path));
+    return <Pressable testID={`department-${d.id}`} accessibilityRole="button" accessibilityLabel={d.label.replace('\n', ' ')} accessibilityState={{ selected }} key={d.id} onPress={() => router.navigate(d.route as any)} style={({ pressed }) => [styles.item, pressed && styles.pressed]}>
+      <View style={[styles.circle, selected && styles.selected]}><Icon name={d.icon as any} size={20} color={selected ? d.color : colors.onSurface} /></View><Text style={[styles.label, selected && { color: d.color }]}>{d.label}</Text>
+    </Pressable>;
+  })}</View>;
 }
-const styles = StyleSheet.create({
-  row: { flexDirection: 'row', paddingHorizontal: 10, paddingTop: 10, backgroundColor: colors.surface, borderBottomWidth: 1, borderColor: colors.border },
-  item: { flex: 1, alignItems: 'center', gap: 7, minHeight: 83 },
-  circle: { width: 47, height: 47, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
-  label: { fontSize: 10, fontWeight: '600', color: colors.onSurface, letterSpacing: -0.2 },
-  line: { height: 3, width: 28, borderRadius: 2, marginTop: 1 },
-  pressed: { opacity: 0.65 },
-});
+const styles = StyleSheet.create({ row: { flexDirection: 'row', paddingHorizontal: 14, paddingTop: 14, paddingBottom: 9 }, item: { flex: 1, alignItems: 'center', minHeight: 74, gap: 6 }, circle: { width: 44, height: 44, borderRadius: 18, backgroundColor: colors.glass, borderWidth: 1, borderColor: colors.glassLine, alignItems: 'center', justifyContent: 'center', transform: [{ rotate: '-4deg' }] }, selected: { backgroundColor: colors.glassBright, boxShadow: [{ offsetX: 0, offsetY: 5, blurRadius: 10, color: colors.shadow }] }, label: { color: colors.onSurface, fontSize: 9, lineHeight: 12, fontWeight: '600', textAlign: 'center' }, pressed: { opacity: 0.6 } });
