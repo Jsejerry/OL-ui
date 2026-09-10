@@ -17,7 +17,10 @@
       "bundleIdentifier": "com.emergent.onelaturmarket.rrvr15"
     },
     "android": {
-      "permissions": ["CAMERA", "RECORD_AUDIO"],
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#000000"
@@ -47,8 +50,20 @@
       "expo-status-bar",
       "@react-native-vector-icons/ionicons",
       "expo-video",
-      ["expo-audio", {"microphonePermission": "Search for products with your voice"}],
-      ["expo-image-picker", {"cameraPermission": "Find products using a photo", "photosPermission": "Choose product photos for visual search", "microphonePermission": false}]
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Search for products with your voice"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Find products using a photo",
+          "photosPermission": "Choose product photos for visual search",
+          "microphonePermission": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
