@@ -89,7 +89,7 @@ export default function CartScreen() {
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1, backgroundColor: colors.surfaceSecondary }} testID="cart-screen">
       <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
-        <View style={styles.cartTop}><Pressable testID="cart-back" accessibilityLabel="Continue shopping" style={styles.back} onPress={() => router.navigate('/(tabs)' as any)}><Icon name="chevron-back" size={20} color={colors.onSurface} /></Pressable><Text testID="cart-title" style={styles.title}>Your little bag</Text><Text testID="cart-total-items" style={styles.subtitle}>{totalItems} items</Text></View>
+        <View style={styles.cartTop}><Pressable testID="cart-back" accessibilityLabel="Go back" style={styles.back} onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')}><Icon name="chevron-back" size={20} color={colors.onSurface} /></Pressable><Text testID="cart-title" style={styles.title}>Your little bag</Text><Text testID="cart-total-items" style={styles.subtitle}>{totalItems} items</Text></View>
         <View testID="cart-tabs" style={styles.tabs}>{[{ id: 'cart', label: 'Cart', icon: 'bag-handle-outline' }, { id: 'saver', label: 'One Saver', icon: 'sparkles-outline' }].map(t => <Pressable key={t.id} testID={`cart-tab-${t.id}`} accessibilityRole="tab" accessibilityState={{ selected: tab === t.id }} onPress={() => setTab(t.id as 'cart' | 'saver')} style={[styles.tab, tab === t.id && styles.selectedTab]}><Icon name={t.icon as any} size={15} color={tab === t.id ? colors.surface : colors.forest} /><Text style={[styles.tabText, tab === t.id && styles.selectedTabText]}>{t.label}</Text></Pressable>)}</View>
       </View>
 

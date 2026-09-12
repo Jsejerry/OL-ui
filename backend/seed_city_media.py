@@ -18,7 +18,7 @@ SOURCES = {
     'city-logo': 'https://customer-assets-gfyr7b9c.emergentagent.net/job_onelatur-market/artifacts/k8kt9vac_hf_20260909_210048_132cb1e9-7487-46a6-87fb-4df954f897d2.webp',
     'amul-logo': 'https://amul.com/header/logo.svg',
     'amul-cheese': 'https://www.bbassets.com/media/uploads/p/l/104582_8-amul-cheese-slices.jpg',
-    'amul-butter-pack': 'https://dudhsagardairy.coop/wp-content/uploads/2025/11/Amul-Butter.jpg',
+    'amul-butter-pack': 'https://static.prod-images.emergentagent.com/jobs/3cb83ea3-18f9-4095-bf39-e30c8fbd8760/images/594801a19eb8864c6afcab79a714d5b10439a4bc48217bb704e87059d96edced.jpeg',
     'amul-float': 'https://static.prod-images.emergentagent.com/jobs/db4fdb48-b6e5-4ee7-b438-ee61f170c5f1/images/ea6d1390bb68979c051f5c1b0c762a256cd698ead81303c59206a972a99045bd.jpeg',
     'amul-milk': 'https://cdn.zeptonow.com/production/ik-seo/tr:w-640,ar-1200-1200,pr-true,f-auto,q-80/cms/product_variant/7aecef2d-80ab-406d-8f44-bea711b845ae/Amul-Taaza-Homogenised-Toned-Milk-Tetra-Pack-.jpeg',
     'amul-cream': 'https://www.bbassets.com/media/uploads/p/l/104615_9-amul-fresh-cream.jpg',

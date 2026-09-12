@@ -1,87 +1,82 @@
 {
+  "theme_preservation": "Keep existing company theme from /app/frontend/src/theme.ts. Use lime (#76EC00), forest (#174D37) for highlights, and cityFade for pastel backgrounds.",
   "typography": {
-    "headings": "font-sans font-bold tracking-tight text-gray-900 (Use Outfit or Manrope). Scale max text-2xl or text-3xl for mobile app feel.",
-    "body": "font-sans font-medium text-gray-700 (Use IBM Plex Sans or Inter, highly legible at small scales). Keep fonts small to maximize screen real estate.",
-    "accents": "uppercase text-[10px] tracking-wider font-bold"
+    "headings": "Bold sans-serif with tight tracking (React Native text styling).",
+    "body": "Clean readable sans-serif."
   },
   "colors": {
-    "primary": "#00B96B",
-    "primary_glow": "rgba(0, 185, 107, 0.6)",
-    "background": "#FFFFFF",
-    "surface": "#F5F5F5",
-    "surface_glass": "rgba(255, 255, 255, 0.8)",
-    "text_main": "#0A0A0A",
-    "text_muted": "#666666",
-    "black_brand": "#111111"
+    "brand_primary": "#76EC00",
+    "brand_dark": "#174D37",
+    "background_gradient_1": "linear-gradient(180deg, #F0FFD7 0%, #FFFFFF 100%)",
+    "bag_gradient_bg": "linear-gradient(135deg, #E6F4EA, #F1FBEA)"
   },
-  "visual enhancers": {
-    "border_radius": "Extremely curvy. Use rounded-2xl for cards and rounded-full for buttons/icons.",
-    "shadows": "Soft, colored shadows for primary actions (shadow-[0_8px_20px_rgba(0,185,107,0.3)])",
-    "glassmorphism": "backdrop-blur-xl bg-white/80 for sticky headers and floating bars.",
-    "spacing": "Dense item grids with p-2 or p-3 to show more items, but generous padding (p-4 to p-6) for outer containers."
+  "visual_enhancers": {
+    "3D_bags": "Use 3D bag assets with gradient backgrounds for the Shop by Store categories.",
+    "add_to_cart": "Lottie popup or Animated scale-in overlay when adding to cart.",
+    "scrollaway_header": "Animated.View tied to scroll offset to hide top categories and show search bar.",
+    "theme_animations": "Indian festival animations (Navratri/Ganesh) for Festive Time, powerful dull animation for Fitness."
   },
-  "component name": {
-    "FloatingCart": "Pill-shaped bottom floating bar (Instamart style) with live price, item count, and Checkout CTA.",
-    "OneButton": "Central '1' floating action button with pulsing neon green glow. Tap -> Discover Reels, Hold -> AI Bot.",
-    "VendorPopUp": "Small animated illustration overlay above Proceed to Pay button.",
-    "CollapsibleHeader": "Header containing Search Bar. On scroll, category icons (Food, Groceries, Shops, Pharmacy, Book it) collapse into the search bar row to save vertical space.",
-    "CartTabs": "Segmented control at the top of the Cart page: [ Cart | One Saver ].",
-    "DiscoverReels": "Instagram-style 3-column dense grid. Tapping an item opens a fullscreen swipable reel.",
-    "AIBotSheet": "Bottom sheet triggered by long-press on '1' button. Conversational UI for meal/catalogue recommendations (e.g. 'gym for bulk')."
-  },
-  "grids": {
-    "DiscoverGrid": "grid grid-cols-3 gap-1 (Instagram explore page style)",
-    "ProductGrid": "grid grid-cols-2 md:grid-cols-3 gap-3 p-3 (dense product layout)"
-  },
-  "layouts": {
-    "app_shell": "Mobile-first, constrained max-width (max-w-md mx-auto relative h-screen bg-white overflow-hidden).",
-    "header": "Sticky top-0 z-40 bg-white/90 backdrop-blur-md pt-4 pb-2 px-4 transition-all. Logo shrunk. Category strip scales down and moves inline with search on scroll.",
-    "cart_page": "Top sticky tabs (Cart / One Saver). Scrollable item list. Bottom floating 'Proceed to pay' button.",
-    "vendor_illustration_placement": "Absolute positioned bottom-full mb-2 left-4 (just above the Pay button), sliding up on item add."
-  },
-  "motion": {
-    "OneButton_Glow": "framer-motion animate={{ boxShadow: ['0px 0px 0px 0px rgba(0,185,107,0.8)', '0px 0px 20px 10px rgba(0,185,107,0)'] }} transition={{ repeat: Infinity, duration: 1.5 }}",
-    "Add_To_Cart": "Trajectory animation: when clicking '+' on a product, a miniature version of the product flies in an arc into the bottom floating cart.",
-    "Category_Icons": "Hover/Tap slight scale (scale: 0.95) and bounce.",
-    "Vendor_PopUp": "Slide up from bottom (y: 20 to 0) with gentle spring, delay 0.2s, pop-in text bubble ('Raju Bhaiya packed your veggies').",
-    "Header_Collapse": "Smooth height interpolation and layout transition using framer-motion layoutId for category items moving up."
-  },
-  "accessibility": {
-    "contrast": "Ensure white text on #00B96B passes minimum 3:1 APCA. Use #0A0A0A for all typography.",
-    "data_testid": "Add data-testid attributes to ALL interactive elements (e.g., '1-button-tap', '1-button-hold', 'add-to-cart-btn', 'floating-cart').",
-    "touch_targets": "Ensure all curvy buttons have minimum 44x44px touch area."
-  },
-  "media": {
-    "image_urls": {
-      "logo_1": "https://customer-assets-4nw71qhi.emergentagent.net/job_overlay-ui-kit/artifacts/b53wk9sj_hf_20260910_213929_6f85b1e9-82fc-42b3-ae7e-a2cee71cf6b2.png",
-      "category_food": "https://images.unsplash.com/photo-1674027392851-7b34f21b07ee?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwzfHwzRCUyMGljb24lMjBmb29kJTIwZ3JvY2VyeSUyMHBoYXJtYWN5JTIwc2hvcHBpbmd8ZW58MHx8fHwxNzg5MDc3MTgzfDA&ixlib=rb-4.1.0&q=85",
-      "category_grocery": "https://images.unsplash.com/photo-1674027392838-d85710a5121d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHw0fHwzRCUyMGljb24lMjBmb29kJTIwZ3JvY2VyeSUyMHBoYXJtYWN5JTIwc2hvcHBpbmd8ZW58MHx8fHwxNzg5MDc3MTgzfDA&ixlib=rb-4.1.0&q=85",
-      "category_pharmacy": "https://images.unsplash.com/photo-1674027392842-29f8354e236c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwyfHwzRCUyMGljb24lMjBmb29kJTIwZ3JvY2VyeSUyMHBoYXJtYWN5JTIwc2hvcHBpbmd8ZW58MHx8fHwxNzg5MDc3MTgzfDA&ixlib=rb-4.1.0&q=85",
-      "vendor_raju_bhaiya_veggies": "https://images.unsplash.com/photo-1740252117027-4275d3f84385?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njl8MHwxfHNlYXJjaHwyfHwzZCUyMGN1dGUlMjBjaGFyYWN0ZXIlMjBhdmF0YXIlMjBzbWlsaW5nfGVufDB8fHx8MTc4OTA3NzIwNnww&ixlib=rb-4.1.0&q=85",
-      "vendor_amul_milk": "https://images.unsplash.com/photo-1740252117013-4fb21771e7ca?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njl8MHwxfHNlYXJjaHwzfHwzZCUyMGN1dGUlMjBjaGFyYWN0ZXIlMjBhdmF0YXIlMjBzbWlsaW5nfGVufDB8fHx8MTc4OTA3NzIwNnww&ixlib=rb-4.1.0&q=85",
-      "vendor_pharmacy": "https://images.unsplash.com/photo-1740252117012-bb53ad05e370?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njl8MHwxfHNlYXJjaHw0fHwzZCUyMGN1dGUlMjBjaGFyYWN0ZXIlMjBhdmF0YXIlMjBzbWlsaW5nfGVufDB8fHx8MTc4OTA3NzIwNnww&ixlib=rb-4.1.0&q=85",
-      "vendor_shops": "https://images.unsplash.com/photo-1740252117070-7aa2955b25f8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njl8MHwxfHNlYXJjaHwxfHwzZCUyMGN1dGUlMjBjaGFyYWN0ZXIlMjBhdmF0YXIlMjBzbWlsaW5nfGVufDB8fHx8MTc4OTA3NzIwNnww&ixlib=rb-4.1.0&q=85",
-      "vendor_food": "https://images.unsplash.com/photo-1603129927228-79965ede0115?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzNTl8MHwxfHNlYXJjaHw0fHxkZWxpdmVyeSUyMG1hbiUyMGlsbHVzdHJhdGlvbiUyMGN1dGUlMjBwb3AlMjB1cHxlbnwwfHx8fDE3ODkwNzcxODN8MA&ixlib=rb-4.1.0&q=85"
+  "components": [
+    {
+      "name": "CategoriesPage",
+      "description": "Instamart-inspired categories hub."
+    },
+    {
+      "name": "ShopByStore",
+      "description": "Horizontal or grid section showing the 5 themed stores with 3D bag icons."
+    },
+    {
+      "name": "StoreCategoryCard",
+      "description": "Card with 3D bag and items inside, placed on gradient background."
+    },
+    {
+      "name": "CompactProductCard",
+      "description": "Smaller items catalog to show more on screen."
+    },
+    {
+      "name": "PersistentBottomNav",
+      "description": "Bottom navigation bar that stays constant throughout the app."
     }
+  ],
+  "layouts": {
+    "categories_grid": "Compact 3-column or 4-column grid for categories to fit more on screen.",
+    "scroll_behavior": "Make Home screen and Categories scrollable."
   },
-  "3d libraries": {
-    "usage": "Use Framer Motion for UI animations and 2D-plane interactions (Reels swipe, floating cart, glow). The 3D category icons are static image assets provided in the media section, styled with drop-shadows to look interactive."
+  "image_urls": {
+    "3d_shopping_bags": [
+      "https://images.unsplash.com/photo-1761646238431-dd22150544e8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTV8MHwxfHNlYXJjaHwyfHwzZCUyMHNob3BwaW5nJTIwYmFnJTIwZ3JhZGllbnR8ZW58MHx8fHwxNzg5MjAzNjg0fDA&ixlib=rb-4.1.0&q=85",
+      "https://images.unsplash.com/photo-1677753669144-66e809db63e3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTV8MHwxfHNlYXJjaHw0fHwzZCUyMHNob3BwaW5nJTIwYmFnJTIwZ3JhZGllbnR8ZW58MHx8fHwxNzg5MjAzNjg0fDA&ixlib=rb-4.1.0&q=85",
+      "https://images.unsplash.com/photo-1761646238181-eb3d981b3085?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTV8MHwxfHNlYXJjaHwzfHwzZCUyMHNob3BwaW5nJTIwYmFnJTIwZ3JhZGllbnR8ZW58MHx8fHwxNzg5MjAzNjg0fDA&ixlib=rb-4.1.0&q=85"
+    ],
+    "festive_animations": [
+      "https://images.unsplash.com/photo-1757317990265-d99d5f10d05e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwxfHxJbmRpYW4lMjBmZXN0aXZhbCUyMGdhbmVzaCUyMG5hdnJhdHJpJTIwaWxsdXN0cmF0aW9ufGVufDB8fHx8MTc4OTIwMzY4NHww&ixlib=rb-4.1.0&q=85",
+      "https://images.unsplash.com/photo-1631406381509-e6f4535987e3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHw0fHxJbmRpYW4lMjBmZXN0aXZhbCUyMGdhbmVzaCUyMGdhbmVzaCUyMG5hdnJhdHJpJTIwaWxsdXN0cmF0aW9ufGVufDB8fHx8MTc4OTIwMzY4NHww&ixlib=rb-4.1.0&q=85"
+    ],
+    "brand_logos": [
+      "https://images.unsplash.com/photo-1783831954499-91feb35790f4?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTV8MHwxfHNlYXJjaHw0fHxncm9jZXJ5JTIwYnJhbmQlMjBsb2dvc3xlbnwwfHx8fDE3ODkyMDM2ODR8MA&ixlib=rb-4.1.0&q=85",
+      "https://images.unsplash.com/photo-1776093745837-4b2f17dc9512?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTV8MHwxfHNlYXJjaHwxfHxncm9jZXJ5JTIwYnJhbmQlMjBsb2dvc3xlbnwwfHx8fDE3ODkyMDM2ODR8MA&ixlib=rb-4.1.0&q=85"
+    ],
+    "fitness_animations": [
+      "https://images.unsplash.com/photo-1725289767206-e19c40c212bd?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MDV8MHwxfHNlYXJjaHw0fHwzZCUyMGZpdG5lc3MlMjBzcG9ydHMlMjBkdW1iZWxsJTIwaWNvbnxlbnwwfHx8fDE3ODkyMDM3MDN8MA&ixlib=rb-4.1.0&q=85"
+    ]
   },
-  "instructions_to_main_agent": {
-    "1": "DO NOT rebuild the app. Update existing JS components in `/app/frontend/src/` incrementally.",
-    "2": "Replace the current logo with the provided `logo_1` URL and shrink its container.",
-    "3": "Implement the Header collapse feature: Use framer-motion. On scroll > 50px, transition the 'Food, Groceries, Shops, Pharmacy, Book it' horizontal strip up alongside the search bar, shrinking their icons.",
-    "4": "The 1 Button: Apply continuous pulsing `box-shadow` (green glow). Use `onPress` (or `onClick`) to route to /discover (Reels Grid) and `onLongPress` to open a bottom sheet AI Bot (use Framer Motion drag constraints or standard Dialog).",
-    "5": "Discover Reels: Create a 3-column dense grid of thumbnail rectangles. Tapping one should show a fullscreen video/image view (mock the video with an image).",
-    "6": "Instamart Floating Cart: When cart.length > 0, show a sticky bottom bar (z-50) hovering above the bottom tab nav. Make it pill-shaped (rounded-full). When 'Add' is clicked on a product, animate a small dot flying into the cart.",
-    "7": "Cart Page tabs: Add a simple segmented control at the top: 'Cart' and 'One Saver'.",
-    "8": "Vendor Animations: On the delivery/checkout screen, watch the cart items. When the screen loads or item is updated, slide up one of the 5 character illustrations (e.g., Raju Bhaiya) from behind the 'Proceed to pay' button with a chat bubble.",
-    "9": "Make all buttons and inputs extremely curvy (`rounded-3xl` or `rounded-full`). Shrink font sizes across the board to create high data density."
-  },
-  "component_path": {
-    "AppShell": "/app/frontend/src/components/app-shell.jsx",
-    "Layout": "/app/frontend/app/(tabs)/_layout.jsx",
-    "Theme": "/app/frontend/src/theme.js"
-  },
-  "UNIVERSAL GUIDELINES FOR MAIN AGENT": "You tend to converge toward generic outputs. Avoid this! Build a highly interactive, fluid, app-like frontend. DO NOT apply universal transitions (e.g., transition: all). Add transitions to specific elements. Avoid completely transparent backgrounds for overlays and headers; always use a blur + slight opacity (e.g., bg-white/80 backdrop-blur-md). DO NOT center-align all app text; left-align naturally. Use the precise image URLs provided; never use dummyimage.com placeholders. Use `data-testid` on all buttons, links, and interactive elements."
+  "instructions_to_main_agent": [
+    "Implement a back button on every inner page header for easier navigation.",
+    "Design a Categories page inspired by Instamart, emphasizing tight spacing and small components.",
+    "Implement 'Shop by Store' with 5 themed categories: Festive time, Fitness and Sport, Trending in market, Gourmet Treats, Everyday Essentials.",
+    "For 'Shop by Store', use 3D bag icons displaying items inside, layered on gradient backgrounds.",
+    "Animate the scroll view: Top categories (Food, Groceries, Pharmacy, Beauty) must scroll away (hide), and a search bar must remain or appear.",
+    "Make product cards more compact (smaller items catalog) to fit more items on the screen.",
+    "Make the home screen and Categories pages scrollable.",
+    "Add-to-cart action should trigger a creative pop-up animation.",
+    "Ensure bottom navigation stays constant throughout the app. Use a Tab Navigator structure or place it outside individual screen stacks.",
+    "Reload all missing icons and illustrations throughout the app to fix missing images.",
+    "Apply specific themed animations when clicking 'Shop by Store' categories: Ganesh Chaturthi/Navratri style for Festive time, and a dull-colored powerful animation for Fitness and Sport."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "Do not use transparent backgrounds under text or icons without a blur or solid color.",
+    "Include `data-testid` on all interactive elements.",
+    "Use React Native Animated or Reanimated for smooth scroll-away headers.",
+    "Follow company theme colors from `/app/frontend/src/theme.ts`."
+  ]
 }

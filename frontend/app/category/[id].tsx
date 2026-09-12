@@ -1,79 +1,31 @@
-import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Icon from "@react-native-vector-icons/ionicons";
-import { colors, radius, spacing } from "@/src/theme";
-import { api, Category, Product } from "@/src/api";
-import { ProductCard } from "@/src/components/product-card";
+import { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, Pressable, TextInput } from 'react-native';
+import { Image } from 'expo-image';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import Icon from '@react-native-vector-icons/ionicons';
+import { colors } from '@/src/theme';
+import { useCatalog } from '@/src/use-catalog';
+import { ProductCard } from '@/src/components/product-card';
+import { LoadState } from '@/src/components/catalog-sections';
 
 export default function CategoryScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
-  const insets = useSafeAreaInsets();
-  const router = useRouter();
-  const [cat, setCat] = useState<Category | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
-
-  useEffect(() => {
-    if (!id) return;
-    api<Category[]>("/categories").then((all) => {
-      setCat(all.find((c) => c.id === id) ?? null);
-    });
-    api<Product[]>(`/products?category_id=${id}`).then(setProducts);
-  }, [id]);
-
-  const bg = cat ? ((colors as any)[cat.color] ?? colors.surfaceSecondary) : colors.surfaceSecondary;
-
-  return (
-    <View style={{ flex: 1, backgroundColor: colors.surface }} testID="category-screen">
-      <View style={[styles.header, { paddingTop: insets.top + 8, backgroundColor: bg }]}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => router.back()} testID="cat-back-btn">
-          <Icon name="chevron-back" size={22} color={colors.onSurface} />
-        </TouchableOpacity>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.title}>{cat?.name ?? "Category"}</Text>
-          <Text style={styles.sub}>{products.length} products</Text>
-        </View>
-        <Text style={styles.emoji}>{cat?.emoji}</Text>
-      </View>
-
-      <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: 40 }}>
-        <View style={styles.grid}>
-          {products.map((p) => (
-            <View key={p.id} style={styles.gridItem}>
-              <ProductCard product={p} width={undefined as any} />
-            </View>
-          ))}
-          {products.length === 0 && (
-            <View style={styles.empty}>
-              <Text style={{ color: colors.muted }}>No products yet</Text>
-            </View>
-          )}
-        </View>
-      </ScrollView>
-    </View>
-  );
+  const { id } = useLocalSearchParams<{ id: string }>(); const router = useRouter(); const { data, isError, refetch } = useCatalog();
+  const [query, setQuery] = useState(''); const [sort, setSort] = useState(false); const [budget, setBudget] = useState(false); const [brand, setBrand] = useState(''); const [showBrands, setShowBrands] = useState(false);
+  useEffect(() => { setQuery(''); setBrand(''); setShowBrands(false); }, [id]);
+  if (!data) return <LoadState error={isError} retry={refetch} />;
+  const cat = data.categories.find(c => c.id === id);
+  const original = data.products.filter(p => p.category_id === id);
+  const products = original.filter(p => (!budget || p.price < 99) && (!brand || p.brand_id === brand) && p.name.toLowerCase().includes(query.toLowerCase())).sort((a, b) => sort ? a.price - b.price : 0);
+  const brands = data.brands.filter(b => original.some(p => p.brand_id === b.id));
+  const categories = data.categories.filter(c => c.department === cat?.department);
+  return <View testID="category-screen" style={styles.screen}>
+    <View style={styles.header}><Pressable testID="cat-back-btn" accessibilityLabel="Go back" onPress={() => router.canGoBack() ? router.back() : router.replace('/categories')} style={styles.back}><Icon name="arrow-back" size={21} color={colors.forest} /></Pressable><View style={styles.flex}><Text testID="category-title" style={styles.title}>{cat?.name || 'Category not found'}</Text><Text testID="category-count" style={styles.sub}>{products.length} little finds · demo catalogue</Text></View><Pressable testID="category-all" accessibilityLabel="Browse all categories" onPress={() => router.navigate('/categories')} style={styles.back}><Icon name="grid-outline" size={21} color={colors.forest} /></Pressable></View>
+    <View style={styles.search}><Icon name="search-outline" size={17} color={colors.muted} /><TextInput testID="category-search" value={query} onChangeText={setQuery} placeholder="Find something in this category" placeholderTextColor={colors.muted} style={styles.input} /></View>
+    <View style={styles.body}><ScrollView testID="category-sidebar" style={styles.sidebar} contentContainerStyle={styles.sidebarContent} showsVerticalScrollIndicator={false}>{categories.map(c => <Pressable key={c.id} testID={`sidebar-${c.id}`} accessibilityState={{ selected: c.id === id }} onPress={() => router.setParams({ id: c.id })} style={[styles.sideItem, c.id === id && styles.activeItem]}><Image testID={`sidebar-image-${c.id}`} source={c.image} contentFit="contain" style={styles.sideImage} /><Text style={[styles.sideText, c.id === id && styles.activeText]}>{c.name}</Text>{c.id === id && <View style={styles.indicator} />}</Pressable>)}</ScrollView>
+    <View style={styles.flex}><ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filters} contentContainerStyle={styles.filtersContent}><Pressable testID="category-sort" onPress={() => setSort(!sort)} style={[styles.chip, sort && styles.activeChip]}><Icon name="swap-vertical-outline" size={13} color={colors.forest} /><Text style={styles.chipText}>{sort ? 'Price: low first' : 'Sort'}</Text></Pressable><Pressable testID="category-budget" onPress={() => setBudget(!budget)} style={[styles.chip, budget && styles.activeChip]}><Text style={styles.chipText}>Under ₹99</Text></Pressable><Pressable testID="category-brand-filter" onPress={() => setShowBrands(!showBrands)} style={[styles.chip, brand && styles.activeChip]}><Text style={styles.chipText}>Brand</Text><Icon name="chevron-down" size={12} color={colors.forest} /></Pressable></ScrollView>
+      {showBrands && <ScrollView horizontal testID="category-brand-options" contentContainerStyle={styles.filtersContent} style={styles.filters}><Pressable testID="category-brand-all" onPress={() => setBrand('')} style={styles.chip}><Text style={styles.chipText}>All brands</Text></Pressable>{brands.map(b => <Pressable testID={`category-brand-${b.id}`} key={b.id} onPress={() => setBrand(b.id)} style={[styles.chip, brand === b.id && styles.activeChip]}><Text style={styles.chipText}>{b.name}</Text></Pressable>)}</ScrollView>}
+      <ScrollView key={`${id}-${sort}-${brand}-${budget}`} testID="category-products-scroll" contentContainerStyle={styles.productsContent} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled"><View style={styles.grid}>{products.map(p => <View key={p.id} style={styles.gridItem}><ProductCard product={p} width={null} scope="category" /></View>)}</View>{!products.length && <View testID="category-empty" style={styles.empty}><Text style={styles.title}>No matching finds</Text><Pressable testID="category-clear-filters" onPress={() => { setQuery(''); setBrand(''); setBudget(false); }} style={styles.chip}><Text style={styles.chipText}>Clear filters</Text></Pressable></View>}</ScrollView>
+    </View></View>
+  </View>;
 }
-
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.md,
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.lg,
-    borderBottomLeftRadius: radius.lg,
-    borderBottomRightRadius: radius.lg,
-  },
-  backBtn: {
-    width: 40, height: 40, borderRadius: 20,
-    backgroundColor: colors.surface,
-    alignItems: "center", justifyContent: "center",
-  },
-  title: { fontSize: 20, fontWeight: "800", color: colors.onSurface },
-  sub: { fontSize: 12, color: colors.onSurfaceSecondary, marginTop: 2 },
-  emoji: { fontSize: 44 },
-  grid: { flexDirection: "row", flexWrap: "wrap", gap: spacing.md },
-  gridItem: { width: "47.5%" },
-  empty: { width: "100%", padding: spacing.xl, alignItems: "center" },
-});
+const styles = StyleSheet.create({ screen: { flex: 1, backgroundColor: colors.surface }, header: { flexDirection: 'row', alignItems: 'center', gap: 7, padding: 10 }, back: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }, flex: { flex: 1, minWidth: 0 }, title: { color: colors.onSurface, fontSize: 18, fontWeight: '700' }, sub: { fontSize: 10, color: colors.muted, marginTop: 4 }, search: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 15, marginHorizontal: 16, marginBottom: 12, borderRadius: 23, backgroundColor: colors.cream }, input: { flex: 1, minHeight: 44, color: colors.onSurface, fontSize: 11 }, body: { flex: 1, flexDirection: 'row' }, sidebar: { width: 76, flexGrow: 0, backgroundColor: colors.cream }, sidebarContent: { paddingBottom: 130 }, sideItem: { paddingHorizontal: 6, paddingVertical: 13, alignItems: 'center', gap: 6 }, activeItem: { backgroundColor: colors.limeSoft }, sideImage: { width: 47, height: 49, borderRadius: 14, backgroundColor: colors.surface }, sideText: { fontSize: 9, lineHeight: 12, textAlign: 'center', color: colors.muted }, activeText: { color: colors.forest, fontWeight: '700' }, indicator: { position: 'absolute', width: 3, height: 36, right: 0, top: 22, borderRadius: 3, backgroundColor: colors.forest }, filters: { maxHeight: 54, flexGrow: 0 }, filtersContent: { gap: 6, paddingHorizontal: 9, alignItems: 'center', paddingBottom: 8 }, chip: { minHeight: 44, paddingHorizontal: 11, flexDirection: 'row', alignItems: 'center', gap: 5, borderRadius: 22, borderWidth: 1, borderColor: colors.border }, chipText: { fontSize: 10, fontWeight: '600', color: colors.forest }, activeChip: { backgroundColor: colors.limeSoft, borderColor: colors.cityMid }, productsContent: { padding: 8, paddingBottom: 145 }, grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 }, gridItem: { width: '48%', flexGrow: 1, maxWidth: '49%' }, empty: { padding: 20, gap: 15, alignItems: 'center' } });

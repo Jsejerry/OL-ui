@@ -101,7 +101,7 @@ export default function StoreProfileScreen() {
       {/* Back button - floating */}
       <TouchableOpacity
         style={[styles.backBtn, { top: insets.top + 8 }]}
-        onPress={() => router.back()}
+        onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')}
         testID="back-btn"
       >
         <Icon name="chevron-back" size={22} color={colors.onSurface} />

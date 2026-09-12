@@ -102,6 +102,19 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
+current_update:
+  request: "Incremental Instamart-inspired categories, five 3D themed stores, back everywhere, persistent bottom navigation, scroll-away headers, compact products, demo brands, cart animation and richer assistant. User reports ALL old icons/images/illustrations missing."
+  implemented: true
+  working: true
+  needs_retesting: false
+  priority: high
+  media_bug_root_cause: "Imported database had zero catalog_assets. Restored legacy managed-media imports, motion icons/vendors and reel transcodes, replaced unreachable butter image. Added transient storage PUT bounded retries. Iteration7 found one further dead external store thumbnail; replaced with managed snacks. Migrated ALL remaining legacy catalog/store/banner photos to managed storage using seed_legacy_media.py; saved cart/order image links now use canonical catalog images."
+  current_catalog: "46 brands / 84 products / 32 categories / 5 themed stores"
+  test_focus: [All legacy and new media loaded, Navigation and back history, Header scrolling, Five themed collections and festival modes, Sidebar/category filters, Compact cards at360and390, Global added popup from all sources, AI budget vegetarian cart review and add basket, Existing checkout and reel regression]
+  self_test: "Iteration7 testing agent: backend15/15 existing,3/4 new (single dead external thumbnail), frontend shopping/assistant/navigation responsive checks pass, no duplicate visible-screen issue. All image migrations applied. Iteration8 testing agent POST-FIX:4/4 new suite plus3/3 focused media/cart/order tests pass. All image/reel decode and browser sweeps pass, no remaining reported issues. See iteration_8.json. Native device-specific behaviour not tested."
+  credentials: "No auth; memory/test_credentials.md created. AI/storage keys already server-side."
+  sample_data: "User explicitly approved extra demo brands/items; original sample orders/tracking remain sample; AI is real."
+
 user_problem_statement: "Redesign One Latur using supplied grocery UI and lime/black logos: persistent Food/Grocery Shop/Pharmacy/Beauty/Book It strip except reels; location and company row, search/cart/profile; ads, trending, top picks, department showcases; distinct department pages; bottom Home/Categories/1 Reels/Food/Book It; shoppable reels; demo booking enquiries approved. Preserve existing shopping features."
 latest_request: "Incremental interactive OneCity refresh: smaller logo, folded glowing 1, tap Discover grid and hold real AI, animated floating cart, Cart/One Saver, scroll-away header/departments, green/white/black 3D icons and five vendor illustrations. Do not rebuild."
 latest_implementation:

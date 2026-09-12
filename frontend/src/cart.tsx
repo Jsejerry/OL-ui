@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { mediaUrl } from './api';
+import { api, mediaUrl } from './api';
 
 export type CartProduct = {
   id: string;
@@ -39,9 +39,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     AsyncStorage.getItem(KEY).then((v) => {
       if (v) {
-        try { setItems(JSON.parse(v).map((item: CartItem) => item.id === 'p6' ? { ...item, image: mediaUrl('snacks') } : item)); } catch {}
+        try { setItems(JSON.parse(v).map((item: CartItem) => { const key = item.image?.split('/api/media/')[1]; return { ...item, image: item.id === 'p6' ? mediaUrl('snacks') : key ? mediaUrl(key) : item.image }; })); } catch {}
       }
       setHydrated(true);
+      // Refresh legacy/imported image links without changing quantities or prices.
+      api<CartProduct[]>('/products').then(products => {
+        const images = new Map(products.map(p => [p.id, p.image]));
+        setItems(current => current.map(item => ({ ...item, image: images.get(item.id) || item.image })));
+      }).catch(() => {});
     });
   }, []);
 

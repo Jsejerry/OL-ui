@@ -41,7 +41,7 @@ export default function OrdersScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.surfaceSecondary }} testID="orders-screen">
       <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn} testID="orders-back-btn">
+        <TouchableOpacity onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')} style={styles.backBtn} testID="orders-back-btn">
           <Icon name="chevron-back" size={22} color={colors.onSurface} />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>

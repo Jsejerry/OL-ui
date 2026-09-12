@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="4" time="38.105" timestamp="2026-09-12T09:21:50.233295+00:00" hostname="agent-env-e89a2451-179f-4146-9cd4-d5abba39820c"><testcase classname="tests.test_iteration7_p0_regression" name="test_catalog_shape_and_counts" time="11.700" /><testcase classname="tests.test_iteration7_p0_regression" name="test_media_urls_decode_or_play_and_report_failures" time="21.335"><failure message="AssertionError: Broken/undecodable images found: [{'id': '', 'url': 'https://images.unsplash.com/photo-1600359746654-780cf3d2c73a?w=600', 'status': 404}]&#10;assert [{'id': '', '...status': 404}] == []&#10;  &#10;  Left contains one more item: {'id': '', 'url': 'https://images.unsplash.com/photo-1600359746654-780cf3d2c73a?w=600', 'status': 404}&#10;  &#10;  Full diff:&#10;  - []&#10;  + [&#10;  +     {...&#10;  &#10;  ...Full output truncated (5 lines hidden), use '-vv' to show">backend/tests/test_iteration7_p0_regression.py:181: in test_media_urls_decode_or_play_and_report_failures
+    assert broken_images == [], f'Broken/undecodable images found: {broken_images}'
+E   AssertionError: Broken/undecodable images found: [{'id': '', 'url': 'https://images.unsplash.com/photo-1600359746654-780cf3d2c73a?w=600', 'status': 404}]
+E   assert [{'id': '', '...status': 404}] == []
+E     
+E     Left contains one more item: {'id': '', 'url': 'https://images.unsplash.com/photo-1600359746654-780cf3d2c73a?w=600', 'status': 404}
+E     
+E     Full diff:
+E     - []
+E     + [
+E     +     {...
+E     
+E     ...Full output truncated (5 lines hidden), use '-vv' to show</failure></testcase><testcase classname="tests.test_iteration7_p0_regression" name="test_assistant_budget_vegetarian_and_cart_subtotal_298" time="4.650" /><testcase classname="tests.test_iteration7_p0_regression" name="test_five_store_collections_present" time="0.082" /></testsuite></testsuites>

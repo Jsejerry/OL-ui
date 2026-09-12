@@ -94,7 +94,7 @@ export default function OrderTrackingScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.surfaceSecondary }} testID="order-tracking">
       <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
-        <TouchableOpacity onPress={() => router.replace("/(tabs)" as any)} style={styles.backBtn} testID="track-back-btn">
+        <TouchableOpacity onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')} style={styles.backBtn} testID="track-back-btn">
           <Icon name="chevron-back" size={22} color={colors.onSurface} />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>

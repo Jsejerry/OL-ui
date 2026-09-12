@@ -8,12 +8,14 @@ from pathlib import Path
 from pydantic import BaseModel, Field
 from typing import List, Optional
 import uuid
+import hashlib
 from datetime import datetime, timezone
 from catalog_data import BRANDS, EXTRA_PRODUCTS, EXTRA_CATEGORIES, EVENTS, REELS, image
 from media_store import router as media_router
 from ai_search import router as search_router
 from assistant import router as assistant_router
 from city_catalog import CITY_BRANDS, CITY_PRODUCTS, CITY_CATEGORIES, CITY_REELS
+from store_catalog import STORE_BRANDS, STORE_PRODUCTS, STORE_CATEGORIES, THEMED_STORES
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -227,7 +229,7 @@ STORES: List[Store] = [
                        thumbnail="https://images.unsplash.com/photo-1739065883242-92659253f7a6?w=600"),
             StoreMedia(type="video",
                        url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
-                       thumbnail="https://images.unsplash.com/photo-1600359746654-780cf3d2c73a?w=600"),
+                       thumbnail=image('snacks')),
             StoreMedia(type="image",
                        url="https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=800"),
             StoreMedia(type="image",
@@ -291,9 +293,11 @@ PRODUCTS: List[Product] = [
 # Expand the sample catalogue without changing existing product/order identifiers.
 for cat in CATEGORIES:
     cat.image = image({'c1': 'fruit', 'c2': 'milk', 'c3': 'fries', 'c4': 'coffee', 'c5': 'bread', 'c6': 'pasta', 'c7': 'skincare', 'c8': 'fresh'}[cat.id])
-CATEGORIES.extend(Category(id=cid, name=name, emoji='', color='pastelGreen', department=dept, image=image(asset)) for cid, name, dept, asset in EXTRA_CATEGORIES + CITY_CATEGORIES)
+CATEGORIES.extend(Category(id=cid, name=name, emoji='', color='pastelGreen', department=dept, image=image(asset)) for cid, name, dept, asset in EXTRA_CATEGORIES + CITY_CATEGORIES + STORE_CATEGORIES)
 BRANDS.extend(CITY_BRANDS)
+BRANDS.extend(STORE_BRANDS)
 EXTRA_PRODUCTS.extend(CITY_PRODUCTS)
+EXTRA_PRODUCTS.extend(STORE_PRODUCTS)
 PRODUCTS.extend(Product(**p) for p in EXTRA_PRODUCTS)
 for p in PRODUCTS:
     if p.id == 'p6':
@@ -309,6 +313,31 @@ for store in STORES:
             asset = 'reel-burger' if store.department == 'food' and index == 0 else 'reel-tomato' if index == 0 else 'reel-pasta'
             medium.url = image(asset)
             medium.video_web = image(asset + '-webm')
+
+# Imported legacy photos now share the same managed-media lifecycle as new assets.
+# Sources remain reproducible for the one-time importer, never fetched at runtime.
+LEGACY_MEDIA_SOURCES = {}
+
+
+def managed_legacy_image(url):
+    if not url.startswith('http'):
+        return url
+    key = 'legacy-' + hashlib.sha256(url.encode()).hexdigest()[:16]
+    LEGACY_MEDIA_SOURCES[key] = url
+    return image(key)
+
+
+for p in PRODUCTS:
+    p.image = managed_legacy_image(p.image)
+for banner in BANNERS:
+    banner.image = managed_legacy_image(banner.image)
+for store in STORES:
+    store.logo = managed_legacy_image(store.logo)
+    for medium in store.media:
+        if medium.thumbnail:
+            medium.thumbnail = managed_legacy_image(medium.thumbnail)
+        if medium.type == 'image':
+            medium.url = managed_legacy_image(medium.url)
 
 # ---------- Routes ----------
 app.state.products = PRODUCTS
@@ -446,10 +475,11 @@ async def create_order(payload: OrderCreate):
 @api_router.get("/orders", response_model=List[Order])
 async def list_orders():
     docs = await db.orders.find({}, {"_id": 0}).sort("created_at", -1).to_list(200)
+    product_images = {p.id: p.image for p in PRODUCTS}
     for doc in docs:
         for item in doc.get('items', []):
-            if item['id'] == 'p6':
-                item['image'] = image('snacks')
+            if item['id'] in product_images:
+                item['image'] = product_images[item['id']]
     return [Order(**d) for d in docs]
 
 
@@ -458,15 +488,16 @@ async def get_order(order_id: str):
     doc = await db.orders.find_one({"id": order_id}, {"_id": 0})
     if not doc:
         raise HTTPException(status_code=404, detail="Order not found")
+    product_images = {p.id: p.image for p in PRODUCTS}
     for item in doc.get('items', []):
-        if item['id'] == 'p6':
-            item['image'] = image('snacks')
+        if item['id'] in product_images:
+            item['image'] = product_images[item['id']]
     return Order(**doc)
 
 
 @api_router.get('/catalog')
 async def catalog():
-    return {'brands': BRANDS, 'products': PRODUCTS, 'categories': CATEGORIES, 'events': EVENTS, 'sample': True}
+    return {'brands': BRANDS, 'products': PRODUCTS, 'categories': CATEGORIES, 'events': EVENTS, 'themed_stores': THEMED_STORES, 'sample': True}
 
 
 @api_router.get('/reels')

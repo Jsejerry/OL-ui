@@ -36,7 +36,7 @@ export default function ProductDetail() {
     <View style={{ flex: 1, backgroundColor: colors.surface }} testID="product-detail">
       <TouchableOpacity
         style={[styles.backBtn, { top: insets.top + 8 }]}
-        onPress={() => router.back()}
+        onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')}
         testID="pd-back-btn"
       >
         <Icon name="chevron-back" size={22} color={colors.onSurface} />

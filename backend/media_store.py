@@ -1,6 +1,8 @@
 """Public, curated catalogue assets, stored in managed object storage."""
 import os
 import threading
+import time
+import random
 from pathlib import Path
 from functools import lru_cache
 import requests
@@ -28,9 +30,15 @@ def init_storage():
 
 
 def put_object(path, data, content_type):
-    response = requests.put(f'{STORAGE_URL}/objects/{path}', headers={'X-Storage-Key': init_storage(), 'Content-Type': content_type}, data=data, timeout=120)
-    response.raise_for_status()
-    return response.json()
+    global storage_key
+    for attempt in range(4):
+        response = requests.put(f'{STORAGE_URL}/objects/{path}', headers={'X-Storage-Key': init_storage(), 'Content-Type': content_type}, data=data, timeout=120)
+        if response.status_code not in (500, 502, 503) or attempt == 3:
+            response.raise_for_status()
+            return response.json()
+        if response.status_code == 503 and attempt == 0:
+            storage_key = None
+        time.sleep(2 ** attempt + random.random())
 
 
 @lru_cache(maxsize=100)

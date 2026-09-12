@@ -1,5 +1,29 @@
 # OneCity — Hyperlocal Shopping & Discovery
 
+## Current update — categories, navigation and missing-media restoration
+User requests incremental updates only: Instamart-inspired categories while keeping company lime/forest theme; 5 themed stores with original 3D bags, Indian Ganesh Chaturthi/Navratri animation and subdued fitness animation; compact catalogue, long scrolling Home/categories, scroll-away departments; back and persistent bottom navigation on all pages; global add animation; many demo brands; richer AI. Follow-up bug: all previous icons and illustrations missing after import.
+
+### Implemented and verified
+- Root cause of missing images: imported MongoDB contained **zero catalog_assets records**. Re-ran legacy managed imports (seed_media.py, seed_city_media.py, seed_motion_assets.py, transcode_reels.py), restored 5 department icons/5 vendor illustrations, logo, product photos and browser/native reel files. Installed missing CairoSVG dependency. Replaced unavailable butter source with explicit illustrative artwork. Added bounded retry for transient storage PUT 500/502/503; no retries for quota/auth errors.
+- 46 approved demo brands, 84 products, 32 categories; existing IDs preserved. New module store_catalog.py provides themed collections and product/brand expansion. seed_store_assets.py imports 5 individually generated bags and 18 isolated product illustrations into managed storage.
+- Categories now scrolls with Home/department behaviour: 5-store rail, celebration banner, 8 category groups with 4-column tiles, budget shelves, brands, events and AI shortcut.
+- /collection/[id]: Festive Time, Sports & Fitness, Trending Now, Gourmet Treats, Everyday Essentials; unique animated motifs, 2 festival modes, within-store search, budget/category filters, brand collections and dense products. Animations respect reduced motion.
+- /category/[id]: compact 2-column products and image sidebar; search, price sorting, under-₹99 and brand filters; loading/retry/empty states.
+- Root-level BottomNavigation replaces tab-only bar, remains on detail/search/assistant/checkout pages. Back buttons with direct-entry fallback; shared compact search/back after main headers scroll away. All major original routes retained.
+- Global cart spring popup uses cart context add events from every source. Existing animated floating cart retained. Cards reduced to 99px images/140px rails with accessible 44px add controls. Persisted media URLs rebind to current backend after import.
+- AI: real existing GPT-5.4 stream retained, 5 shopping starters, basket budgets ₹300/₹500/₹1000, vegetarian preference, trusted catalogue-derived cart review, context-aware collection prompt, validated recommendation totals and add-missing-items basket. No automatic cart changes or live price claims.
+- Self-checks: TypeScript passes; modified Python/components lint pass. Pre-existing root icon prewarm lint warning remains. Mobile screenshots show restored 5 store bags, Home/category hub, festive/Navratri switching, and global add popup.
+- Testing agent iteration7: existing backend tests15/15, new3/4; responsive UI/navigation/store/cart/AI/reels checks passed. Found one dead legacy store thumbnail. Replaced it with managed snacks, then preserved ALL other external legacy photographs in managed storage with `seed_legacy_media.py`. Catalogue/store/banner runtime payloads now use managed images only. Saved cart/order image fields refresh to canonical product images without changing prices/quantities.
+- Testing agent iteration8 POST-FIX: iteration7 full suite4/4 and focused media/cart/orders3/3. All media decoded, all requested icons and illustrations load, previously missing product/store images restored. UI confirms cart reload persistence, order images and bottom nav. Reports `/app/test_reports/iteration_7.json`, `/app/test_reports/iteration_8.json`; no open bugs reported. Final store ordering prioritises each theme’s primary category (e.g. fitness equipment before snacks).
+
+### P0 / P1 / P2
+- P0: no open issues in verified update scope; await user feedback.
+- P1: native iOS/Android haptics/voice/keyboard testing; live catalogue/fulfilment not part of current demo request.
+- P2: saved themed shopping lists / seasonal collections.
+
+### Architecture and data boundaries
+Existing Expo Router + React Native frontend, FastAPI backend and MongoDB unchanged. Catalog data is explicitly user-approved demonstration content, not merchant integrations. Media is stored through existing managed storage proxy. Assistant sessions and sample orders/enquiries persist in MongoDB; cart persists in AsyncStorage. Current source files and original implementation documentation follow below.
+
 ## Latest request — interactive motion refresh (September 2026)
 User explicitly requested incremental changes only: smaller logo, uploaded folded lime 1 button, tap -> Instagram-style Discover ad grid; long hold -> AI shopping assistant; preserve fullscreen reel layout. Instamart-inspired floating animated cart, Cart/One Saver tabs, scroll-away search/departments, green/white/black 3D category icons, curvy controls, small readable typography, five vendor illustrations and interactive delivery. Followup emphasized cool interactive animations in floating bars. User approved defaults and existing AI setup.
 

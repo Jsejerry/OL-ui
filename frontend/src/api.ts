@@ -7,7 +7,7 @@ export const BACKEND = Platform.OS === 'web' && typeof window !== 'undefined' ? 
 export const API = BACKEND + '/api';
 export const mediaUrl = (key: string) => `${API}/media/${key}`;
 function resolveMedia(value: any): any {
-  if (typeof value === 'string') return value.startsWith('/api/media/') ? BACKEND + value : value;
+  if (typeof value === 'string') { const media = value.match(/^(?:https?:\/\/[^/]+)?\/api\/media\/(.+)$/); return media ? mediaUrl(media[1]) : value; }
   if (Array.isArray(value)) return value.map(resolveMedia);
   if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, resolveMedia(v)]));
   return value;
@@ -74,7 +74,8 @@ export async function apiPost<T>(path: string, body: unknown): Promise<T> {
 
 export type Brand = { id: string; name: string; department: string; logo: string; image: string; tagline: string };
 export type EventListing = { id: string; title: string; kind: string; subtitle: string; venue: string; price: number; image: string; tag: string; slots: string[] };
-export type Catalog = { brands: Brand[]; products: Product[]; categories: Category[]; events: EventListing[] };
+export type ThemedStore = { id: string; name: string; subtitle: string; eyebrow: string; categories: string[]; icon: string; image: string; sections: string[] };
+export type Catalog = { brands: Brand[]; products: Product[]; categories: Category[]; events: EventListing[]; themed_stores: ThemedStore[] };
 export type Reel = { id: string; video: string; video_web: string; product: Product; caption: string; creator: string; likes: number; tag: string; brand: Brand };
 export type AISearchResult = { query: string; product_ids: string[]; explanation: string; transcript?: string };
 export async function uploadSearch(mode: 'image' | 'voice', uri: string, name: string, type: string, signal: AbortSignal): Promise<AISearchResult> {

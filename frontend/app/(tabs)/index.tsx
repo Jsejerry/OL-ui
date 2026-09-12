@@ -9,6 +9,7 @@ import { useCatalog } from '@/src/use-catalog';
 import { useFollowedStores } from '@/src/followed';
 import { TrendingCards } from '@/src/components/home-promos';
 import { BrandSpotlight } from '@/src/components/brand-spotlight';
+import { StoreRail } from '@/src/components/store-rail';
 import { CityScroll } from '@/src/motion';
 import { BrandRail, CategoryRail, EventRail, LoadState, ProductRail, SectionTitle } from '@/src/components/catalog-sections';
 
@@ -26,6 +27,8 @@ export default function HomeScreen() {
     {followed.length > 0 && <><SectionTitle id="followed" title="Your local favourites" subtitle="The stores you follow, always first." /><ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.stores}>{followed.map(s => <Pressable testID={`followed-store-${s.id}`} key={s.id} style={styles.store} onPress={go(`/store/${s.id}`)}><Image source={s.logo} style={styles.storeImage} /><Text style={styles.storeName}>{s.name}</Text><Icon name="heart" size={13} color={colors.forest} /></Pressable>)}</ScrollView></>}
     <BrandSpotlight switchable />
     <View style={styles.sheet}>
+    <SectionTitle id="home-shop-by-store" title="A little world for every mood" subtitle="SHOP BY STORE · Five edits, made for you." onPress={go('/categories')} />
+    <StoreRail stores={data.themed_stores || []} scope="home" />
     <SectionTitle id="trending" title="Trending in Latur" subtitle="Good finds. Everyone’s talking." onPress={go('/search?collection=trending')} />
     <TrendingCards products={selected(['f1', 'f5', 'b1', 'f3'])} />
     <SectionTitle id="top-picks" title="Top picks for you" subtitle="A few things we think you’ll love." onPress={go('/search?collection=picks')} />
@@ -49,6 +52,8 @@ export default function HomeScreen() {
     <EventRail events={data.events} scope="home-book" />
     <SectionTitle id="home-stores" title="Meet your neighbourhood" subtitle="Independent stores. A little closer to home." />
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.stores}>{stores.filter(s => s.id.startsWith('s')).map(s => <Pressable testID={`store-card-${s.id}`} key={s.id} style={styles.store} onPress={go(`/store/${s.id}`)}><Image source={s.logo} style={styles.storeImage} /><View><Text style={styles.storeName}>{s.name}</Text><Text style={styles.meta}>{s.delivery_time} · {s.rating} rating</Text></View></Pressable>)}</ScrollView>
+    <SectionTitle id="home-budget" title="Little prices. Lots to love." subtitle="Everything here under ₹99" onPress={go('/search?collection=budget')} /><ProductRail products={data.products.filter(p => p.price < 99).slice(-10)} scope="home-budget" />
+    <SectionTitle id="home-brand-discovery" title="Meet your next favourite brand" subtitle={`${data.brands.length} demo brands, one little city`} /><BrandRail brands={data.brands.slice(16)} scope="home-new-brands" />
     <View style={styles.footer}><Text style={styles.footerTitle}>One city. Endless possibilities.</Text><Text style={styles.footerSub}>Made for Latur. Made for you.</Text><Text testID="sample-catalog-notice" style={styles.notice}>Explore our sample catalogue. Brand listings, prices and booking experiences are for demonstration.</Text></View>
     </View>
   </CityScroll>;
