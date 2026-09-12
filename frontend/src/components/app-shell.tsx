@@ -15,6 +15,7 @@ import { useCityScroll } from '../motion';
 import { FloatingCart } from './floating-cart';
 import { BottomNavigation } from './bottom-navigation';
 import { CartCelebration } from './cart-celebration';
+import { DeliveryLocationContext } from '../delivery-location';
 
 export function BrandMark({ large = false }: { large?: boolean }) { return <View style={[styles.mark, large && styles.largeMark]}><Text style={[styles.one, large && styles.largeOne]}>1</Text></View>; }
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -29,7 +30,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [location, setLocation] = useState('Latur, Maharashtra'); const [draft, setDraft] = useState(location); const [editing, setEditing] = useState(false); const [error, setError] = useState('');
   useEffect(() => { AsyncStorage.getItem('one-latur-location').then(v => { if (v) setLocation(v); }).catch(() => {}); }, []);
   const save = async () => { if (draft.trim().length < 3) return; try { await AsyncStorage.setItem('one-latur-location', draft.trim()); setLocation(draft.trim()); setEditing(false); } catch { setError('Could not save. Please try again.'); } };
-  return <View style={styles.container}>
+  return <DeliveryLocationContext.Provider value={{ location, edit: () => { setDraft(location); setError(''); setEditing(true); } }}><View style={styles.container}>
     {!reels && <Animated.View testID="city-header" onLayout={e => { if (scrolling) setHeaderHeight(e.nativeEvent.layout.height); }} style={scrolling ? [styles.scrollingHeader, { transform: [{ translateY: y.interpolate({ inputRange: [0, headerHeight], outputRange: [0, -headerHeight], extrapolate: 'clamp' }) }] }] : undefined}><LinearGradient testID="city-header-gradient" colors={[palette.top, palette.mid]}>
       <View style={{ paddingTop: insets.top }}><View style={styles.header}>
         <View style={styles.topRow}><Pressable testID="global-back-button" accessibilityLabel="Go to previous page" onPress={back} style={styles.iconButton}><Icon name="arrow-back" size={20} color={colors.onSurface} /></Pressable><Pressable testID="header-brand-home" accessibilityLabel="OneCity home" onPress={() => router.navigate('/(tabs)' as any)} style={styles.brand}><Image testID="company-logo" accessibilityLabel="OneCity" source={mediaUrl('city-logo')} contentFit="contain" style={styles.logo} /></Pressable>
@@ -41,11 +42,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     </LinearGradient></Animated.View>}
     {scrolling && compact && <View testID="compact-header" style={[styles.compact, { top: insets.top + 6 }]}><Pressable testID="compact-back" accessibilityLabel="Go back" style={styles.compactButton} onPress={back}><Icon name="arrow-back" size={19} color={colors.forest} /></Pressable><Pressable testID="compact-expand-header" accessibilityLabel="Show departments" style={styles.compactButton} onPress={() => scrollRef.current?.scrollTo({ y: 0, animated: true })}><Icon name="grid-outline" size={17} color={colors.forest} /><Text style={styles.compactText}>Explore</Text></Pressable><Pressable testID="compact-search" accessibilityLabel="Search products" style={styles.compactButton} onPress={() => router.push('/search' as any)}><Icon name="search-outline" size={17} color={colors.forest} /><Text style={styles.compactText}>Search OneCity</Text></Pressable></View>}
     <SafeAreaInsetsContext.Provider value={{ ...insets, top: 0, bottom: 0 }}><View style={[styles.body, reels && { paddingTop: insets.top }]}>{utility && <View style={styles.utility}><Pressable testID="page-back-button" accessibilityLabel="Go back" onPress={back} style={styles.iconButton}><Icon name="arrow-back" size={20} color={colors.forest} /></Pressable><Text testID="page-navigation-label" style={styles.compactText}>OneCity</Text><Pressable testID="page-search-button" accessibilityLabel="Search" onPress={() => router.push('/search')} style={styles.iconButton}><Icon name="search-outline" size={20} color={colors.forest} /></Pressable></View>}{children}</View></SafeAreaInsetsContext.Provider>
-    {(scrolling || path === '/discover' || path.startsWith('/category/') || path.startsWith('/collection/') || path.startsWith('/brand/') || path === '/search') && <FloatingCart bottom={Math.max(insets.bottom, 9) + 84} />}
+    {(scrolling || path === '/discover' || path.startsWith('/category/') || path.startsWith('/collection/') || path.startsWith('/brand/') || path === '/search') && <FloatingCart compact={path.startsWith('/category/')} bottom={Math.max(insets.bottom, 9) + 84} />}
     <BottomNavigation />
     <CartCelebration top={insets.top + 8} />
     <Modal visible={editing} transparent animationType="slide" onRequestClose={() => setEditing(false)}><KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modal}><View testID="location-modal" style={styles.sheet}><View style={styles.topRow}><Text style={styles.modalTitle}>Your little corner of the city</Text><Pressable testID="close-location" style={styles.iconButton} onPress={() => setEditing(false)}><Icon name="close" size={20} color={colors.onSurface} /></Pressable></View><Text style={styles.help}>Enter your area in Latur. Sample delivery address.</Text><TextInput testID="location-input" value={draft} onChangeText={setDraft} placeholder="Area, Latur" style={styles.input} maxLength={100} />{!!error && <Text testID="location-error" style={styles.help}>{error}</Text>}<Pressable testID="save-location" disabled={draft.trim().length < 3} style={[styles.save, draft.trim().length < 3 && styles.disabled]} onPress={save}><Text style={styles.saveText}>Save location</Text></Pressable></View></KeyboardAvoidingView></Modal>
-  </View>;
+  </View></DeliveryLocationContext.Provider>;
 }
 const styles = StyleSheet.create({
   utility: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.surface, paddingHorizontal: 14, height: 44 },

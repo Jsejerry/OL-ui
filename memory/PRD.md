@@ -1,5 +1,14 @@
 # OneCity — Hyperlocal Shopping & Discovery
 
+## Subcategory reference-layout refinement (current)
+- User requested: "i want you to make a small change i want this type of scroll animation and same layout for subcategory"; clarified "make it look almost similar and position of everything search bar timer items". Keep existing company theme and persistent bottom navigation.
+- Scoped to `/category/[id]` and category-only components; shared product cards on Home/collections remain unchanged.
+- Reference-positioned back/title/delivery-address/share/search header; search icon expands local search. Delivery address uses existing global location editor/state. Header compresses 65→52px as products scroll; solid sticky Filters/Sort/Brand/Type row and independently scrollable ~23%-width sidebar.
+- Borderless two-column product tiles: photo + top-right save heart, weight band + overlapping outlined ADD, derived per-100g/ml cost when pack data allows, price/MRP, green discount, name, actual sample rating and delivery-minute estimate. No fabricated stock counts/reviews/nutrition/bought-earlier badges.
+- Filters, price/rating sorting, brand, pack size sheets. Local saved products persist via AsyncStorage and can be filtered; responsive widths preserve two columns at360/390. Spring entrance respects reduced-motion settings. Product details/cart increment/decrement/popups retained.
+- Subcategory-only centred compact cart pill with product thumbnails, View cart, item count/subtotal and arrow, above unchanged bottom navigation. Other pages retain their larger cart strip.
+- TypeScript passed; loaded390px screenshots confirm reference layout, ADD and compact cart, sort sheet. Comprehensive focused testing pending.
+
 ## Current update — categories, navigation and missing-media restoration
 User requests incremental updates only: Instamart-inspired categories while keeping company lime/forest theme; 5 themed stores with original 3D bags, Indian Ganesh Chaturthi/Navratri animation and subdued fitness animation; compact catalogue, long scrolling Home/categories, scroll-away departments; back and persistent bottom navigation on all pages; global add animation; many demo brands; richer AI. Follow-up bug: all previous icons and illustrations missing after import.
 

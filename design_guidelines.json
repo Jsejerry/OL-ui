@@ -1,82 +1,89 @@
 {
-  "theme_preservation": "Keep existing company theme from /app/frontend/src/theme.ts. Use lime (#76EC00), forest (#174D37) for highlights, and cityFade for pastel backgrounds.",
   "typography": {
-    "headings": "Bold sans-serif with tight tracking (React Native text styling).",
-    "body": "Clean readable sans-serif."
+    "font_family": "System Sans-serif (Inter/Roboto equivalent in Expo)",
+    "hierarchy": {
+      "header_title": "text-lg font-bold tracking-tight text-gray-900",
+      "search_text": "text-base font-normal text-gray-800",
+      "filter_pill": "text-sm font-medium text-gray-700",
+      "category_sidebar": "text-xs text-center font-medium",
+      "product_title": "text-sm font-semibold leading-tight text-gray-900",
+      "delivery_estimate": "text-xs font-medium text-emerald-600",
+      "price": "text-base font-bold text-gray-900",
+      "quantity": "text-sm font-bold text-gray-900"
+    }
   },
   "colors": {
-    "brand_primary": "#76EC00",
-    "brand_dark": "#174D37",
-    "background_gradient_1": "linear-gradient(180deg, #F0FFD7 0%, #FFFFFF 100%)",
-    "bag_gradient_bg": "linear-gradient(135deg, #E6F4EA, #F1FBEA)"
-  },
-  "visual_enhancers": {
-    "3D_bags": "Use 3D bag assets with gradient backgrounds for the Shop by Store categories.",
-    "add_to_cart": "Lottie popup or Animated scale-in overlay when adding to cart.",
-    "scrollaway_header": "Animated.View tied to scroll offset to hide top categories and show search bar.",
-    "theme_animations": "Indian festival animations (Navratri/Ganesh) for Festive Time, powerful dull animation for Fitness."
-  },
-  "components": [
-    {
-      "name": "CategoriesPage",
-      "description": "Instamart-inspired categories hub."
-    },
-    {
-      "name": "ShopByStore",
-      "description": "Horizontal or grid section showing the 5 themed stores with 3D bag icons."
-    },
-    {
-      "name": "StoreCategoryCard",
-      "description": "Card with 3D bag and items inside, placed on gradient background."
-    },
-    {
-      "name": "CompactProductCard",
-      "description": "Smaller items catalog to show more on screen."
-    },
-    {
-      "name": "PersistentBottomNav",
-      "description": "Bottom navigation bar that stays constant throughout the app."
-    }
-  ],
-  "layouts": {
-    "categories_grid": "Compact 3-column or 4-column grid for categories to fit more on screen.",
-    "scroll_behavior": "Make Home screen and Categories scrollable."
-  },
-  "image_urls": {
-    "3d_shopping_bags": [
-      "https://images.unsplash.com/photo-1761646238431-dd22150544e8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTV8MHwxfHNlYXJjaHwyfHwzZCUyMHNob3BwaW5nJTIwYmFnJTIwZ3JhZGllbnR8ZW58MHx8fHwxNzg5MjAzNjg0fDA&ixlib=rb-4.1.0&q=85",
-      "https://images.unsplash.com/photo-1677753669144-66e809db63e3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTV8MHwxfHNlYXJjaHw0fHwzZCUyMHNob3BwaW5nJTIwYmFnJTIwZ3JhZGllbnR8ZW58MHx8fHwxNzg5MjAzNjg0fDA&ixlib=rb-4.1.0&q=85",
-      "https://images.unsplash.com/photo-1761646238181-eb3d981b3085?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTV8MHwxfHNlYXJjaHwzfHwzZCUyMHNob3BwaW5nJTIwYmFnJTIwZ3JhZGllbnR8ZW58MHx8fHwxNzg5MjAzNjg0fDA&ixlib=rb-4.1.0&q=85"
-    ],
-    "festive_animations": [
-      "https://images.unsplash.com/photo-1757317990265-d99d5f10d05e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwxfHxJbmRpYW4lMjBmZXN0aXZhbCUyMGdhbmVzaCUyMG5hdnJhdHJpJTIwaWxsdXN0cmF0aW9ufGVufDB8fHx8MTc4OTIwMzY4NHww&ixlib=rb-4.1.0&q=85",
-      "https://images.unsplash.com/photo-1631406381509-e6f4535987e3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHw0fHxJbmRpYW4lMjBmZXN0aXZhbCUyMGdhbmVzaCUyMGdhbmVzaCUyMG5hdnJhdHJpJTIwaWxsdXN0cmF0aW9ufGVufDB8fHx8MTc4OTIwMzY4NHww&ixlib=rb-4.1.0&q=85"
-    ],
-    "brand_logos": [
-      "https://images.unsplash.com/photo-1783831954499-91feb35790f4?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTV8MHwxfHNlYXJjaHw0fHxncm9jZXJ5JTIwYnJhbmQlMjBsb2dvc3xlbnwwfHx8fDE3ODkyMDM2ODR8MA&ixlib=rb-4.1.0&q=85",
-      "https://images.unsplash.com/photo-1776093745837-4b2f17dc9512?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTV8MHwxfHNlYXJjaHwxfHxncm9jZXJ5JTIwYnJhbmQlMjBsb2dvc3xlbnwwfHx8fDE3ODkyMDM2ODR8MA&ixlib=rb-4.1.0&q=85"
-    ],
-    "fitness_animations": [
-      "https://images.unsplash.com/photo-1725289767206-e19c40c212bd?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MDV8MHwxfHNlYXJjaHw0fHwzZCUyMGZpdG5lc3MlMjBzcG9ydHMlMjBkdW1iZWxsJTIwaWNvbnxlbnwwfHx8fDE3ODkyMDM3MDN8MA&ixlib=rb-4.1.0&q=85"
+    "primary": "Company brand primary (pull from theme.js)",
+    "background": "bg-white",
+    "surface": "bg-gray-50",
+    "surface_active": "bg-blue-50 border-blue-500",
+    "text_primary": "text-gray-900",
+    "text_secondary": "text-gray-500",
+    "border": "border-gray-200",
+    "rules": [
+      "NO transparent backgrounds in sticky headers, overlays, or any surface over content. Use solid bg-white.",
+      "Hover/Active states must have clear contrast. Active sidebar items must have a distinct left-border or background highlight."
     ]
   },
-  "instructions_to_main_agent": [
-    "Implement a back button on every inner page header for easier navigation.",
-    "Design a Categories page inspired by Instamart, emphasizing tight spacing and small components.",
-    "Implement 'Shop by Store' with 5 themed categories: Festive time, Fitness and Sport, Trending in market, Gourmet Treats, Everyday Essentials.",
-    "For 'Shop by Store', use 3D bag icons displaying items inside, layered on gradient backgrounds.",
-    "Animate the scroll view: Top categories (Food, Groceries, Pharmacy, Beauty) must scroll away (hide), and a search bar must remain or appear.",
-    "Make product cards more compact (smaller items catalog) to fit more items on the screen.",
-    "Make the home screen and Categories pages scrollable.",
-    "Add-to-cart action should trigger a creative pop-up animation.",
-    "Ensure bottom navigation stays constant throughout the app. Use a Tab Navigator structure or place it outside individual screen stacks.",
-    "Reload all missing icons and illustrations throughout the app to fix missing images.",
-    "Apply specific themed animations when clicking 'Shop by Store' categories: Ganesh Chaturthi/Navratri style for Festive time, and a dull-colored powerful animation for Fitness and Sport."
+  "layouts": {
+    "screen_structure": "Flex column full height. Sticky Header -> Sticky Filter Row -> Flex Row (Sidebar + Content).",
+    "header": "Padding top for safe area. Flex row for delivery timer + share icon. Full width search bar underneath. MUST have solid bg-white with z-50.",
+    "filters": "Horizontal scroll, gap-3, padding-x-4, padding-y-2 border-b border-gray-100.",
+    "main_split": "Flex row, flex-1 bg-gray-50.",
+    "sidebar_left": "Width 24%. Border-right border-gray-200. Background gray-50. Vertical scroll for categories.",
+    "product_grid_right": "Width 76%. Background white. Padding-2."
+  },
+  "grids": {
+    "product_grid": "Two-column grid (numColumns=2). Gap 12px. Equal width columns.",
+    "product_card": "Flex column, relative layout. Image on top (aspect-square, ~100px height). Absolute add button bottom right or standard action row at bottom."
+  },
+  "motion": {
+    "scroll_animation": "Implement dual-scroll synchronization. Right SectionList drives left FlatList. Use onViewableItemsChanged on the right product grid to detect which category is active in view, and automatically scroll the left sidebar to the corresponding active index.",
+    "header_collapse": "Optional Animated.ScrollView for header to subtly hide search bar on scroll down, keeping delivery timer strictly sticky."
+  },
+  "component name": "SubcategoryLayout",
+  "component_path": [
+    "/app/frontend/app/category/[id].js",
+    "/app/frontend/src/components/product-card.js",
+    "/app/frontend/theme.js"
   ],
-  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
-    "Do not use transparent backgrounds under text or icons without a blur or solid color.",
-    "Include `data-testid` on all interactive elements.",
-    "Use React Native Animated or Reanimated for smooth scroll-away headers.",
-    "Follow company theme colors from `/app/frontend/src/theme.ts`."
+  "visual enhancers": {
+    "shadows": "Subtle shadow-sm on product cards. Header needs shadow-sm to distinguish from scrolling content below.",
+    "borders": "1px border-gray-100 on product cards, rounded-xl.",
+    "badges": "Delivery time badge needs light background (e.g., bg-emerald-50) with emerald icon."
+  },
+  "accessibility": {
+    "guidelines": "All interactive elements MUST include data-testid. Use descriptive roles for buttons.",
+    "test_ids": [
+      "data-testid='category-sidebar-item'",
+      "data-testid='product-add-to-cart'",
+      "data-testid='product-card'",
+      "data-testid='search-bar-input'",
+      "data-testid='subcategory-filter-pill'"
+    ]
+  },
+  "media": {
+    "image_handling": "Product images must have aspect-ratio 1, resizeMode='contain'.",
+    "placeholders": "Use default gray View (bg-gray-100) if image is loading."
+  },
+  "3d libraries": "None required for this interface.",
+  "image_urls": [],
+  "instructions_to_main_agent": [
+    "Target file is exactly /app/frontend/app/category/[id].js (Use .js extension, NEVER .tsx per explicit instructions).",
+    "Layout Construction: Create a solid white sticky header with Delivery Timer (top left), Share (top right), and Search bar (full width bottom). Ensure z-index is high to prevent overlap.",
+    "Below the search bar, add a horizontally scrollable filter row for 'Sort', 'Brand', etc. pills.",
+    "Main Content Split: Use a flex row. Left side width is 24% for the narrow vertical category sidebar. Right side width is 76% for the two-column product grid.",
+    "Update src/components/product-card.js: Ensure it holds the Image, Title, Delivery min estimate row (⚡ X mins), Price, and an Add/Quantity toggle matching dense e-commerce UI.",
+    "Scroll Animation Logic: Implement right-to-left list synchronization. Map right-side scroll position to left-side active category using React Native's `onViewableItemsChanged` on the right-side list, updating the active state of the left category sidebar.",
+    "Ensure the bottom navigation persists and remains unchanged.",
+    "DO NOT invent mock data for reviews or nutrition labels. Use existing data mapped from the context.",
+    "Ensure all backgrounds that overlap scrolling content are SOLID (bg-white), strictly no transparency."
+  ],
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
+    "DO NOT use raw centered layouts for text.",
+    "DO NOT use complete transparent backgrounds in headers or dropdowns. Solid fills are mandatory to avoid content clash.",
+    "Always apply layered design elements with z-index hierarchy and subtle shadows.",
+    "Include data-testid on every interactive element (button, input, tab, etc).",
+    "Adhere to mobile-first precise geometry. Use exact spacing (gap-3, p-4) to match dense, high-utility subcategory design (like fast-commerce interfaces)."
   ]
 }
