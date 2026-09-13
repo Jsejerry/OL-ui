@@ -63,7 +63,7 @@
     "/app/test_reports/artifacts_iter6_ui_vendor/vendor_groups.jpeg"
   ],
   "action_items": [
-    "Fix preview CORS origin mapping so Access-Control-Allow-Origin matches https://jsejerry-ol.preview.emergentagent.com for POST preflight requests.",
+    "Fix preview CORS origin mapping so Access-Control-Allow-Origin matches https://ol-components-1.preview.emergentagent.com for POST preflight requests.",
     "Retest assistant session/chat UI after CORS fix (streaming, follow-up memory, add-to-cart cards).",
     "Retest cart coupon apply and checkout order creation after CORS fix.",
     "Investigate vendor-note group derivation to ensure all five intended groups appear for p1/p4/f1/b1/sneak1.",
@@ -85,5 +85,5 @@
   "retest_needed": true,
   "should_main_agent_self_test": false,
   "context_for_next_testing_agent": "Start with CORS verification from public origin using OPTIONS on /api/assistant/sessions, /api/coupons/apply, /api/orders. GET routes and managed v2 media keys are healthy. Long-press vs quick tap behavior is correct from Home.",
-  "rca_of_issue": "Reproduced in Playwright console and curl preflight. OPTIONS requests to /api/orders and /api/assistant/sessions from Origin https://jsejerry-ol.preview.emergentagent.com return Access-Control-Allow-Origin set to a different cluster domain (not request origin). Browser blocks subsequent POSTs, breaking assistant UI, coupon apply, and checkout order placement."
+  "rca_of_issue": "Reproduced in Playwright console and curl preflight. OPTIONS requests to /api/orders and /api/assistant/sessions from Origin https://ol-components-1.preview.emergentagent.com return Access-Control-Allow-Origin set to a different cluster domain (not request origin). Browser blocks subsequent POSTs, breaking assistant UI, coupon apply, and checkout order placement."
 }

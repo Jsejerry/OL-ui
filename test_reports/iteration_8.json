@@ -39,6 +39,6 @@
   "seed_data_creation": "Created one runtime sample order during canonicalization verification (API test data).",
   "retest_needed": false,
   "should_main_agent_self_test": true,
-  "context_for_next_testing_agent": "Validated at https://jsejerry-ol.preview.emergentagent.com (390px mobile viewport): department icons, 5 themed store bag illustrations, /store/s3 second thumbnail=/api/media/snacks, target products p2/p7/p14/a2 image fetch/decode, cart add+reload persistence with managed images, orders list/detail canonical image behavior, and bottom navigation visibility unaffected on tested routes. No frontend error elements detected.",
+  "context_for_next_testing_agent": "Validated at https://ol-components-1.preview.emergentagent.com (390px mobile viewport): department icons, 5 themed store bag illustrations, /store/s3 second thumbnail=/api/media/snacks, target products p2/p7/p14/a2 image fetch/decode, cart add+reload persistence with managed images, orders list/detail canonical image behavior, and bottom navigation visibility unaffected on tested routes. No frontend error elements detected.",
   "rca_of_issue": "Previous HIGH media bug is resolved. Root cause had been stale external runtime image dependency; current implementation serves managed media and canonicalizes stale cart/order image fields by product id, preventing recurrence from legacy URLs."
 }
