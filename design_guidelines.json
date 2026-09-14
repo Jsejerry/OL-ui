@@ -1,89 +1,203 @@
 {
-  "typography": {
-    "font_family": "System Sans-serif (Inter/Roboto equivalent in Expo)",
-    "hierarchy": {
-      "header_title": "text-lg font-bold tracking-tight text-gray-900",
-      "search_text": "text-base font-normal text-gray-800",
-      "filter_pill": "text-sm font-medium text-gray-700",
-      "category_sidebar": "text-xs text-center font-medium",
-      "product_title": "text-sm font-semibold leading-tight text-gray-900",
-      "delivery_estimate": "text-xs font-medium text-emerald-600",
-      "price": "text-base font-bold text-gray-900",
-      "quantity": "text-sm font-bold text-gray-900"
+  "project_name": "OneCity Mobile App Incremental Redesign",
+  "archetype": "Pastel & High-Density Retail Micro-Themes",
+  "navigation_rules": {
+    "home_page": {
+      "show_back_button": false,
+      "header_style": "Company Green brand header with location selector, brand logo, share and search entry"
+    },
+    "opened_pages": {
+      "show_back_button": true,
+      "header_style": "Sticky top bar with visible back chevron (data-testid='nav-back-button'), screen title, search icon, and department-specific pastel background"
     }
   },
-  "colors": {
-    "primary": "Company brand primary (pull from theme.js)",
-    "background": "bg-white",
-    "surface": "bg-gray-50",
-    "surface_active": "bg-blue-50 border-blue-500",
-    "text_primary": "text-gray-900",
-    "text_secondary": "text-gray-500",
-    "border": "border-gray-200",
-    "rules": [
-      "NO transparent backgrounds in sticky headers, overlays, or any surface over content. Use solid bg-white.",
-      "Hover/Active states must have clear contrast. Active sidebar items must have a distinct left-border or background highlight."
+  "grid_and_layout_strategy": {
+    "home_page_products": {
+      "items_per_row": 3,
+      "layout_type": "3-column grid (31.5% item width with gap-2/gap-3)",
+      "card_style": "Compact vertical item card with thumbnail, title max 2 lines, weight label, price, and floating + ADD pill button"
+    },
+    "subcategory_detail_pages": {
+      "items_per_row": 2,
+      "layout_type": "Instamart-inspired split layout: 24% width fixed vertical subcategory sidebar on left, 76% width 2-column product grid on right",
+      "card_style": "Clean borderless card with product photo, badge/discount tag, weight/unit selector, price comparison, and prominent ADD button"
+    }
+  },
+  "category_pastel_palettes": {
+    "home": {
+      "mode": "Company Green Signature",
+      "primary": "#174D37",
+      "accent": "#76EC00",
+      "soft_bg": "#F0FFD7",
+      "surface": "#FFFFFF",
+      "card_bg": "#F8F9F5"
+    },
+    "food": {
+      "mode": "Warm Sunset Pastel",
+      "primary": "#D9531E",
+      "accent": "#FF8A3D",
+      "soft_bg": "#FFF4ED",
+      "surface": "#FFFFFF",
+      "card_bg": "#FFFAF5",
+      "border": "#FFE3D1"
+    },
+    "grocery": {
+      "mode": "Fresh Botanical Pastel",
+      "primary": "#2E7D32",
+      "accent": "#4CAF50",
+      "soft_bg": "#EBFBEE",
+      "surface": "#FFFFFF",
+      "card_bg": "#F4FBF5",
+      "border": "#D2F5D6"
+    },
+    "shops": {
+      "mode": "Modern Lavender Pastel",
+      "primary": "#6D28D9",
+      "accent": "#8B5CF6",
+      "soft_bg": "#F3E8FF",
+      "surface": "#FFFFFF",
+      "card_bg": "#FAF5FF",
+      "border": "#E9D5FF"
+    },
+    "care": {
+      "mode": "Soft Peachy Rose Pastel",
+      "primary": "#BE185D",
+      "accent": "#EC4899",
+      "soft_bg": "#FFF0F5",
+      "surface": "#FFFFFF",
+      "card_bg": "#FFF5F8",
+      "border": "#FCE7F3"
+    },
+    "book_it": {
+      "mode": "Sky Cyan Pastel",
+      "primary": "#0369A1",
+      "accent": "#0EA5E9",
+      "soft_bg": "#E0F2FE",
+      "surface": "#FFFFFF",
+      "card_bg": "#F0F9FF",
+      "border": "#BAE6FD"
+    }
+  },
+  "festive_and_store_animations": {
+    "festive_theme": "Ganesh Chaturthi Bappa Festival Special",
+    "search_bar_to_festival_flow": {
+      "trigger": "Collection search bar interaction & festival banner focus",
+      "animation": "Smooth expanding gradient sweep from search bar into the festive collection grid with subtle floating modak/flower particle accents"
+    },
+    "bappa_character_animation": {
+      "component": "BappaAnimatedBanner",
+      "description": "Interactive animated Bappa mascot widget on top of festival collections with micro-bounce and aura glow effect",
+      "asset_type": "Vector SVG / Motion character with warm festive illumination"
+    },
+    "store_category_animations": {
+      "shop_by_store": "Pulsing live store badges and micro-tilt hover/tap effects on store storefront cards",
+      "product_entrance": "Staggered slide-and-fade animation for product items when switching categories or loading stores"
+    }
+  },
+  "brand_spotlight_strategy": {
+    "brands_list": [
+      { "name": "Amul", "category": "Dairy & Ice Cream", "logo_bg": "#FFF0E6" },
+      { "name": "Britannia", "category": "Bakery & Biscuits", "logo_bg": "#FFF5F5" },
+      { "name": "Nestlé", "category": "Packaged Foods", "logo_bg": "#EFF6FF" },
+      { "name": "Cadbury", "category": "Chocolates", "logo_bg": "#F3E8FF" },
+      { "name": "Nandini", "category": "Fresh Milk & Butter", "logo_bg": "#ECFDF5" },
+      { "name": "Nike", "category": "Sports & Apparel", "logo_bg": "#F3F4F6" },
+      { "name": "Nykaa", "category": "Beauty & Cosmetics", "logo_bg": "#FCE7F3" }
+    ],
+    "presentation": "Horizontal scrolling multi-brand logo rail + expandable brand grid, supporting brand filter taps"
+  },
+  "cart_character_overlay": {
+    "type": "Interactive 3D Waving Mascot Overlay (Not a plain static toast)",
+    "behaviour": "When any product ADD button is clicked, a 3D animated friendly shopping character pops up near bottom center, waving enthusiastically with item preview and 'Added to Cart!' celebratory feedback",
+    "dismiss_duration": 2200,
+    "interactive_elements": ["View Cart CTA button inside overlay", "Dismiss button", "Item quantity counter update"]
+  },
+  "profile_and_account_hierarchy": {
+    "sections": [
+      {
+        "id": "profile_edit",
+        "title": "Edit Profile",
+        "fields": ["Full Name", "Phone Number", "Email Address", "Avatar Selector"],
+        "test_id": "profile-edit-section"
+      },
+      {
+        "id": "saved_addresses",
+        "title": "Saved Addresses",
+        "fields": ["Home Address", "Work Address", "Add New Address Button"],
+        "test_id": "saved-addresses-section"
+      },
+      {
+        "id": "wishlist",
+        "title": "My Wishlist",
+        "description": "Saved items grid with instant 1-tap Move to Cart action",
+        "test_id": "wishlist-section"
+      },
+      {
+        "id": "refer_and_earn",
+        "title": "Refer & Earn",
+        "description": "Referral code display with Copy Code button and Native Share invite sheet",
+        "test_id": "refer-and-earn-section"
+      },
+      {
+        "id": "payment_preferences",
+        "title": "Payment Preferences",
+        "options": ["Saved UPI IDs (Google Pay, PhonePe, Paytm)", "Credit & Debit Cards", "Net Banking", "Cash on Delivery (COD)", "OneCity Wallet Balance"],
+        "test_id": "payment-preferences-section"
+      },
+      {
+        "id": "order_history",
+        "title": "My Orders & Tracking",
+        "test_id": "order-history-section"
+      },
+      {
+        "id": "customer_support",
+        "title": "Help & Customer Support",
+        "test_id": "customer-support-section"
+      }
     ]
   },
-  "layouts": {
-    "screen_structure": "Flex column full height. Sticky Header -> Sticky Filter Row -> Flex Row (Sidebar + Content).",
-    "header": "Padding top for safe area. Flex row for delivery timer + share icon. Full width search bar underneath. MUST have solid bg-white with z-50.",
-    "filters": "Horizontal scroll, gap-3, padding-x-4, padding-y-2 border-b border-gray-100.",
-    "main_split": "Flex row, flex-1 bg-gray-50.",
-    "sidebar_left": "Width 24%. Border-right border-gray-200. Background gray-50. Vertical scroll for categories.",
-    "product_grid_right": "Width 76%. Background white. Padding-2."
+  "typography": {
+    "font_family_heading": "Cabinet Grotesk / Outfit / System Display",
+    "font_family_body": "Inter / System Sans",
+    "sizes": {
+      "h1": "text-3xl font-bold tracking-tight",
+      "h2": "text-2xl font-semibold tracking-tight",
+      "h3": "text-xl font-semibold",
+      "body": "text-sm leading-relaxed",
+      "caption": "text-xs font-medium text-muted"
+    }
   },
-  "grids": {
-    "product_grid": "Two-column grid (numColumns=2). Gap 12px. Equal width columns.",
-    "product_card": "Flex column, relative layout. Image on top (aspect-square, ~100px height). Absolute add button bottom right or standard action row at bottom."
+  "component_mapping": {
+    "app_layout": "/app/frontend/app/_layout.tsx",
+    "tabs_layout": "/app/frontend/app/(tabs)/_layout.tsx",
+    "home_screen": "/app/frontend/app/(tabs)/index.tsx",
+    "account_screen": "/app/frontend/app/(tabs)/account.tsx",
+    "department_screen": "/app/frontend/src/components/department-screen.tsx",
+    "theme_tokens": "/app/frontend/src/theme.ts",
+    "departments_config": "/app/frontend/src/departments.ts",
+    "product_card": "/app/frontend/src/components/product-card.tsx",
+    "subcategory_product": "/app/frontend/src/components/subcategory-product.tsx",
+    "cart_celebration": "/app/frontend/src/components/cart-celebration.tsx",
+    "brand_spotlight": "/app/frontend/src/components/brand-spotlight.tsx"
   },
-  "motion": {
-    "scroll_animation": "Implement dual-scroll synchronization. Right SectionList drives left FlatList. Use onViewableItemsChanged on the right product grid to detect which category is active in view, and automatically scroll the left sidebar to the corresponding active index.",
-    "header_collapse": "Optional Animated.ScrollView for header to subtly hide search bar on scroll down, keeping delivery timer strictly sticky."
-  },
-  "component name": "SubcategoryLayout",
-  "component_path": [
-    "/app/frontend/app/category/[id].js",
-    "/app/frontend/src/components/product-card.js",
-    "/app/frontend/theme.js"
-  ],
-  "visual enhancers": {
-    "shadows": "Subtle shadow-sm on product cards. Header needs shadow-sm to distinguish from scrolling content below.",
-    "borders": "1px border-gray-100 on product cards, rounded-xl.",
-    "badges": "Delivery time badge needs light background (e.g., bg-emerald-50) with emerald icon."
-  },
-  "accessibility": {
-    "guidelines": "All interactive elements MUST include data-testid. Use descriptive roles for buttons.",
-    "test_ids": [
-      "data-testid='category-sidebar-item'",
-      "data-testid='product-add-to-cart'",
-      "data-testid='product-card'",
-      "data-testid='search-bar-input'",
-      "data-testid='subcategory-filter-pill'"
-    ]
-  },
-  "media": {
-    "image_handling": "Product images must have aspect-ratio 1, resizeMode='contain'.",
-    "placeholders": "Use default gray View (bg-gray-100) if image is loading."
-  },
-  "3d libraries": "None required for this interface.",
-  "image_urls": [],
   "instructions_to_main_agent": [
-    "Target file is exactly /app/frontend/app/category/[id].js (Use .js extension, NEVER .tsx per explicit instructions).",
-    "Layout Construction: Create a solid white sticky header with Delivery Timer (top left), Share (top right), and Search bar (full width bottom). Ensure z-index is high to prevent overlap.",
-    "Below the search bar, add a horizontally scrollable filter row for 'Sort', 'Brand', etc. pills.",
-    "Main Content Split: Use a flex row. Left side width is 24% for the narrow vertical category sidebar. Right side width is 76% for the two-column product grid.",
-    "Update src/components/product-card.js: Ensure it holds the Image, Title, Delivery min estimate row (⚡ X mins), Price, and an Add/Quantity toggle matching dense e-commerce UI.",
-    "Scroll Animation Logic: Implement right-to-left list synchronization. Map right-side scroll position to left-side active category using React Native's `onViewableItemsChanged` on the right-side list, updating the active state of the left category sidebar.",
-    "Ensure the bottom navigation persists and remains unchanged.",
-    "DO NOT invent mock data for reviews or nutrition labels. Use existing data mapped from the context.",
-    "Ensure all backgrounds that overlap scrolling content are SOLID (bg-white), strictly no transparency."
+    "Strictly enforce back button visibility: hidden on Home screen (index.tsx), visible on all nested/opened pages.",
+    "Implement 3 items per row grid on Home screen products using flex flex-row flex-wrap with item widths calc(33.33% - spacing) or 3-column layout.",
+    "Implement 2 items per row in subcategories next to the left vertical subcategory navigation bar.",
+    "Update theme.ts and departments.ts so Company Green (#174D37) is isolated to Home, while Food (Warm Sunset), Groceries (Fresh Botanical), Shops (Lavender), Care (Rose/Peachy), and Book It (Sky Cyan) render distinct pastel color palettes on screen header, backgrounds, and cards.",
+    "Add Bappa Ganesh Chaturthi festive theme animated banner connected to the collection search bar flow.",
+    "Expand brand spotlight to include multi-brand logos (Amul, Britannia, Nestle, Cadbury, Nandini, Nike, Nykaa) across Food, Groceries, and Shops.",
+    "Replace plain card toast on cart add with waving 3D character mascot overlay animation (cart-celebration.tsx).",
+    "Build complete working profile page (account.tsx) with profile edit, saved addresses, wishlist, refer & earn (copy/share code), and payment preferences.",
+    "Add explicit data-testid attributes (e.g., data-testid='nav-back-button', data-testid='product-card-add-button', data-testid='profile-edit-button') to all interactive components."
   ],
   "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
-    "DO NOT use raw centered layouts for text.",
-    "DO NOT use complete transparent backgrounds in headers or dropdowns. Solid fills are mandatory to avoid content clash.",
-    "Always apply layered design elements with z-index hierarchy and subtle shadows.",
-    "Include data-testid on every interactive element (button, input, tab, etc).",
-    "Adhere to mobile-first precise geometry. Use exact spacing (gap-3, p-4) to match dense, high-utility subcategory design (like fast-commerce interfaces)."
+    "Never use generic centered layouts or plain flat borders without padding.",
+    "Ensure high contrast compliance for all text placed on top of pastel backgrounds.",
+    "Ensure explicit hover and active press state styles on all buttons and cards.",
+    "Include data-testid on all interactive elements in kebab-case format."
   ]
+},
+  overwrite: true,
+  path: "/app/design_guidelines.json"
 }

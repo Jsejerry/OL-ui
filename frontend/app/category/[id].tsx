@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Animated, View, Text, StyleSheet, ScrollView, Pressable, KeyboardAvoidingView, Platform, useWindowDimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useCustomer } from '@/src/customer';
 import Icon from '@react-native-vector-icons/ionicons';
 import { colors } from '@/src/theme';
 import { useCatalog } from '@/src/use-catalog';
@@ -13,16 +13,13 @@ import { CategoryOption, SubcategoryOptions } from '@/src/components/subcategory
 import { useMotionAllowed } from '@/src/motion';
 
 type Sheet = 'filters' | 'sort' | 'brand' | 'type' | null;
-const SAVED_KEY = 'onecity.saved-products.v1';
 export default function CategoryScreen() {
   const { id } = useLocalSearchParams<{ id: string }>(); const router = useRouter(); const { data, isError, refetch } = useCatalog();
   const [query, setQuery] = useState(''); const [sort, setSort] = useState('recommended'); const [budget, setBudget] = useState(false); const [brand, setBrand] = useState(''); const [pack, setPack] = useState(''); const [offers, setOffers] = useState(false); const [savedOnly, setSavedOnly] = useState(false); const [sheet, setSheet] = useState<Sheet>(null);
-  const [saved, setSaved] = useState<string[]>([]); const [ready, setReady] = useState(false); const [notice, setNotice] = useState('');
+  const { saved, toggleSaved } = useCustomer(); const [notice, setNotice] = useState('');
   const sidebar = useRef<ScrollView>(null); const list = useRef<ScrollView>(null); const y = useRef(new Animated.Value(0)).current;
   const motion = useMotionAllowed(); const { width } = useWindowDimensions(); const railWidth = Math.max(80, Math.min(114, Math.round(width*0.23)));
   const itemWidth = (width-railWidth-32)/2;
-  useEffect(() => { AsyncStorage.getItem(SAVED_KEY).then(v => { if (v) { const ids = JSON.parse(v); if (Array.isArray(ids)) setSaved(ids.filter(s => typeof s === 'string')); } }).catch(() => setNotice('Could not load saved items.')).finally(() => setReady(true)); }, []);
-  useEffect(() => { if (ready) AsyncStorage.setItem(SAVED_KEY, JSON.stringify(saved)).catch(() => setNotice('Could not save your favourites.')); }, [saved, ready]);
   useEffect(() => { setQuery(''); setBrand(''); setPack(''); setSheet(null); setBudget(false); setOffers(false); setSavedOnly(false); setSort('recommended'); y.setValue(0); list.current?.scrollTo({ y: 0, animated: false }); }, [id, y]);
   useEffect(() => { list.current?.scrollTo({ y: 0, animated: false }); y.setValue(0); }, [query, y]);
   const categories = data?.categories.filter(c => c.department === data.categories.find(c => c.id === id)?.department) || [];
@@ -48,7 +45,7 @@ export default function CategoryScreen() {
       <View style={styles.products}>
         <ScrollView horizontal testID="subcategory-filter-row" showsHorizontalScrollIndicator={false} style={styles.filters} contentContainerStyle={styles.filterContent}>{[{ id: 'filters', test: 'category-filters', icon: 'options-outline', label: filterCount ? `Filters · ${filterCount}` : 'Filters', active: !!filterCount }, { id: 'sort', test: 'category-sort', icon: 'swap-vertical-outline', label: 'Sort', active: sort !== 'recommended' }, { id: 'brand', test: 'category-brand-filter', label: 'Brand', active: !!brand }, { id: 'type', test: 'category-type-filter', label: 'Type', active: !!pack }].map(f => <Pressable key={f.id} testID={f.test} accessibilityLabel={`Choose ${f.id}`} accessibilityState={{ selected: f.active }} onPress={() => setSheet(f.id as Sheet)} style={styles.filter}>{f.icon && <Icon name={f.icon as any} size={14} color={f.active ? colors.forest : colors.onSurface} />}<Text style={[styles.filterText, f.active && styles.activeText]}>{f.label}</Text><Icon name="chevron-down" size={10} color={f.active ? colors.forest : colors.onSurface} /></Pressable>)}</ScrollView>
         <Animated.ScrollView ref={list} testID="category-products-scroll" showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" scrollEventThrottle={16} onScroll={Animated.event([{ nativeEvent: { contentOffset: { y } } }], { useNativeDriver: false })} contentContainerStyle={styles.productContent}>
-          <View key={`${id}-${sort}-${brand}-${pack}-${budget}-${savedOnly}-${offers}`} style={styles.grid}>{products.map((p,index) => <View key={p.id} style={[styles.gridItem, { width: itemWidth, maxWidth: itemWidth }]}><SubcategoryProduct product={p} index={index} saved={saved.includes(p.id)} onSave={() => { if (ready) setSaved(current => current.includes(p.id) ? current.filter(s => s !== p.id) : [...current, p.id]); }} /></View>)}</View>
+          <View key={`${id}-${sort}-${brand}-${pack}-${budget}-${savedOnly}-${offers}`} style={styles.grid}>{products.map((p,index) => <View key={p.id} style={[styles.gridItem, { width: itemWidth, maxWidth: itemWidth }]}><SubcategoryProduct product={p} index={index} saved={saved.includes(p.id)} onSave={() => { void toggleSaved(p.id).catch(() => setNotice('Could not save your favourites. Please try again.')); }} /></View>)}</View>
           {!products.length && <View testID="category-empty" style={styles.empty}><Icon name="search-outline" size={28} color={colors.muted} /><Text style={styles.emptyTitle}>No matching items</Text><Pressable testID="category-clear-filters" onPress={reset} style={styles.clear}><Text style={styles.clearText}>Clear filters</Text></Pressable>{!cat && <Pressable testID="category-all" onPress={() => router.replace('/categories')} style={styles.clear}><Text style={styles.clearText}>Browse categories</Text></Pressable>}</View>}
           <Text testID="category-count" style={styles.footnote}>{products.length} items · sample catalogue</Text><Text testID="subcategory-estimate-note" style={styles.footnote}>Delivery times are sample estimates.</Text>
         </Animated.ScrollView>

@@ -21,7 +21,7 @@ export function DepartmentStrip() {
   return <View testID="department-strip" style={styles.row}>{departments.map((d, i) => {
     const selected = path === d.route || (d.id === 'care' && ['/beauty', '/pharmacy'].includes(path));
     return <Pressable testID={`department-${d.id}`} accessibilityRole="button" accessibilityLabel={d.label.replace('\n', ' ')} accessibilityState={{ selected }} key={d.id} onPress={() => router.navigate(d.route as any)} style={({ pressed }) => [styles.item, pressed && styles.pressed]}>
-      <DepartmentIcon id={d.id} selected={selected} delay={i * 65} /><Text testID={`department-label-${d.id}`} style={[styles.label, selected && styles.active]}>{d.label}</Text>{selected && <View style={styles.dot} />}
+      <DepartmentIcon id={d.id} selected={selected} delay={i * 65} /><Text testID={`department-label-${d.id}`} style={[styles.label, selected && styles.active, selected && { color: d.color }]}>{d.label}</Text>{selected && <View style={[styles.dot, { backgroundColor: d.color }]} />}
     </Pressable>;
   })}</View>;
 }

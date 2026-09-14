@@ -1,0 +1,43 @@
+{
+  "status": "pass_for_implemented_mobile_preview_scope",
+  "backend": { "passed": 20, "failed": 0, "source": "/app/test_reports/iteration_9.json" },
+  "diagnosis": "Retained inactive Expo Router screens are expected; use exact visible-screen-scoped selectors. No navigation unmounting or state-loss workaround was applied.",
+  "fixes_verified": [
+    "Help receipt uses null instead of empty-string conditional; no Unexpected text node console warnings in final flows",
+    "Referral heading renders an actual line break, not a literal backslash-n",
+    "Checkout placing state resets on success; two consecutive sample orders placed",
+    "Trending hero now uses managed transparent illustrative headphones and sneaker assets without rectangular photo backgrounds"
+  ],
+  "frontend_passed": [
+    "No Home back in expanded or compact header",
+    "Home3columns at390/360 (iteration9); category c23 exactly2columns at360 measured x93/228",
+    "Home/category/product-detail ADD displays fully visible character with independently changing arm transform",
+    "Cart popup dismiss/View bag and reduced-motion static confirmation",
+    "Address required validation/add/edit/Home-Work label/select delivery/delete cancel/confirm",
+    "UPI preferred payment save",
+    "Checkout card selection Modal and saved selected label",
+    "Sample order tracks Credit / Debit card with not-charged notice",
+    "Category saved item appears in account count and shared Wishlist; removal gives empty state",
+    "Profile validation and persistence (testing agent)",
+    "Help FAQ and support submission with Mongo receipt (testing agent and self checks)",
+    "Referral persistent code and clipboard copy; unsupported-browser sharing gives explicit copy fallback",
+    "Bappa and Navratri loaded managed character art and festival selection",
+    "Fitness, Trending, Gourmet, Everyday loaded main art and working collection back",
+    "All5 department gradients measured unique: peach/yellow/lavender/rose/blue",
+    "All5 food brand logos HTTP200; brand spotlight switching and KFC selection verified",
+    "TypeScript and modified code lint pass; pre-existing Android icon-prewarm require lint warning unchanged"
+  ],
+  "unresolved_core_bugs": [],
+  "not_connected_or_not_tested": [
+    "Native iOS/Android share sheets, device keyboard/gestures and physical-device animations",
+    "Payment collection, referral tracking/rewards/payouts, live merchant fulfilment",
+    "Cross-device profile sync/login and live support chat/email"
+  ],
+  "evidence": [
+    "/root/.emergent/automation_output/20260914_051000/console_20260914_051000.log",
+    "/root/.emergent/automation_output/20260914_051030/console_20260914_051030.log",
+    "/root/.emergent/automation_output/20260914_051151/console_20260914_051151.log",
+    "/root/.emergent/automation_output/20260914_051237/console_20260914_051237.log",
+    "/root/.emergent/automation_output/20260914_051452/console_20260914_051452.log"
+  ]
+}

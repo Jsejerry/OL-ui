@@ -6,7 +6,7 @@ import os
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List, Optional, Literal
 import uuid
 import hashlib
 from datetime import datetime, timezone
@@ -111,6 +111,7 @@ class OrderCreate(BaseModel):
     delivery_fee: float = 0
     total: float
     coupon_code: Optional[str] = None
+    payment_method: Literal['cod', 'upi', 'card', 'netbanking'] = 'cod'
 
 
 class Order(BaseModel):
@@ -121,6 +122,8 @@ class Order(BaseModel):
     delivery_fee: float = 0
     total: float
     coupon_code: Optional[str] = None
+    payment_method: Literal['cod', 'upi', 'card', 'netbanking'] = 'cod'
+    payment_status: Literal['not_charged'] = 'not_charged'
     status: str = "placed"  # placed | packed | out | delivered
     rider_name: str = "Suraj"
     rider_phone: str = "+91 98765 43210"
@@ -542,6 +545,28 @@ async def booking_enquiry(payload: BookingEnquiryCreate):
     result = BookingEnquiry(**payload.model_dump())
     await db.booking_enquiries.insert_one(result.model_dump())
     return result
+
+
+class SupportRequestCreate(BaseModel):
+    topic: Literal['order', 'payment', 'profile', 'other']
+    message: str = Field(min_length=10, max_length=2000)
+    reference: str = Field(default='', max_length=100)
+
+
+class SupportReceipt(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    status: str = 'saved_for_review'
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+@api_router.post('/support-requests', response_model=SupportReceipt)
+async def save_support_request(payload: SupportRequestCreate):
+    if len(payload.message.strip()) < 10:
+        raise HTTPException(400, 'Please describe your question in at least 10 characters')
+    receipt = SupportReceipt()
+    document = {**payload.model_dump(), **receipt.model_dump()}
+    await db.support_requests.insert_one(document)
+    return receipt
 
 
 # ---------- App wiring ----------

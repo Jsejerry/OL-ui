@@ -1,0 +1,45 @@
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export type PaymentMethod = 'cod' | 'upi' | 'card' | 'netbanking';
+export type Address = { id: string; label: string; name: string; phone: string; line: string; area: string; pin: string };
+export type Profile = { name: string; email: string; phone: string; avatar: string };
+type CustomerData = { profile: Profile; addresses: Address[]; payment: PaymentMethod; referral: string };
+const KEY = 'onecity.customer.v1';
+const SAVED_KEY = 'onecity.saved-products.v1';
+const defaults: CustomerData = { profile: { name: '', email: '', phone: '', avatar: 'person' }, addresses: [], payment: 'cod', referral: '' };
+type Context = CustomerData & { ready: boolean; saved: string[]; error: string; clearError: () => void; update: (patch: Partial<CustomerData>) => Promise<void>; toggleSaved: (id: string) => Promise<void> };
+const CustomerContext = createContext<Context | null>(null);
+export function CustomerProvider({ children }: { children: React.ReactNode }) {
+  const [data, setData] = useState<CustomerData>(defaults); const [saved, setSaved] = useState<string[]>([]);
+  const [ready, setReady] = useState(false); const [error, setError] = useState('');
+  const current = useRef(defaults); const currentSaved = useRef<string[]>([]); const queue = useRef(Promise.resolve());
+  useEffect(() => { (async () => {
+    try {
+      const [stored, favourites] = await Promise.all([AsyncStorage.getItem(KEY), AsyncStorage.getItem(SAVED_KEY)]);
+      const parsed = stored ? JSON.parse(stored) : {};
+      const next = { ...defaults, ...parsed, profile: { ...defaults.profile, ...parsed.profile }, referral: parsed.referral || `ONE${Math.random().toString(36).slice(2, 9).toUpperCase()}` };
+      const ids = favourites ? JSON.parse(favourites) : [];
+      current.current = next; currentSaved.current = Array.isArray(ids) ? ids.filter(x => typeof x === 'string') : [];
+      setData(next); setSaved(currentSaved.current); await AsyncStorage.setItem(KEY, JSON.stringify(next));
+    } catch { setError('Could not load your saved preferences. Please reopen this screen.'); }
+    finally { setReady(true); }
+  })(); }, []);
+  const enqueue = (action: () => Promise<void>) => {
+    const result = queue.current.catch(() => {}).then(action);
+    queue.current = result.catch(() => { setError('Could not save your changes. Please try again.'); });
+    return result;
+  };
+  const update = (patch: Partial<CustomerData>) => enqueue(async () => {
+    if (!ready) throw new Error('Your profile is still loading');
+    const next = { ...current.current, ...patch };
+    await AsyncStorage.setItem(KEY, JSON.stringify(next)); current.current = next; setData(next); setError('');
+  });
+  const toggleSaved = (id: string) => enqueue(async () => {
+    if (!ready) return;
+    const next = currentSaved.current.includes(id) ? currentSaved.current.filter(x => x !== id) : [...currentSaved.current, id];
+    await AsyncStorage.setItem(SAVED_KEY, JSON.stringify(next)); currentSaved.current = next; setSaved(next); setError('');
+  });
+  return <CustomerContext.Provider value={{ ...data, ready, saved, error, clearError: () => setError(''), update, toggleSaved }}>{children}</CustomerContext.Provider>;
+}
+export function useCustomer() { const value = useContext(CustomerContext); if (!value) throw new Error('CustomerProvider missing'); return value; }

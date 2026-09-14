@@ -1,4 +1,4 @@
-import { View, Text, Pressable, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, Pressable, ScrollView, StyleSheet, ActivityIndicator, useWindowDimensions } from 'react-native';
 import { Image } from 'expo-image';
 import Icon from '@react-native-vector-icons/ionicons';
 import { useRouter } from 'expo-router';
@@ -12,11 +12,16 @@ export function SectionTitle({ title, subtitle, onPress, id }: { title: string; 
 export function ProductRail({ products, scope }: { products: Product[]; scope: string }) {
   return <ScrollView horizontal testID={`${scope}-rail`} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.rail}>{products.map(p => <ProductCard key={p.id} product={p} scope={scope} />)}</ScrollView>;
 }
+export function ProductGrid({ products, scope }: { products: Product[]; scope: string }) {
+  const { width } = useWindowDimensions(); const cardWidth = (width - 48) / 3;
+  return <View testID={`${scope}-grid`} style={gridStyles.grid}>{products.map(p => <ProductCard key={p.id} product={p} scope={scope} width={cardWidth} />)}</View>;
+}
+const gridStyles = StyleSheet.create({ grid: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 16, gap: 8, rowGap: 16 } });
 export function BrandRail({ brands, scope, onSelect, active }: { brands: Brand[]; scope: string; onSelect?: (id: string) => void; active?: string }) {
   const router = useRouter();
   return <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.brandRail}>
     {brands.map(b => <Pressable testID={`${scope}-brand-${b.id}`} key={b.id} onPress={() => onSelect ? onSelect(b.id) : router.push(`/brand/${b.id}` as any)} style={styles.brandItem}>
-      <View style={[styles.brandCircle, active === b.id && styles.selectedBrand]}>{b.logo ? <Image source={b.logo} contentFit="contain" style={styles.brandLogo} /> : <Text style={[styles.brandWord, { color: b.department === 'beauty' ? colors.beauty : colors.pharmacy }]} numberOfLines={2}>{b.name}</Text>}</View><Text style={styles.brandName} numberOfLines={1}>{b.name}</Text>
+      <View style={[styles.brandCircle, active === b.id && styles.selectedBrand]}>{b.logo ? <Image testID={`${scope}-brand-logo-${b.id}`} source={b.logo} contentFit="contain" style={styles.brandLogo} /> : <Text testID={`${scope}-brand-wordmark-${b.id}`} style={[styles.brandWord, { color: b.department === 'beauty' ? colors.beauty : colors.pharmacy }]} numberOfLines={2}>{b.name}</Text>}</View><Text testID={`${scope}-brand-name-${b.id}`} style={styles.brandName} numberOfLines={1}>{b.name}</Text>
     </Pressable>)}
   </ScrollView>;
 }

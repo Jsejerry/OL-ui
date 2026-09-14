@@ -1,14 +1,18 @@
 import { colors } from './theme';
+import { storePalette } from './store-palettes';
 export const departments = [
   { id: 'food', label: 'Food', icon: 'fast-food-outline', color: colors.food, soft: colors.foodSoft, image: 'burger', route: '/food', title: 'Good food.\nGreat little moments.', subtitle: 'Fresh cravings, served your way.', eyebrow: 'THE FOOD EDIT', filters: ['All', 'Burgers', 'Pizza', 'Coffee', 'Chicken'], top: colors.foodTop, mid: colors.foodMid, fade: colors.foodFade },
-  { id: 'grocery', label: 'Groceries', icon: 'basket-outline', color: colors.forest, soft: colors.limeSoft, image: 'amul-cutout', route: '/grocery', title: 'Little slices.\nBig happiness.', subtitle: 'Everyday goodness, from Amul.', eyebrow: 'FRESH FINDS, EVERY DAY', filters: ['All', 'Fruits & Veggies', 'Dairy & Eggs', 'Snacks', 'Bakery'], top: colors.groceryTop, mid: colors.groceryMid, fade: colors.groceryFade },
-  { id: 'shops', label: 'Shops', icon: 'storefront-outline', color: colors.book, soft: colors.shopsFade, image: 'sneakers', route: '/shops', title: 'Your next\n“I love that” find.', subtitle: 'Style, sound & little things for home.', eyebrow: 'THE CITY SHOPPING EDIT', filters: ['All', 'Fashion', 'Electronics', 'Homeware'], top: colors.shopsTop, mid: colors.shopsMid, fade: colors.shopsFade },
+  { id: 'grocery', label: 'Groceries', icon: 'basket-outline', color: colors.grocery, soft: colors.groceryFade, image: 'amul-cutout', route: '/grocery', title: 'Little slices.\nBig happiness.', subtitle: 'Everyday goodness, from Amul.', eyebrow: 'FRESH FINDS, EVERY DAY', filters: ['All', 'Fruits & Veggies', 'Dairy & Eggs', 'Snacks', 'Bakery'], top: colors.groceryTop, mid: colors.groceryMid, fade: colors.groceryFade },
+  { id: 'shops', label: 'Shops', icon: 'storefront-outline', color: colors.shops, soft: colors.shopsFade, image: 'sneakers', route: '/shops', title: 'Your next\n“I love that” find.', subtitle: 'Style, sound & little things for home.', eyebrow: 'THE CITY SHOPPING EDIT', filters: ['All', 'Fashion', 'Electronics', 'Homeware'], top: colors.shopsTop, mid: colors.shopsMid, fade: colors.shopsFade },
   { id: 'care', label: 'Pharmacy\n& Beauty', icon: 'sparkles-outline', color: colors.beauty, soft: colors.beautySoft, image: 'skincare', route: '/care', title: 'Feel good.\nGlow a little.', subtitle: 'A softer kind of everyday care.', eyebrow: 'CARE COMES FIRST', filters: ['All', 'Wellness', 'Hygiene', 'Skincare', 'Makeup', 'Haircare'], top: colors.careTop, mid: colors.careMid, fade: colors.careFade },
   { id: 'book-it', label: 'Book It', icon: 'ticket-outline', color: colors.book, soft: colors.bookSoft, image: 'concert', route: '/book-it', title: 'Less scrolling.\nMore living.', subtitle: 'Movies, live music & little adventures.', eyebrow: 'MAKE ROOM FOR GOOD TIMES', filters: ['All', 'Movies', 'Events', 'Activities'], top: colors.bookTop, mid: colors.bookMid, fade: colors.bookFade },
 ] as const;
 export type DepartmentId = typeof departments[number]['id'];
 export function inDepartment(value: string | undefined, department: string) { return department === 'care' ? value === 'pharmacy' || value === 'beauty' : value === department; }
 export function paletteFor(path: string) {
+  if (path.startsWith('/collection/')) { const p = storePalette(path.split('/')[2]); return { top: p.top, mid: p.soft, fade: p.soft, color: p.ink }; }
   const department = departments.find(d => d.route === path) || (['/pharmacy', '/beauty'].includes(path) ? departments.find(d => d.id === 'care') : undefined);
-  return department || { top: colors.lime, mid: colors.cityMid, fade: colors.cityFade, color: colors.forest };
+  if (department) return department;
+  if (path === '/') return { top: colors.lime, mid: colors.cityMid, fade: colors.cityFade, color: colors.forest };
+  return { top: colors.shopsMid, mid: colors.shopsFade, fade: colors.surface, color: colors.shops };
 }

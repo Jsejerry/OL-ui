@@ -12,6 +12,7 @@ import { CartProvider } from "@/src/cart";
 import { AppShell } from '@/src/components/app-shell';
 import { colors } from '@/src/theme';
 import { CityMotionProvider } from '@/src/motion';
+import { CustomerProvider } from '@/src/customer';
 
 LogBox.ignoreAllLogs(true);
 
@@ -38,7 +39,7 @@ export default function RootLayout() {
           <QueryClientProvider client={queryClient}>
             <CartProvider>
               <StatusBar style="dark" />
-              <CityMotionProvider><AppShell><Stack screenOptions={{ headerShown: false, animation: 'slide_from_right', contentStyle: { backgroundColor: colors.surface } }} /></AppShell></CityMotionProvider>
+              <CustomerProvider><CityMotionProvider><AppShell><Stack screenOptions={{ headerShown: false, animation: 'slide_from_right', contentStyle: { backgroundColor: colors.surface } }} /></AppShell></CityMotionProvider></CustomerProvider>
             </CartProvider>
           </QueryClientProvider>
         </ErrorBoundary>

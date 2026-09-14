@@ -10,11 +10,14 @@ import { useCart } from "@/src/cart";
 import { apiPost, Coupon, CouponResult, Order } from "@/src/api";
 import { VendorNote } from '@/src/components/vendor-note';
 import { OneSaver } from '@/src/components/one-saver';
+import { CheckoutPayment } from '@/src/components/checkout-payment';
+import { useCustomer } from '@/src/customer';
 
 export default function CartScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { items, add, remove, clear, totalItems, totalPrice, totalMrp } = useCart();
+  const { payment } = useCustomer();
 
   const [couponCode, setCouponCode] = useState("");
   const [applied, setApplied] = useState<Coupon | null>(null);
@@ -74,6 +77,7 @@ export default function CartScreen() {
         delivery_fee: deliveryFee,
         total: grand,
         coupon_code: couponDiscount > 0 ? applied?.code ?? null : null,
+        payment_method: payment,
       });
       clear();
       setApplied(null);
@@ -81,8 +85,9 @@ export default function CartScreen() {
       setCouponMsg(null);
       router.replace(`/order/${order.id}` as any);
     } catch {
-      setPlacing(false);
       setCheckoutError('Could not place your order. Please try again.');
+    } finally {
+      setPlacing(false);
     }
   };
 
@@ -193,6 +198,7 @@ export default function CartScreen() {
               </View>
             </View>
 
+            <CheckoutPayment />
             {/* Bill details */}
             <View style={[styles.card, { marginTop: spacing.md }]}>
               <Text style={styles.billTitle}>Bill Details</Text>

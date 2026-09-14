@@ -1,79 +1,28 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { useRouter } from "expo-router";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Icon from "@react-native-vector-icons/ionicons";
-import { colors, radius, spacing } from "@/src/theme";
-
-const TAB_BAR_H = 64;
-
+import { View, Text, StyleSheet, ScrollView, Pressable, ActivityIndicator } from 'react-native';
+import { useRouter } from 'expo-router';
+import Icon from '@react-native-vector-icons/ionicons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { colors } from '@/src/theme';
+import { useCustomer } from '@/src/customer';
 const ROWS = [
-  { icon: "receipt-outline", label: "My Orders", testID: "acc-orders", route: "/orders" },
-  { icon: "location-outline", label: "Saved Addresses", testID: "acc-addresses" },
-  { icon: "heart-outline", label: "Wishlist", testID: "acc-wishlist" },
-  { icon: "gift-outline", label: "Refer & Earn", testID: "acc-refer" },
-  { icon: "help-circle-outline", label: "Help & Support", testID: "acc-help" },
-    { icon: "information-circle-outline", label: "About OneCity", testID: "acc-about" },
+  { icon: 'receipt-outline', label: 'My Orders', sub: 'Track a delivery or order again', id: 'orders', route: '/orders' },
+  { icon: 'location-outline', label: 'Saved Addresses', sub: 'Home, work and everywhere in between', id: 'addresses', route: '/addresses' },
+  { icon: 'heart-outline', label: 'Wishlist', sub: 'All your little favourites', id: 'wishlist', route: '/wishlist' },
+  { icon: 'card-outline', label: 'Payment Preferences', sub: 'Choose how you prefer to pay', id: 'payments', route: '/payments' },
+  { icon: 'gift-outline', label: 'Refer & Earn', sub: 'Good things are better shared', id: 'refer', route: '/refer' },
+  { icon: 'ticket-outline', label: 'My Bookings', sub: 'Your saved event enquiries', id: 'bookings', route: '/enquiries' },
+  { icon: 'wallet-outline', label: 'OneCity Wallet', sub: 'Explore your demo wallet', id: 'wallet', route: '/wallet' },
+  { icon: 'help-circle-outline', label: 'Help & Support', sub: 'Find answers and save a request', id: 'help', route: '/help' },
+  { icon: 'information-circle-outline', label: 'About OneCity', sub: 'A little closer to your city', id: 'about', route: '/about' },
 ];
-
 export default function AccountScreen() {
-  const insets = useSafeAreaInsets();
-  const router = useRouter();
-
-  return (
-    <View style={{ flex: 1, backgroundColor: colors.surfaceSecondary }} testID="account-screen">
-      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
-        <View style={styles.avatar}><Text style={styles.avatarText}>C</Text></View>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.name}>Customer</Text>
-          <Text style={styles.meta}>customer@onelatur.com</Text>
-        </View>
-        <TouchableOpacity style={styles.editBtn} testID="edit-profile-btn">
-          <Text style={styles.editText}>Edit</Text>
-        </TouchableOpacity>
-      </View>
-      <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: TAB_BAR_H + 24 }}>
-        <View style={styles.card}>
-          {ROWS.map((r, i) => (
-            <TouchableOpacity
-              key={r.label}
-              style={[styles.row, i !== ROWS.length - 1 && styles.rowBorder]}
-              testID={r.testID}
-              onPress={() => { if (r.route) router.push(r.route as any); }}
-            >
-              <View style={styles.rowIcon}>
-                <Icon name={r.icon as any} size={20} color={colors.onSurface} />
-              </View>
-              <Text style={styles.rowLabel}>{r.label}</Text>
-              <Icon name="chevron-forward" size={18} color={colors.muted} />
-            </TouchableOpacity>
-          ))}
-        </View>
-        <Text style={styles.tag}>OneCity · Made in Latur</Text>
-      </ScrollView>
-    </View>
-  );
+  const router = useRouter(); const { profile, saved, addresses, ready, error } = useCustomer();
+  return <ScrollView testID="account-screen" style={s.screen} contentContainerStyle={s.content}>
+    <LinearGradient colors={[colors.shopsTop, colors.shopsFade]} style={s.hero}><Text testID="account-eyebrow" style={s.eyebrow}>YOUR LITTLE CORNER</Text><View style={s.identity}><View style={s.avatar}><Icon name={`${profile.avatar}-outline` as any} size={32} color={colors.shops} /></View><View style={s.flex}><Text testID="account-name" style={s.name}>{profile.name || 'Hello, neighbour'}</Text><Text testID="account-email" style={s.meta}>{profile.email || 'Let’s make OneCity feel like you.'}</Text></View></View><Pressable testID="edit-profile-btn" onPress={() => router.push('/profile-edit')} style={s.edit}><Text style={s.editText}>Edit profile</Text><Icon name="arrow-forward" size={16} color={colors.shops} /></Pressable>
+    <View style={s.stats}><Pressable testID="account-wishlist-summary" onPress={() => router.push('/wishlist')} style={s.stat}><Text testID="account-wishlist-count" style={s.number}>{saved.length}</Text><Text style={s.meta}>Saved favourites</Text></Pressable><View style={s.divider} /><Pressable testID="account-address-summary" onPress={() => router.push('/addresses')} style={s.stat}><Text testID="account-address-count" style={s.number}>{addresses.length}</Text><Text style={s.meta}>Saved addresses</Text></Pressable></View></LinearGradient>
+    {!ready && <ActivityIndicator testID="account-loading" color={colors.shops} />}{!!error && <Text testID="account-storage-error" style={s.error}>{error}</Text>}
+    <View style={s.rows}>{ROWS.map(r => <Pressable key={r.id} testID={`acc-${r.id}`} onPress={() => router.push(r.route as any)} style={({ pressed }) => [s.row, pressed && s.pressed]}><View style={s.icon}><Icon name={r.icon as any} size={21} color={colors.shops} /></View><View style={s.flex}><Text testID={`acc-${r.id}-label`} style={s.label}>{r.label}</Text><Text style={s.sub}>{r.sub}</Text></View><Icon name="chevron-forward" size={17} color={colors.muted} /></Pressable>)}</View>
+    <Text testID="account-device-notice" style={s.notice}>Your profile and preferences stay on this device.</Text><Text style={s.tag}>OneCity · Made in Latur</Text>
+  </ScrollView>;
 }
-
-const styles = StyleSheet.create({
-  header: {
-    backgroundColor: colors.brandPrimary,
-    padding: spacing.lg,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.md,
-    borderBottomLeftRadius: radius.lg,
-    borderBottomRightRadius: radius.lg,
-  },
-  avatar: { width: 56, height: 56, borderRadius: 28, backgroundColor: colors.brandSecondary, alignItems: "center", justifyContent: "center" },
-  avatarText: { fontSize: 24, fontWeight: "800", color: colors.onBrandSecondary },
-  name: { fontSize: 18, fontWeight: "800", color: colors.onBrandPrimary },
-  meta: { fontSize: 12, color: "#B8B8B8", marginTop: 2 },
-  editBtn: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: radius.pill, borderWidth: 1, borderColor: "#3a3a3a" },
-  editText: { color: colors.onBrandPrimary, fontWeight: "700", fontSize: 12 },
-  card: { backgroundColor: colors.surface, borderRadius: radius.md, overflow: "hidden" },
-  row: { flexDirection: "row", alignItems: "center", gap: spacing.md, padding: spacing.md },
-  rowBorder: { borderBottomWidth: 1, borderBottomColor: colors.divider },
-  rowIcon: { width: 36, height: 36, borderRadius: 18, backgroundColor: colors.pastelYellow, alignItems: "center", justifyContent: "center" },
-  rowLabel: { flex: 1, fontSize: 14, fontWeight: "600", color: colors.onSurface },
-  tag: { textAlign: "center", color: colors.muted, marginTop: spacing.xl, fontSize: 12 },
-});
+const s = StyleSheet.create({ screen: { flex: 1, backgroundColor: colors.shopsFade }, content: { paddingBottom: 30 }, hero: { padding: 24, paddingBottom: 16 }, eyebrow: { color: colors.shops, fontSize: 10, letterSpacing: 2, fontWeight: '700', marginBottom: 22 }, identity: { flexDirection: 'row', alignItems: 'center', gap: 15 }, avatar: { width: 66, height: 66, borderRadius: 24, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' }, flex: { flex: 1 }, name: { fontSize: 23, color: colors.onSurface, fontWeight: '700' }, meta: { fontSize: 11, color: colors.muted, marginTop: 5 }, edit: { minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: 12, alignSelf: 'flex-start', marginLeft: 81 }, editText: { fontSize: 12, fontWeight: '700', color: colors.shops }, stats: { flexDirection: 'row', backgroundColor: colors.glassBright, borderRadius: 23, paddingVertical: 15, marginTop: 18 }, stat: { flex: 1, alignItems: 'center', minHeight: 48 }, number: { fontSize: 23, fontWeight: '700', color: colors.shops }, divider: { width: 1, backgroundColor: colors.shopsMid }, rows: { backgroundColor: colors.surface, margin: 16, borderRadius: 26, paddingHorizontal: 15 }, row: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 81, borderBottomWidth: 1, borderBottomColor: colors.divider }, icon: { width: 42, height: 42, borderRadius: 15, backgroundColor: colors.shopsFade, alignItems: 'center', justifyContent: 'center' }, label: { fontSize: 14, fontWeight: '600', color: colors.onSurface }, sub: { fontSize: 10, color: colors.muted, lineHeight: 16, marginTop: 4 }, notice: { color: colors.muted, fontSize: 11, textAlign: 'center' }, tag: { color: colors.shops, fontSize: 11, textAlign: 'center', marginTop: 12 }, error: { color: colors.onError, margin: 16 }, pressed: { opacity: 0.6 } });

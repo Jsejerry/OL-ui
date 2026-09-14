@@ -10,6 +10,7 @@ import { colors, radius, spacing } from "@/src/theme";
 import { api, Order } from "@/src/api";
 import { VendorNote } from '@/src/components/vendor-note';
 import { useMotionAllowed } from '@/src/motion';
+import { paymentLabel } from '@/src/components/payment-options';
 
 const AnimatedView = Animated.View;
 const { width: SCREEN_W } = Dimensions.get("window");
@@ -104,6 +105,7 @@ export default function OrderTrackingScreen() {
       </View>
 
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: 60 }}>
+        <Text testID="order-payment-method" style={styles.riderMeta}>{paymentLabel(order.payment_method || 'cod')} · sample order, not charged</Text>
         <VendorNote items={order.items} status={order.status} />
         {/* ETA hero */}
         <View style={styles.etaCard}>

@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'expo-router';
 import Icon from '@react-native-vector-icons/ionicons';
 import { colors } from '../theme';
 import { mediaUrl } from '../api';
+import { FoodSpotlight } from './food-spotlight';
 
 const stories = {
   home: { eyebrow: 'THE LITTLE JOYS OF EVERYDAY', title: 'Everyday, a little\nmore delicious.', copy: 'A slice of goodness. A whole lot of happy.', asset: 'amul-cutout', tag: 'Amul goodness', detail: 'Cheese favourites · from ₹145', cta: 'Shop Amul', route: '/brand/amul', color: colors.forest, badge: 'made for\nhappy bites', icon: 'heart-outline' },
@@ -17,9 +18,12 @@ const stories = {
   'book-it': { eyebrow: 'YOUR CITY. A LITTLE MORE ALIVE.', title: 'Good times,\noutside your feed.', copy: 'Big screens, live scenes & new memories.', asset: 'concert', tag: 'Latur After Hours', detail: 'Live music · sample experience', cta: 'Make a plan', route: '/booking/e3', color: colors.book, badge: 'make room\nfor memories', icon: 'musical-notes-outline' },
 };
 export type SpotlightVariant = keyof typeof stories;
-export function BrandSpotlight({ variant = 'home', switchable = false }: { variant?: SpotlightVariant; switchable?: boolean }) {
+export function BrandSpotlight(props: { variant?: SpotlightVariant; switchable?: boolean }) { return props.variant === 'food' ? <FoodSpotlight /> : <DefaultBrandSpotlight {...props} />; }
+function DefaultBrandSpotlight({ variant = 'home', switchable = false }: { variant?: SpotlightVariant; switchable?: boolean }) {
   const [selected, setSelected] = useState<SpotlightVariant>(variant);
-  const story = stories[switchable ? selected : variant];
+  const baseStory = stories[switchable ? selected : variant];
+  const currentPalette = paletteFor(usePathname());
+  const story = { ...baseStory, color: currentPalette.color };
   const float = useRef(new Animated.Value(0)).current; const router = useRouter(); const palette = paletteFor(usePathname());
   useEffect(() => { let animation: Animated.CompositeAnimation | undefined; let disposed = false; AccessibilityInfo.isReduceMotionEnabled().then(reduce => { if (!reduce && !disposed) { animation = Animated.loop(Animated.sequence([Animated.timing(float, { toValue: -7, duration: 2100, useNativeDriver: Platform.OS !== 'web' }), Animated.timing(float, { toValue: 0, duration: 2100, useNativeDriver: Platform.OS !== 'web' })])); animation.start(); } }); return () => { disposed = true; animation?.stop(); }; }, [float]);
   return <LinearGradient testID={`spotlight-${variant}`} colors={[palette.mid, palette.fade, colors.surface]} locations={[0, 0.83, 1]} style={styles.wrap}>

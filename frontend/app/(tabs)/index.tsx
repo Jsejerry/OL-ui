@@ -7,11 +7,10 @@ import { colors } from '@/src/theme';
 import { api, Store } from '@/src/api';
 import { useCatalog } from '@/src/use-catalog';
 import { useFollowedStores } from '@/src/followed';
-import { TrendingCards } from '@/src/components/home-promos';
 import { BrandSpotlight } from '@/src/components/brand-spotlight';
 import { StoreRail } from '@/src/components/store-rail';
 import { CityScroll } from '@/src/motion';
-import { BrandRail, CategoryRail, EventRail, LoadState, ProductRail, SectionTitle } from '@/src/components/catalog-sections';
+import { BrandRail, CategoryRail, EventRail, LoadState, ProductGrid as ProductRail, SectionTitle } from '@/src/components/catalog-sections';
 
 export default function HomeScreen() {
   const { data, isLoading, isError, refetch } = useCatalog();
@@ -30,9 +29,9 @@ export default function HomeScreen() {
     <SectionTitle id="home-shop-by-store" title="A little world for every mood" subtitle="SHOP BY STORE · Five edits, made for you." onPress={go('/categories')} />
     <StoreRail stores={data.themed_stores || []} scope="home" />
     <SectionTitle id="trending" title="Trending in Latur" subtitle="Good finds. Everyone’s talking." onPress={go('/search?collection=trending')} />
-    <TrendingCards products={selected(['f1', 'f5', 'b1', 'f3'])} />
+    <ProductRail products={selected(['f1', 'f5', 'b1', 'f3', 'p3', 'a1'])} scope="trending-home" />
     <SectionTitle id="top-picks" title="Top picks for you" subtitle="A few things we think you’ll love." onPress={go('/search?collection=picks')} />
-    <ProductRail products={selected(['p3', 'f3', 'b1', 'p4', 'f6'])} scope="picks" />
+    <ProductRail products={selected(['p3', 'f3', 'b1', 'p4', 'f6', 'a1'])} scope="picks" />
     <View style={styles.rule} />
     <SectionTitle id="home-food" title="What are you craving?" subtitle="FOOD · The names you know. The bites you love." onPress={go('/food')} />
     <BrandRail brands={data.brands.filter(b => b.department === 'food')} scope="home-food" />

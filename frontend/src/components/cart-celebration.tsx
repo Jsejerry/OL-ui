@@ -2,25 +2,25 @@ import { useEffect, useRef, useState } from 'react';
 import { Animated, View, Text, Pressable, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
 import Icon from '@react-native-vector-icons/ionicons';
-import { useRouter } from 'expo-router';
+import { usePathname, useRouter } from 'expo-router';
 import { useCart } from '../cart';
 import { colors } from '../theme';
 import { nativeDriver, useMotionAllowed } from '../motion';
-
+import { CartCharacter } from './cart-character';
 export function CartCelebration({ top }: { top: number }) {
-  const { lastAdded, totalItems } = useCart(); const router = useRouter(); const motion = useMotionAllowed();
+  const { lastAdded, totalItems } = useCart(); const router = useRouter(); const path = usePathname(); const motion = useMotionAllowed();
   const progress = useRef(new Animated.Value(0)).current; const [visible, setVisible] = useState(false);
+  useEffect(() => { setVisible(false); }, [path]);
   useEffect(() => {
-    if (!lastAdded) return;
-    setVisible(true); progress.setValue(motion ? 0 : 1);
-    const animation = Animated.spring(progress, { toValue: 1, friction: 6, useNativeDriver: nativeDriver });
-    animation.start();
-    const timer = setTimeout(() => setVisible(false), 2200);
+    if (!lastAdded) return; setVisible(true); progress.setValue(motion ? 0 : 1);
+    const animation = Animated.spring(progress, { toValue: 1, friction: 6, tension: 65, useNativeDriver: nativeDriver }); if (motion) animation.start();
+    const timer = setTimeout(() => setVisible(false), motion ? 3400 : 4500);
     return () => { clearTimeout(timer); animation.stop(); };
   }, [lastAdded, motion, progress]);
   if (!visible || !lastAdded) return null;
-  return <Animated.View testID="cart-added-popup" accessibilityLiveRegion="polite" style={[styles.toast, { top, opacity: progress, transform: [{ translateY: progress.interpolate({ inputRange: [0, 1], outputRange: [-70, 0] }) }, { scale: progress.interpolate({ inputRange: [0, 1], outputRange: [0.9, 1] }) }] }]}>
-    <Image testID="cart-added-image" source={lastAdded.product.image} contentFit="contain" style={styles.image} /><View style={styles.copy}><Text testID="cart-added-title" style={styles.title}>A little joy, added!</Text><Text testID="cart-added-product" numberOfLines={1} style={styles.name}>{lastAdded.product.name}</Text></View><Pressable testID="cart-added-open" accessibilityLabel={`View cart with ${totalItems} items`} style={styles.action} onPress={() => { setVisible(false); router.navigate('/cart'); }}><Icon name="checkmark-circle" size={19} color={colors.lime} /><Text style={styles.actionText}>View bag</Text></Pressable>
+  return <Animated.View testID="cart-added-popup" accessibilityLiveRegion="polite" style={[s.overlay, { top: top + 64, opacity: progress, transform: [{ translateY: progress.interpolate({ inputRange: [0, 1], outputRange: [70, 0] }) }, { scale: progress.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] }) }] }]}>
+    <View style={s.characterWrap}><View style={s.aura} /><CartCharacter revision={lastAdded.revision} /><Image testID="cart-added-image" source={lastAdded.product.image} contentFit="contain" style={s.product} /><Icon name="sparkles" color={colors.gold} size={22} style={s.sparkle} /></View>
+    <View style={s.bubble}><Pressable testID="cart-added-dismiss" accessibilityLabel="Dismiss added confirmation" onPress={() => setVisible(false)} style={s.close}><Icon name="close" size={17} color={colors.muted} /></Pressable><Text testID="cart-added-title" style={s.title}>Great pick!</Text><Text testID="cart-added-product" numberOfLines={2} style={s.name}>{lastAdded.product.name} is in your bag.</Text><Pressable testID="cart-added-open" accessibilityLabel={`View cart with ${totalItems} items`} style={s.action} onPress={() => { setVisible(false); router.navigate('/cart'); }}><Text style={s.actionText}>View bag · {totalItems}</Text><Icon name="arrow-forward" size={15} color={colors.shops} /></Pressable></View>
   </Animated.View>;
 }
-const styles = StyleSheet.create({ toast: { position: 'absolute', left: 14, right: 14, zIndex: 100, flexDirection: 'row', alignItems: 'center', gap: 10, borderRadius: 22, backgroundColor: colors.forestDeep, padding: 10, boxShadow: [{ offsetX: 0, offsetY: 5, blurRadius: 20, color: colors.shadow }] }, image: { width: 44, height: 44, borderRadius: 14, backgroundColor: colors.surface }, copy: { flex: 1 }, title: { color: colors.surface, fontSize: 13, fontWeight: '700' }, name: { color: colors.cityMid, fontSize: 10, marginTop: 4 }, action: { minHeight: 44, minWidth: 64, alignItems: 'center', justifyContent: 'center', gap: 3 }, actionText: { color: colors.surface, fontSize: 10, fontWeight: '600' } });
+const s = StyleSheet.create({ overlay: { position: 'absolute', right: 8, zIndex: 100, width: 192, alignItems: 'center', pointerEvents: 'box-none' }, characterWrap: { width: 186, height: 188, pointerEvents: 'none' }, aura: { position: 'absolute', top: 36, left: 10, width: 140, height: 140, borderRadius: 80, backgroundColor: colors.glass }, product: { position: 'absolute', right: 19, bottom: 28, width: 39, height: 43, borderRadius: 8 }, sparkle: { position: 'absolute', left: 2, top: 25 }, bubble: { width: 178, marginTop: -7, borderRadius: 24, borderTopRightRadius: 8, backgroundColor: colors.surface, paddingHorizontal: 14, paddingTop: 17, boxShadow: [{ offsetX: 0, offsetY: 4, blurRadius: 24, color: colors.shadow }], borderWidth: 1, borderColor: colors.shopsMid }, close: { position: 'absolute', top: -9, right: -9, width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }, title: { color: colors.shops, fontSize: 18, fontWeight: '800' }, name: { color: colors.onSurface, fontSize: 11, lineHeight: 16, marginTop: 5, paddingRight: 3 }, action: { minHeight: 44, flexDirection: 'row', gap: 6, alignItems: 'center' }, actionText: { color: colors.shops, fontSize: 11, fontWeight: '700' } });

@@ -55,6 +55,8 @@ export type Order = {
   delivery_fee: number;
   total: number;
   coupon_code?: string | null;
+  payment_method?: 'cod' | 'upi' | 'card' | 'netbanking';
+  payment_status?: 'not_charged';
   status: string;
   rider_name: string;
   rider_phone: string;

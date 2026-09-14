@@ -1,5 +1,29 @@
 # OneCity — Hyperlocal Shopping & Discovery
 
+## Current update — pastel worlds, character animation and functional customer pages
+User requested incremental changes only: no back on Home, back on opened pages; three products per Home row and reference-style two-column subcategories; immersive store animation from title/search to festival selection; animated Bappa/products and distinct store scenes; pastel Food/Groceries/Shops/Pharmacy & Beauty/Book It (green Home only); additional food brand spotlights/logos; articulated waving cart character; payment method selection; functional profile/edit/addresses/wishlist/referral/help actions.
+
+### Implemented and verified in mobile preview
+- Home header/compact header hide back; opened pages preserve back and bottom navigation. All Home product shelves now responsive three-column grids. Existing reference-style subcategory sidebar and two-column layout retained.
+- Peach Food, butter-yellow Groceries, lavender Shops, blush Care, sky-blue Book It. Home retains company lime. Shared product/cart/navigation accents follow the current page.
+- New CollectionScene spans store title, search, moving product art and festival selection in one pastel scene. Ganesh Chaturthi Bappa with mandala/petals/modaks/diyas; Navratri garba dancer with dandiya/garland; fitness equipment lift, trending headphones/sneakers, gourmet coffee/chocolate/nuts, everyday milk/pantry products. Managed artwork imported via seed_festival_refresh.py (19 assets, including polished transparent headphones/sneaker v2). Collection motion pauses offscreen/background and honours reduced motion.
+- Food hero now offers five switchable logo-led spotlights: McDonald's, KFC, Starbucks, Burger King, Domino's, linking existing brand collections.
+- Global CartCharacter is layered 3D-style SVG artwork with separately articulated waving arm, blink and body bob, carrying the selected product; spring entry and dismiss/View bag feedback. No longer a plain toast card.
+- CustomerProvider adds device-local profile name/email/phone/avatar, saved address CRUD and selection into existing delivery location, shared wishlist (migrates existing saved key), payment preference and invite code. New screens profile-edit, addresses, wishlist, payments, refer, help, about. Account rows link working destinations including orders/bookings/wallet.
+- Checkout payment selector offers UPI/card/net banking/COD, persists preference and records validated payment_method + not_charged status on sample orders. Does not collect bank credentials or process payments.
+- Refer & Earn provides persistent invite code, copy/native share and clear inactive rewards notice; no tracking or payouts connected. Help provides FAQs and validated POST /api/support-requests with Mongo receipt persistence; no live chat, email or response guarantee.
+
+### Architecture / boundaries
+Existing Expo Router + FastAPI + MongoDB retained. No auth added. Profile/address/wishlist/payment data is device-local, not cloud-synced. Catalogue/order/booking/wallet demonstrations remain as previously approved. Support receipt endpoint returns Pydantic model, excludes database IDs. No new payment provider or auth integration. Generated artwork imported into existing managed storage proxy; credentials remain server-side.
+
+### Verification / priorities
+- Self-checks: TypeScript clean; Python new code lint clean; frontend lint clean except existing Android icon-prewarm require warning. Media HTTP200, food logos HTTP200. Phone screenshot verifies no Home back, 3-column product grid, full loaded Bappa/Navratri art, festival switching and character mount.
+- Testing agent iteration9: backend20/20 including payment metadata/default COD/invalid422 and support Mongo receipt. Profile validation/persistence, food switching, Home grid and help passed. Agent hit expected retained-screen hidden selectors; read-only diagnosis confirmed no multiple visible-screen/navigation defect. Kept native navigation/scroll state intact and verified all previously blocked interactions using exact active-screen locators.
+- Fixed real Help empty-string conditional warning (nullable receipt), referral heading literal newline, and ensured checkout busy state resets after success for consecutive orders. Post-fix screenshots: address add/validate/edit/select/remove, UPI preference save, shared category→Wishlist save/remove, category two-column at360, cart independently waving arm from Home/category/detail, card payment modal→sample order metadata, two consecutive checkouts, reduced-motion static fully-visible confirmation, four other loaded store scenes and five distinct department header gradients. Native share unavailable in this browser with explicit Copy code fallback; clipboard verified. No error/text-node warnings in post-fix console logs.
+- P0: no known unresolved core-flow bugs in implemented scope. See /app/test_reports/iteration_9_postfix.json. Await user visual feedback.
+- P1: native iOS/Android validation for gesture, sharing, keyboard and animations; real payments/referral rewards/fulfilment remain unconnected and clearly labelled.
+- P2: real merchant catalogue and signed-in cross-device profile when requested.
+
 ## Subcategory reference-layout refinement (current)
 - User requested: "i want you to make a small change i want this type of scroll animation and same layout for subcategory"; clarified "make it look almost similar and position of everything search bar timer items". Keep existing company theme and persistent bottom navigation.
 - Scoped to `/category/[id]` and category-only components; shared product cards on Home/collections remain unchanged.

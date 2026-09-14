@@ -102,6 +102,18 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
+latest_update_2026_09_14:
+  request: "Incremental: back only on opened pages not Home; Home3-column products and reference subcategory2-column; pastel departments; store animations title/search through festival tabs with Bappa and Navratri; five food-logo spotlights; articulated waving cart character; working profile edit, address CRUD, shared wishlist, referral, help and payment options. User approved sensible defaults and no live payment/referral payouts."
+  implemented: true
+  working: true
+  needs_retesting: false
+  files: [frontend/src/customer.tsx, frontend/app/profile-edit.tsx, frontend/app/addresses.tsx, frontend/app/wishlist.tsx, frontend/app/refer.tsx, frontend/app/payments.tsx, frontend/app/help.tsx, frontend/src/components/collection-scene.tsx, frontend/src/components/cart-character.tsx, frontend/src/components/food-spotlight.tsx, backend/server.py]
+  self_test: "tsc passes, Python lint passes, frontend lint only pre-existing icon prewarm require warning. 17 new managed assets imported. Loaded mobile screenshots verify Bappa/Navratri art, 3-column Home and Home back hidden. Food logos and festival assets HTTP200."
+  test_focus: [Home back hidden expanded and compact, Back opened pages, Home3 columns and subcategory2 at360and390, All5 pastel departments and food logos switching, All5 animated stores and festival switching filtering, Waving arm transform and reduced-motion, Profile edit validation persistence, Address add edit select remove persistence, Shared wishlist from Home category and details, Payment preference and checkout metadata, Referral copy share and inactive rewards notice, Help FAQ and request persistence validation, Existing coupon order reels regression]
+  credentials: "No auth; see memory/test_credentials.md. Fake profile Aarav Test / aarav@example.com / 9876543210 / Latur413512. Native profile local-device only."
+  boundaries: "Sample checkout never charges. Payment methods UPI/card/netbanking/cod preference only. Refer codes share/copy real, reward tracking/payout absent. Support request real Mongo receipt but no live chat/email response service. No new API mocks."
+  verification: "Iteration9 backend20/20. UI automation initial62% limited by expected retained-screen selectors. Troubleshooter confirmed no visible duplicate navigation issue; do NOT unmount inactive screens. Fixed Help empty-string conditional and referral heading, reset checkout busy state. All blocked core flows passed in subsequent exact-visible-selector self-tests. Independent waving arm measured; sample checkout card metadata and two consecutive orders passed; addresses CRUD/location, shared Wishlist, referral copy, all5 stores/art and distinct department gradients passed. See iteration_9_postfix.json. Native share unavailable in browser, Copy code fallback verified; native-device tests still needed."
+
 current_update:
   request: "Incremental Instamart-inspired categories, five 3D themed stores, back everywhere, persistent bottom navigation, scroll-away headers, compact products, demo brands, cart animation and richer assistant. User reports ALL old icons/images/illustrations missing."
   implemented: true

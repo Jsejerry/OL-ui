@@ -8,6 +8,7 @@ import * as Haptics from "expo-haptics";
 import { colors, radius, spacing } from "@/src/theme";
 import { api, Product } from "@/src/api";
 import { useCart } from "@/src/cart";
+import { useCustomer } from '@/src/customer';
 
 export default function ProductDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -15,6 +16,7 @@ export default function ProductDetail() {
   const router = useRouter();
   const { add, remove, qtyOf, totalItems, totalPrice } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
+  const { saved, toggleSaved, error: savedError } = useCustomer();
 
   useEffect(() => {
     if (!id) return;
@@ -42,12 +44,15 @@ export default function ProductDetail() {
         <Icon name="chevron-back" size={22} color={colors.onSurface} />
       </TouchableOpacity>
 
+      <TouchableOpacity testID="pd-save-product" accessibilityLabel={saved.includes(id) ? 'Remove from wishlist' : 'Save to wishlist'} accessibilityState={{ selected: saved.includes(id) }} style={[styles.backBtn, { left: undefined, right: 16, top: insets.top + 8 }]} onPress={() => { void toggleSaved(id).catch(() => {}); }}><Icon name={saved.includes(id) ? 'heart' : 'heart-outline'} size={22} color={colors.shops} /></TouchableOpacity>
+
       <ScrollView contentContainerStyle={{ paddingBottom: 140 }}>
         <View style={[styles.imageWrap, { paddingTop: insets.top + 60 }]}>
           <Image source={product.image} style={styles.image} contentFit="cover" />
         </View>
 
         <View style={styles.content}>
+          {!!savedError && <Text testID="pd-save-error" style={{ color: colors.onError }}>{savedError}</Text>}
           <View style={styles.deliveryPill}>
             <Icon name="flash" size={12} color={colors.onSurface} />
             <Text style={styles.deliveryText}>Delivery in {product.delivery_min} minutes</Text>
